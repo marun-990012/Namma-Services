@@ -9,6 +9,7 @@ const userSchema=new Schema({
     userType:String,
     phoneNumber:String,
     profileImage:String,
+    bio:String,
     address: [
         {
           street:String,
@@ -44,8 +45,7 @@ const userSchema=new Schema({
         default:false
     },
     verifiedBadge:{
-        type:String,
-        default:''
+        type:String
     }
     
 },{timestamps:true});
