@@ -6,6 +6,7 @@ const userSchema=new Schema({
     name:String,
     email:String,
     password:String,
+    userType:String,
     phoneNumber:String,
     profileImage:String,
     address: [
@@ -28,7 +29,6 @@ const userSchema=new Schema({
           }
         }
       ],      
-    userType:String,
     images:[String],
     serviceType:{},
     isActive:{
