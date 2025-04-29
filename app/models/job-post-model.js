@@ -1,3 +1,4 @@
+
 import mongoose from 'mongoose';
 
 const {Schema,model} = mongoose;
@@ -12,7 +13,7 @@ const jobPostSchema=new Schema({
         type: Schema.Types.ObjectId,
         ref: 'User', 
     },
-    jobrRequests:[{
+    jobRequests:[{
         serviceProvider:{
             type: Schema.Types.ObjectId,
             ref: 'User', 
@@ -20,12 +21,13 @@ const jobPostSchema=new Schema({
         messages:String,
         response:[String],
         name:String,
-        profileImage:''
+        profileImage:String
     }],
+    selectedServiceProvider:Schema.Types.ObjectId,
     workStatus: {
         type: String,
-        enum: ['started', 'In-Progress', 'Completed'],
-        default: 'Pending'
+        enum: ['started', 'in-progress', 'completed'],
+        // default: 'pending'
     },
     postDate: {
         type: String,
