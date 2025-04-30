@@ -13,7 +13,7 @@ serviceCategoryController.create = async (req,res)=>{
     }
 };
 
-//controller for list all the category
+// controller for list all the category
 serviceCategoryController.list = async(req,res)=>{
     // res.json('hello');
     try{
@@ -40,4 +40,21 @@ serviceCategoryController.update = async(req,res)=>{
         return res.status(500).json({error:"Something went wrong"});
     }
 }
+
+// service category delete controller
+serviceCategoryController.remove = async(req,res)=>{
+    const id = req.params.id;
+    try{
+        const category = await Service.findByIdAndDelete(id,{new:true});
+        if(!category){
+            return res.status(404).json({error:"Service Category is not found"});
+        }
+        return res.json(category);
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong"});
+    }
+};
+
+
 export default serviceCategoryController;
