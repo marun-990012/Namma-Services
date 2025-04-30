@@ -59,7 +59,6 @@ userController.login = async (req, res) => {
 
 // controller for list all the users
 userController.list = async (req, res) => {
-  // res.json('hello');
   try {
     const users = await User.find();
     return res.json(users);
@@ -80,5 +79,100 @@ userController.account = async (req, res) => {
    }
 };
 
+//profile image update controller
+userController.updateProfileImage = async(req,res)=>{
+    const id = req.params.id;
+    const {profileImage} = req.body;
+    try{
+        if(req.userId==id){
+            const user = await User.findByIdAndUpdate(id,{profileImage},{new:true});
+            if(!user){
+                return res.status(404).json({message:"user not found"});
+            }
+            return res.json({user,message:"succefully updated"});
+        }
+        return res.json({error:"Unauthorized access"});
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({ error: "Something went wrong" });
+    }
+};
 
+
+//profile image update controller
+userController.uploadPhotos = async(req,res)=>{
+    const id = req.params.id;
+    const {images} = req.body;
+    try{
+        if(req.userId==id){
+            const user = await User.findByIdAndUpdate(id,{images},{new:true});
+            if(!user){
+                return res.status(404).json({message:"user not found"});
+            }
+            return res.json({user,message:"succefully updated"});
+        }
+        return res.json({error:"Unauthorized access"});
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+//profile update controller
+userController.updateProfile = async(req,res)=>{
+    const id = req.params.id;
+    const {bio,name,phoneNumber} = req.body;
+    try{
+        if(req.userId==id){
+            const user = await User.findByIdAndUpdate(id,{bio,name,phoneNumber},{new:true});
+            if(!user){
+                return res.status(404).json({message:"user not found"});
+            }
+            return res.json({user,message:"succefully updated"});
+        }
+        return res.json({error:"Unauthorized access"});
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+
+//address update controller(not done)
+userController.updateAddress = async(req,res)=>{
+    const id = req.params.id;
+    const {address} = req.body;
+    try{
+        
+        if(req.userId==id){
+            const user = await User.findByIdAndUpdate(id,{address},{new:true});
+            if(!user){
+                return res.status(404).json({message:"user not found"});
+            }
+            return res.json({user,message:"succefully updated"});
+        }
+        return res.json({error:"Unauthorized access"});
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({ error: "Something went wrong" });
+    }
+};
+
+//delete account controller
+userController.remove = async(req,res)=>{
+    const id = req.params.id;
+   try{
+    if(req.userId == id){
+        const account = await User.findByIdAndDelete(id,{new:true});
+        if(!account){
+            return res.status(404).json({message:"User account not found"});
+        }
+        return res.json(account);
+    }
+    return res.json({error:"Unauthorized access"});
+   }catch(error){
+    console.log(error);
+    return res.status(500).json({ error: "Something went wrong" });
+   }
+}
 export default userController;
