@@ -20,7 +20,7 @@ jobPostController.list = async(req,res)=>{
         console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
-};
+}; 
 
 jobPostController.myJobPosts = async (req,res) =>{
     try{
