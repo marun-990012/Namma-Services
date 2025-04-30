@@ -1,11 +1,12 @@
-import User from "../models/user-model";
-function authorizeUser(users) {
+import User from "../models/user-model.js";
+function authorizeUser(permittedRoute) {
   return async (req, res, next) => {
     try {
       // We fetch the user from the database to ensure the user still exists.
       // This prevents access using a valid token after the user has been deleted.
       const user = await User.findById(req.userId);
-      if (users.includes(req.role) && user) {
+      
+      if (permittedRoute.includes(req.role) && user) {
         next();
       } else {
         return res.status(403).json({ error: "unAuthorized access" });
