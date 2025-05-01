@@ -15,25 +15,28 @@ const ratingSchema=new Schema({
         type: Schema.Types.ObjectId,
         ref: 'Job',
       },
-      images: {
-        type: [String],
-        default: []
-      },
-
+    images:[String],
     rating:Number, 
-    review:[String],
+    review:[
+      {
+        name:String,
+        message:String,
+        profileImage:String
+      },
+    ],
     tipAmount: {
         type: Number,
         default: 0
       },
     status: {
         type: String,
-        enum: ['in-progress', 'Completed'],
-        default: 'in-progress'
-      }
+        enum: ['pending', 'completed'],
+        default: 'pending'
+      },
+    
 
 },{timestamps:true});
 
-const Rating=model('rating',ratingSchema);
+const ReviewRating = model('rating',ratingSchema);
 
-export default Rating;
+export default ReviewRating;
