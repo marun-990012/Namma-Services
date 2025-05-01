@@ -18,16 +18,24 @@ const jobPostSchema=new Schema({
             type: Schema.Types.ObjectId,
             ref: 'User', 
           },
-        messages:String,
-        response:[String],
-        name:String,
-        profileImage:String
+        messages:[
+          {
+            textMessage:String,
+            response:[String],
+            name:String,
+            profileImage:String
+          }
+        ],
     }],
-    selectedServiceProvider:Schema.Types.ObjectId,
+    considerations :[String],
+    selectedServiceProvider:{
+      type: Schema.Types.ObjectId,
+      ref: 'User', 
+    },
     workStatus: {
         type: String,
-        enum: ['started', 'in-progress', 'completed'],
-        // default: 'pending'
+        enum: ['not-assigned','started', 'completed'],
+        default: 'not-assigned'
     },
     postDate: {
         type: String,
