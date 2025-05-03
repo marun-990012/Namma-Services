@@ -36,4 +36,51 @@ reviewRatingController.moreReview = async(req,res)=>{
 };
 
 
+//remove or delete review
+reviewRatingController.removeReview = async(req,res)=>{
+    //main id and review id
+    const {id,reviewid} = req.params;
+    try{
+        const review = await ReviewRating.findByIdAndUpdate(id,{ $pull: { review: { _id: reviewid } } },{new:true});
+        if(!review){
+            return res.status(404).json({message:"your previous review is deleted"});
+        }
+      
+    //   await review.save();
+
+      return res.json(review);
+    // return res.json('hello');
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong"});
+    }
+};
+
+
+//update review
+reviewRatingController.updateReview = async(req,res)=>{
+    //main id and review id
+    const {id,reviewid} = req.params;
+    const {message} = req.body;
+    try{
+        const review = await ReviewRating.findById(id);
+        if(!review){
+            return res.status(404).json({error:"your previous review is deleted"});
+        }
+        const reviewToUpdate = review.review.id(reviewid); // find subdocument by _id from array
+        if (!reviewToUpdate) {
+            return res.status(404).json({ error: "Review not found" });
+        }
+        reviewToUpdate.message = message;
+       await review.save();
+    
+      return res.json(review);
+    // return res.json('hello');
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong"});
+    }
+};
+
+
 export default reviewRatingController;
