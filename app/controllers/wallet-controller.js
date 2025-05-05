@@ -1,3 +1,4 @@
+import walletRoute from "../../config/routes/wallet-route.js";
 import Wallet from "../models/wallet-model.js";
 
 const walletController = {};
@@ -61,6 +62,17 @@ walletController.addCoin = async (req, res) => {
     }
   };
   
-
+walletController.find = async(req,res)=>{
+  try {
+    const wallet = await Wallet.findOne({userId:req.userId});
+    if (!wallet) {
+      return res.status(404).json({ error: "Wallet not found" });
+    }
+    return res.json(wallet);
+  } catch (error) {
+    console.error(error);
+      return res.status(500).json({ error: "Something went wrong" });
+  }
+}
 
 export default walletController;
