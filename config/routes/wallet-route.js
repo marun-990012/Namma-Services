@@ -8,5 +8,6 @@ const walletRoute = express.Router();
 walletRoute.post('/create',authentication,walletController.createWallet);
 walletRoute.post('/add/coin',authentication,walletController.addCoin);
 walletRoute.post('/deduct/coin',authentication,walletController.deductCoin);
+walletRoute.get('/find',authentication,walletController.find);
 
 export default walletRoute;
