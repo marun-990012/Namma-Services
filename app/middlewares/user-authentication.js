@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
-function authenticateUser(req,res,next){
+
+function authentication(req,res,next){
     const token = req.headers['authorization'];
     try{
     if(!token){
@@ -13,4 +14,4 @@ function authenticateUser(req,res,next){
         return res.status(401).json({error:error.message});
     }
 }
-export default authenticateUser;
+export default authentication;
