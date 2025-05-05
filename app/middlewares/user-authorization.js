@@ -1,5 +1,5 @@
 import User from "../models/user-model.js";
-function authorizeUser(permittedRoute) {
+function authorization(permittedRoute) {
   return async (req, res, next) => {
     try {
       // We fetch the user from the database to ensure the user still exists.
@@ -18,4 +18,4 @@ function authorizeUser(permittedRoute) {
   };
 }
 
-export default authorizeUser;
+export default authorization;
