@@ -1,23 +1,37 @@
 import Job from "../models/job-post-model.js";
 const findNearestJobController = {};
 
-findNearestJob.nearestJob = async(req,res)=>{
+findNearestJobController.nearestJob = async(req,res)=>{
+    const { lat, lng} = req.query;
     try{
         const jobs = await Job.aggregate([
             {
-                $geoNear:{
-                    near:{type:"point",coordinates:[]},
-                    distanceField:'dist.calculated',
-                    maxDistance:5000,
-                    query:{salary:200},
-                    includeLocs:'dist.location',
-                    spherical:true
-                }
+              $geoNear: {
+                near: {
+                  type: "Point",
+                  coordinates: [parseFloat(lng), parseFloat(lat)]
+                },
+                distanceField: "dist.calculated",
+                // query:{
+                //     title: {
+                //       $regex: "plumber",
+                //       $options: 'i' // case-insensitive
+                //     }
+                //   },
+                maxDistance: 4000, // in meters
+                includeLocs: "dist.location",
+                spherical: true
+              }
             }
-        ]);
+          ]);
 
+         
         if(jobs.length>0){
-            return res.status(200).json(jobs);
+             // Convert distance from meters to kilometers
+             const jobsInKilometers = jobs.map((job) => {
+                return ({...job,dist: {...job.dist,calculated: job.dist.calculated / 1000},})
+            });
+            return res.status(200).json(jobsInKilometers);
         }else{
             return res.status(404).json({message:"job not found"});
         }
