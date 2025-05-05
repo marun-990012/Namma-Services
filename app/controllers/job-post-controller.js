@@ -1,12 +1,25 @@
 import Job from "../models/job-post-model.js";
+import axios from "axios";
+
 const jobPostController={};
 
 //Controller for create job Post
 jobPostController.create = async(req,res)=>{
-    const {title,description,workLocation,salary,images} = req.body;
+    const {title,description,address,postalCode,salary,images} = req.body;
+
+    const apiKey = '414f3b4ff1ad47088654fae1b1c6ca01';
+    const encodedAddress = encodeURIComponent(`${address} ${postalCode}`);
+    const url = `https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&apiKey=${apiKey}`;
     try{
-        const jobPost = await Job.create({title,description,workLocation,salary,images,postedBy:req.userId});
+      
+
+      const response = await axios.get(url);
+      const location = response.data.features[0].properties;
+      // return { lat: location.lat, lng: location.lon };
+
+        const jobPost = await Job.create({title,description,address:location.formatted,postalCode:location.postcode,location: {type: 'Point',coordinates: [location.lon, location.lat]},salary,images,postedBy:req.userId});
         return res.status(201).json(jobPost);
+        // return res.json(location)
     }catch(error){
         console.log(error);
         return res.status(500).json({error:"Something went wrong"});
