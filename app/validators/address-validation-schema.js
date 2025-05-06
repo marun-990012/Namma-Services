@@ -1,4 +1,4 @@
-export const addressValidationSchema = {
+export const addressValidation = {
 
     //validation for street field
     street:{
