@@ -20,9 +20,9 @@ reviewRatingController.moreReview = async(req,res)=>{
     // console.log(jobId)
     const {name,message,profileImage} = req.body;
     try{
-        const review = await ReviewRating.findOne({jobId:jobId});
+        const review = await ReviewRating.findOne({jobId:jobId,jobProvider:req.userId});
         if(!review){
-            return res.status(404).json({message:"your previous review is deleted"});
+            return res.status(404).json({message:"your previous review is deleted or unauthorixed access"});
         }
       const newReview = {name,message,profileImage};
       review.review.push(newReview);
@@ -41,7 +41,7 @@ reviewRatingController.removeReview = async(req,res)=>{
     //main id and review id
     const {id,reviewid} = req.params;
     try{
-        const review = await ReviewRating.findByIdAndUpdate(id,{ $pull: { review: { _id: reviewid } } },{new:true});
+        const review = await ReviewRating.findOneAndUpdate({_id:id,jobProvider:req.userId},{ $pull: { review: { _id: reviewid } } },{new:true});
         if(!review){
             return res.status(404).json({message:"your previous review is deleted"});
         }
@@ -63,9 +63,9 @@ reviewRatingController.updateReview = async(req,res)=>{
     const {id,reviewid} = req.params;
     const {message} = req.body;
     try{
-        const review = await ReviewRating.findById(id);
+        const review = await ReviewRating.findOne({_id:id,jobProvider:req.userId});
         if(!review){
-            return res.status(404).json({error:"your previous review is deleted"});
+            return res.status(404).json({error:"your previous review is deleted or unauthorized access"});
         }
         const reviewToUpdate = review.review.id(reviewid); // find subdocument by _id from array
         if (!reviewToUpdate) {
@@ -82,5 +82,13 @@ reviewRatingController.updateReview = async(req,res)=>{
     }
 };
 
-
+reviewRatingController.list = async(req,res)=>{
+    try{
+        const review = await ReviewRating.find();
+        return res.json(review);
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong"});
+    }
+}
 export default reviewRatingController;
