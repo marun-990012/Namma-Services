@@ -14,29 +14,29 @@ walletController.createWallet = async(req,res)=>{
 };
 
 
-walletController.addCoin = async (req, res) => {
-    try {
-      const { amountPaid } = req.body; // e.g., 20
-      if (!amountPaid || typeof amountPaid !== "number" || amountPaid <= 0) {
-        return res.status(400).json({ error: "Invalid amount paid" });
-      }
+// walletController.addCoin = async (req, res) => {
+//     try {
+//       const { amountPaid } = req.body; // e.g., 20
+//       if (!amountPaid || typeof amountPaid !== "number" || amountPaid <= 0) {
+//         return res.status(400).json({ error: "Invalid amount paid" });
+//       }
   
-      const coinsToAdd = Math.floor(amountPaid / 10); // 1 coin = Rs.10
+//       const coinsToAdd = Math.floor(amountPaid / 10); // 1 coin = Rs.10
   
-      const wallet = await Wallet.findOne({ userId: req.userId });
-      if (!wallet) {
-        return res.status(404).json({ error: "Wallet not found" });
-      }
+//       const wallet = await Wallet.findOne({ userId: req.userId });
+//       if (!wallet) {
+//         return res.status(404).json({ error: "Wallet not found" });
+//       }
   
-      wallet.coins += coinsToAdd;
-      await wallet.save();
+//       wallet.coins += coinsToAdd;
+//       await wallet.save();
   
-      return res.status(201).json(wallet);
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Something went wrong" });
-    }
-  };
+//       return res.status(201).json(wallet);
+//     } catch (error) {
+//       console.error(error);
+//       return res.status(500).json({ error: "Something went wrong" });
+//     }
+//   };
 
 
 
