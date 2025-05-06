@@ -1,35 +1,131 @@
-import User from "../models/user-model.js";
 import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
+import crypto from 'crypto';
+import User from "../models/user-model.js";
+
+import { sendVerificationEamil,senWelcomeEmail,sendResetPasswordEmail } from "../helpers/send-mail.js";
 const userController = {};
 // 9535840603
 
 // user Registration controller
 userController.register = async (req, res) => {
-  const body = req.body;
+ 
+  const {name,email,password,phoneNumber,userType} = req.body;
+  // const Plainpassword = req.body.password;
   try {
+    const user = new User({name,email,password,phoneNumber,userType});
     const totalUsers = await User.countDocuments();
-    if (body.userType == "work-provider") {
-      body.isActive = true;
+    if (userType == "work-provider") {
+      user.isActive = true;
     } else {
-      body.isActive = false;
+      user.isActive = false;
     }
 
     if (totalUsers == 0) {
-      body.userType = "admin";
-      body.isActive = true;
+      user.userType = "admin";
+      user.isActive = true;
     }
 
     const salt = await bcryptjs.genSalt();
-    const newPassword = await bcryptjs.hash(body.password, salt);
-    body.password = newPassword;
-    const user = await User.create(body);
+    const hashedPassword = await bcryptjs.hash(password, salt);
+    user.password = hashedPassword;
+    const verificationToken= Math.floor(100000 + Math.random() * 900000).toString();
+    user.verificationToken=verificationToken;
+    console.log(verificationToken)
+    await user.save();
+    sendVerificationEamil({email:user.email,message:'Verify your account',verficationToken:verificationToken});
     return res.status(201).json(user);
   } catch (error) {
     console.log(error);
     return res.status(500).json({ error: "Something went wrong" });
   }
 };
+
+//verify email
+userController.verfiyEmail = async(req,res)=>{
+  try {
+      const {code}=req.body 
+      const user= await User.findOne({
+          verificationToken:code
+      })
+      if (!user) {
+          return res.status(400).json({success:false,message:"Inavlid or Expired Code"})
+              
+          }
+        
+   user.isVerified=true;
+   user.verificationToken=undefined;
+   await user.save()
+   await senWelcomeEmail({email:user.email,name:user.name,message:"Email Verifed Successfully! Welcome to website"})
+   return res.status(200).json({success:true,message:"Email Verifed Successfully"})
+         
+  } catch (error) {
+      console.log(error)
+      return res.status(400).json({success:false,message:"internal server error"})
+  }
+};
+
+
+userController.forgotPassword = async(req,res)=>{
+  const {email} = req.body;
+  try{
+     const user = await User.findOne({email});
+     if(!user){
+      return res.status(404).json({error:"userr not found"});
+     }
+
+     // Generate a secure random token
+      const resetToken = crypto.randomBytes(32).toString('hex');
+      sendResetPasswordEmail({token:resetToken,email:user.email});
+
+     // Hash it before storing in DB for security
+      const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
+
+     // Set expiry time (e.g., 15 minutes from now)
+      const tokenExpiry = Date.now() + 15 * 60 * 1000; // 15 mins
+
+     // Save to user document (example)
+      user.passwordResetToken = hashedToken;
+      user.passwordResetExpires = tokenExpiry;
+
+      await user.save();
+      return res.json({success:true,message:`reset token has be sent your ${user.email}`});
+
+  }catch(error){
+    console.log(error)
+    return res.status(400).json({success:false,message:"internal server error"})
+  }
+}
+
+//reset password
+userController.resetPassword = async(req,res)=>{
+  const { token, newPassword } = req.body;
+  try {
+      // Hash token to match what was stored
+        const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
+        // Find user with matching token and check expiry
+        const user = await User.findOne({
+           passwordResetToken: hashedToken,
+           passwordResetExpires: { $gt: Date.now() }
+         });
+
+      if (!user) {
+        return res.status(400).json({ error: "Invalid or expired token" });
+      }
+
+      // Update password and clear reset fields
+       const salt = await bcryptjs.genSalt();
+       const hashedPassword = await bcryptjs.hash(newPassword,salt);
+       user.password = hashedPassword;
+       user.passwordResetToken = undefined;
+       user.passwordResetExpires = undefined;
+       await user.save();
+       return res.json({success:true,message:'password chenged succefully'})
+  } catch (error) {
+    console.log(error)
+    return res.status(400).json({success:false,message:"internal server error"})
+  }
+}
 
 // user login controller
 userController.login = async (req, res) => {
@@ -40,9 +136,12 @@ userController.login = async (req, res) => {
       return res.status(404).json({ message: "invalid email or password" });
     }
 
-    const isVerified = await bcryptjs.compare(password, user.password);
+    if(!user.isVerified){
+      return res.json({message:"please verify your account!"})
+    }
+    const isMatch = await bcryptjs.compare(password, user.password);
     // console.log(isVerified)
-    if (!isVerified) {
+    if (!isMatch) {
       return res.status(404).json({ message: "invalid email or password" });
     }
     const tokenData = { userId: user._id, role: user.userType };
@@ -82,10 +181,10 @@ userController.account = async (req, res) => {
 //profile image update controller
 userController.updateProfileImage = async(req,res)=>{
     const id = req.params.id;
-    const {profileImage} = req.body;
+    const {image} = req.body;
     try{
         if(req.userId==id){
-            const user = await User.findByIdAndUpdate(id,{profileImage},{new:true});
+            const user = await User.findByIdAndUpdate(id,{profileImage:image},{new:true});
             if(!user){
                 return res.status(404).json({message:"user not found"});
             }
@@ -99,13 +198,13 @@ userController.updateProfileImage = async(req,res)=>{
 };
 
 
-//profile image update controller
+//upload image controller
 userController.uploadPhotos = async(req,res)=>{
     const id = req.params.id;
-    const {images} = req.body;
+    const {image} = req.body;
     try{
         if(req.userId==id){
-            const user = await User.findByIdAndUpdate(id,{images},{new:true});
+            const user = await User.findByIdAndUpdate(id,{image},{new:true});
             if(!user){
                 return res.status(404).json({message:"user not found"});
             }
