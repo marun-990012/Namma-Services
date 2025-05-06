@@ -1,5 +1,6 @@
 import Job from "../models/job-post-model.js";
 import axios from "axios";
+import mongoose from 'mongoose';
 
 const jobPostController={};
 
@@ -56,11 +57,18 @@ jobPostController.myJobPosts = async (req,res) =>{
 //controller for update job post
 jobPostController.updatePost = async(req,res)=>{
     const id = req.params.id;
-    const {title,description,workLocation,salary,images} = req.body;
+    const {title,description,address,postalCode,salary,images} = req.body;
+
+    const apiKey = '414f3b4ff1ad47088654fae1b1c6ca01';
+    const encodedAddress = encodeURIComponent(`${address} ${postalCode}`);
+    const url = `https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&apiKey=${apiKey}`;
     try{
+           const response = await axios.get(url);
+           const location = response.data.features[0].properties;
+
         const post = await Job.findOneAndUpdate(
             { _id: id, postedBy: req.userId }, // Ensure user owns the post
-            { title, description, workLocation, salary, images },
+            {title,description,address:location.formatted,postalCode:location.postcode,location: {type: 'Point',coordinates: [location.lon, location.lat]},salary,images},
             { new: true }
           );
       
@@ -96,7 +104,7 @@ jobPostController.remove = async(req,res)=>{
 //job Request Controller
 jobPostController.jobRequest = async (req, res) => {
     const id = req.params.id;
-    const request = req.body;
+    const {serviceProvider,messages} = req.body;
   
     try {
       const jobPost = await Job.findById(id);
@@ -106,14 +114,14 @@ jobPostController.jobRequest = async (req, res) => {
   
       // Prevent duplicate request by serviceProvider
       const alreadyRequested = jobPost.jobRequests.some(
-        (r) => r.serviceProvider.toString() === request.serviceProvider
+        (r) => r.serviceProvider.toString() === serviceProvider
       );
   
       if (alreadyRequested) {
         return res.status(409).json({ error: "You have already applied to this job." });
       }
   
-      jobPost.jobRequests.push(request);
+      jobPost.jobRequests.push({serviceProvider,messages});
       await jobPost.save();
   
       return res.status(201).json(jobPost);
@@ -127,11 +135,11 @@ jobPostController.jobRequest = async (req, res) => {
 //controller for send message to requested job
 jobPostController.sendMessage = async(req,res)=>{
     const id = req.params.id;
-    const {requestId,message} = req.body
+    const {requestId,message} = req.body;
     try{
         const jobPost = await Job.findById(id);
         if(!jobPost){
-            return res.status(404).json({error:"You cannot send a request to this post because it is no longer available."})
+            return res.status(404).json({error:"job post not found "})
         }
 
         const request = jobPost.jobRequests.id(requestId);
@@ -139,7 +147,15 @@ jobPostController.sendMessage = async(req,res)=>{
           return res.status(404).json({ error: "Job request not found." });
         }
 
-        request.messages.push(message);
+        const newMessage = {
+          _id: new mongoose.Types.ObjectId(),
+          textMessage: message.textMessage,
+          response: message.response || [],
+          name: message.name,
+          profileImage: message.profileImage,
+        };
+    
+        request.messages.push(newMessage);
         await jobPost.save();
         return res.json(jobPost);
     }catch(error){
@@ -154,9 +170,9 @@ jobPostController.sendReply = async(req,res)=>{
     const id = req.params.id;
     const {requestId,messageId,reply} = req.body
     try{
-        const jobPost = await Job.findById(id);
+      const jobPost = await Job.findOne({ _id: id, postedBy: req.userId });
         if(!jobPost){
-            return res.status(404).json({error:"You cannot send a request to this post because it is no longer available."})
+            return res.status(404).json({error:"job post not found or unauthorized access"})
         }
 
         const request = jobPost.jobRequests.id(requestId);
@@ -242,7 +258,7 @@ jobPostController.removeConsideration = async (req, res) => {
 
   //select service Provider
   jobPostController.selectServiceProvider = async (req, res) => {
-    const id = req.params.id;
+    const { id } = req.params;
     const { requestId } = req.body;
   
     try {
@@ -250,26 +266,34 @@ jobPostController.removeConsideration = async (req, res) => {
       if (!jobPost) {
         return res.status(404).json({ error: "This post is no longer available." });
       }
-
-      jobPost.selectedServiceProvider=requestId;
-      jobPost.workStatus='started'
-       await jobPost.save();
-       return res.status(201).json(jobPost);
-     
+  
+      const request = jobPost.jobRequests.find(req => req._id.toString() === requestId);
+      
+      if (!request) {
+        return res.status(404).json({ message: "Job request not found." });
+      }
+  
+      jobPost.selectedServiceProvider = requestId;
+      jobPost.workStatus = 'started';
+  
+      await jobPost.save();
+  
+      return res.status(200).json(jobPost);
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Something went wrong" });
+      console.error("selectServiceProvider error:", error);
+      return res.status(500).json({ error: "Something went wrong." });
     }
   };
+  
 
 
   //task completed controller
   jobPostController.complete = async(req,res)=>{
     const id = req.params.id;
     try{
-        const jobPost = await Job.findById(id);
+        const jobPost = await Job.findOne({_id:id,postedBy:req.userId});
       if (!jobPost) {
-        return res.status(404).json({ error: "This post is no longer available." });
+        return res.status(404).json({ error: "This post is no longer available or aunauthorized access" });
       }
       jobPost.workStatus='completed'
        await jobPost.save();
