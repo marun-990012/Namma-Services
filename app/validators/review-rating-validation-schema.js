@@ -1,5 +1,5 @@
 //review rating validation schema
-export const reviewRatingValidationSchema = {
+export const reviewRatingValidation = {
 
     //validation for serviceProvider field
     serviceProvider:{
@@ -51,6 +51,49 @@ export const reviewRatingValidationSchema = {
         },
         notEmpty:{
             errorMessage:'rating field should not be 0'
+        },
+    }
+};
+
+
+export const moreReviewValidation = {
+    name:{
+        in:['body'],
+        exists:{
+            errorMessage:'name filed is required'
+        },
+        notEmpty:{
+            errorMessage:'name field should not be 0'
+        },
+    },
+    message:{
+        in:['body'],
+        exists:{
+            errorMessage:'message filed is required'
+        },
+        notEmpty:{
+            errorMessage:'message field should not be 0'
+        },
+    },
+    profileImage:{
+        in:['body'],
+        exists:{
+            errorMessage:'profileImage filed is required'
+        },
+        notEmpty:{
+            errorMessage:'profileImage field should not be 0'
+        },
+    }
+};
+
+export const updateReviewValidation = {
+    message:{
+        in:['body'],
+        exists:{
+            errorMessage:'message filed is required'
+        },
+        notEmpty:{
+            errorMessage:'message field should not be 0'
         },
     }
 }
