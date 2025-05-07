@@ -9,27 +9,7 @@ const userSchema=new Schema({
     userType:String,
     phoneNumber:String,
     profileImage:String,
-    bio:String,
-    address: [
-        {
-          street:String,
-          city:String,
-          state:String,
-          postalCode:String,
-          country: {
-            type: String,
-            default: 'India'
-          },
-          latitude: {
-            type: Number,  
-            default: null
-          },
-          longitude: {
-            type: Number,  
-            default: null
-          }
-        }
-      ],      
+    bio:String,    
     images:[String],
     serviceType:{},
     isActive:{
@@ -46,7 +26,10 @@ const userSchema=new Schema({
     },
     verifiedBadge:{
         type:String
-    }
+    },
+    verificationToken:String,
+    passwordResetToken:String,
+    passwordResetExpires:String
     
 },{timestamps:true});
 
