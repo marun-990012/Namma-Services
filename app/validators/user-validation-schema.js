@@ -1,7 +1,7 @@
 import User from "../models/user-model.js";
 
 //user registration validation schema
-export const userRegisterValidationSchema = {
+export const userRegisterValidation = {
 
     //validation for name field
     name:{
@@ -138,3 +138,131 @@ export const userLoginValidation = {
         }
     }
 };
+
+
+export const emailVerificationValidation = {
+    code:{
+        in:['body'],
+        exists:{
+            errorMessage:'code field is required'
+        },
+        notEmpty:{
+            errorMessage:'code field should not be empty'
+        },
+        trim:true
+    }
+};
+
+export const forgotPasswordValidation = {
+    email:{
+        in:['body'],
+        exists:{
+            errorMessage:'email field is required'
+        },
+        notEmpty:{
+            errorMessage:'email field should not be empty'
+        },
+        trim:true,
+        isEmail:{
+            errorMessage:'email should be in valid format'
+        }
+    }
+};
+
+export const resetPasswordValidation ={
+    token:{
+        in:['body'],
+        exists:{
+            errorMessage:'token field is required'
+        },
+        notEmpty:{
+            errorMessage:'token field should not be empty'
+        },
+        trim:true,
+    },
+    newPassword:{
+        in:['body'],
+        exists:{
+            errorMessage:'newPassword field is required'
+        },
+        notEmpty:{
+            errorMessage:'newPassword field should not be empty'
+        },
+        trim:true,
+        isStrongPassword:{
+            options:{
+                minLength:8,
+                minUpperCase:1,
+                minLowerCase:1,
+                minNumber:1,
+                minSymbol:1
+            },
+            errorMessage:'password length sould be 8 charecter and password sould contain 1 number, 1 symbol, 1 uppercase, 1 lowercase'
+        }
+    }
+};
+
+
+export const ImageUploadValidation = {
+    image:{
+        in:['body'],
+        exists:{
+            errorMessage:'Image field is required'
+        },
+        notEmpty:{
+            errorMessage:'Image field should not be empty'
+        },
+        trim:true,
+    }
+};
+
+export const updateProfileValidation = {
+    bio:{
+        in:['body'],
+        exists:{
+            errorMessage:'bio field is required'
+        },
+        notEmpty:{
+            errorMessage:'bio field should not be empty'
+        },
+        trim:true,
+    },
+    name:{
+        in:['body'],
+        exists:{
+            errorMessage:'name field is required'
+        },
+        notEmpty:{
+            errorMessage:'name field should not be empty'
+        },
+        trim:true,
+    },
+    phoneNumber:{
+        in:['body'],
+        exists:{
+            errorMessage:'phoneNumber field is required'
+        },
+        notEmpty:{
+            errorMessage:'phoneNumber field should not be empty'
+        },
+        trim:true,
+        isMobilePhone:{
+            errorMessage:'mobile number is not valid'
+        }
+    }
+};
+
+
+export const updateAddressValidation = {
+    address:{
+        in:['body'],
+        exists:{
+            errorMessage:'address field is required'
+        },
+        notEmpty:{
+            errorMessage:'address field should not be empty'
+        },
+        trim:true,
+    }
+};
+
