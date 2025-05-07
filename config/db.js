@@ -1,6 +1,6 @@
 import mongoose from 'mongoose';
 
-const configureDb=async ()=>{
+const connectDb = async ()=>{
     const url='mongodb://127.0.0.1:27017/namma-services'
     try{
         mongoose.connect(url);
@@ -10,4 +10,4 @@ const configureDb=async ()=>{
     }
 };
 
-export default configureDb;
+export default connectDb;
