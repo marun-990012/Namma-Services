@@ -3,11 +3,20 @@ import mongoose from 'mongoose';
 
 const {Schema,model} = mongoose;
 
-const jobPostSchema=new Schema({
+const jobPostSchema = new Schema({
     title:String,
     description:String,
     salary:Number,
-    workLocation:String,
+    address:String,
+    postalCode:String,
+    location:{
+      type: {
+        type: String,
+        enum: ['Point'],
+        default:'Point'
+      },
+      coordinates:[Number]
+    },
     images:[String],
     postedBy: {
         type: Schema.Types.ObjectId,
@@ -47,6 +56,7 @@ const jobPostSchema=new Schema({
       }
 },{timestamps:true});
 
+jobPostSchema.index({ location: '2dsphere' });
 const Job=model('job',jobPostSchema);
 
 export default Job;
