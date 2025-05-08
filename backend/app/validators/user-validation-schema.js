@@ -76,24 +76,24 @@ export const userRegisterValidation = {
             errorMessage:"userType field is should not be empty"
         },
         isIn:{
-            options:[['admin','service-provider','work-provider']],
+            options:[['admin','service-provider','work-provider','admin']],
             errorMessage:'usertype should be service-provider or work-provider'
         }
     },
 
     //validation for phoneNumber filed
-    phoneNumber:{
-        in:['body'],
-        exists:{
-            errorMessage:'phoneNumber field is required'
-        },
-        notEmpty:{
-            errorMessage:'phoneNumber field should not be empty'
-        },
-        isMobilePhone:{
-            errorMessage:'mobile number is not valid'
-        }
-    }
+    // phoneNumber:{
+    //     in:['body'],
+    //     exists:{
+    //         errorMessage:'phoneNumber field is required'
+    //     },
+    //     notEmpty:{
+    //         errorMessage:'phoneNumber field should not be empty'
+    //     },
+    //     isMobilePhone:{
+    //         errorMessage:'mobile number is not valid'
+    //     }
+    // }
 };
 
 
