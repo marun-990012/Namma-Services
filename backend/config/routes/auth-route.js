@@ -18,7 +18,7 @@ const authRoute = express.Router();
 
 
 //api for users 12
-authRoute.post('/register',createAdmin(),checkSchema(userRegisterValidation),inputValidator,userController.register);
+authRoute.post('/register',checkSchema(userRegisterValidation),inputValidator,userController.register);
 authRoute.post('/verify',checkSchema(emailVerificationValidation),inputValidator,userController.verfiyEmail);
 authRoute.post('/forgot/paswword',checkSchema(forgotPasswordValidation),inputValidator,userController.forgotPassword);
 authRoute.post('/reset/paswword',checkSchema(resetPasswordValidation),inputValidator,userController.resetPassword);
