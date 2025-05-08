@@ -10,20 +10,18 @@ const userController = {};
 // user Registration controller
 userController.register = async (req, res) => {
  
-  const {name,email,password,phoneNumber,userType} = req.body;
+  const {name,email,password,userType,passcode} = req.body;
   // const Plainpassword = req.body.password;
   try {
-    const user = new User({name,email,password,phoneNumber,userType});
-    const totalUsers = await User.countDocuments();
-    if (userType == "work-provider") {
+    const user = new User({name,email,password,userType});
+    if (userType == "work-provider" || userType == "admin") {
       user.isActive = true;
     } else {
       user.isActive = false;
     }
 
-    if (totalUsers == 0) {
-      user.userType = "admin";
-      user.isActive = true;
+    if (user.userType === "admin" && passcode !== "AdminPass") {
+      return res.status(401).json({ message: "Passcode required for admin or enter correct passcode" });
     }
 
     const salt = await bcryptjs.genSalt();
@@ -129,6 +127,7 @@ userController.resetPassword = async(req,res)=>{
 
 // user login controller
 userController.login = async (req, res) => {
+  console.log(process.env.JWT_SECRET)
   const { password, email } = req.body;
   try {
     const user = await User.findOne({ email: email });
@@ -146,7 +145,7 @@ userController.login = async (req, res) => {
     }
     const tokenData = { userId: user._id, role: user.userType };
     // console.log(tokenData)
-    const token = jsonwebtoken.sign(tokenData, "Secret@123", {
+    const token = jsonwebtoken.sign(tokenData, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
     return res.json({ token: token });
