@@ -1,6 +1,7 @@
 //******* importing third party modules or packages
 import express from 'express';
 import cors from 'cors';
+import dotenv from 'dotenv';
 
 // importing config files
 import connectDb from './config/db.js';
@@ -17,8 +18,8 @@ import findJobRoute from './config/routes/find-nearest-route.js';
 import paymentRoute from './config/routes/payment-route.js';
 
 const app = express();
-const port=3040;
-
+dotenv.config();
+const port= process.env.PORT || 3040;
 //application level middleware 
 app.use(express.json()); // Parse incoming JSON bodies
 app.use(cors());  //to avoide cors error
@@ -57,5 +58,3 @@ app.listen(port,()=>{
     console.log('Server is running on port',port);
     
 });
-
-//35
