@@ -9,11 +9,14 @@ const mediaController = {};
 */
 
 mediaController.uploadImage = async(req,res)=>{
+  console.log(process.env.CLOUD_NAME)
+  console.log(process.env.API_KEY)
+  console.log(process.env.API_SECRET)
     try {
           const file = req.file.path;
       
           const cloudinaryResponse = await cloudinary.uploader.upload(file, {
-            folder: 'classified_App_images',
+            folder: 'Namma-Services',
           });
       
           return res.json(cloudinaryResponse.secure_url);
