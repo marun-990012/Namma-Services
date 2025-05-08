@@ -1,2 +1,4 @@
 node_modules/
 package-lock.js/
+
+backend/config/dotenv/config.env
