@@ -20,7 +20,7 @@ userController.register = async (req, res) => {
       user.isActive = false;
     }
 
-    if (user.userType === "admin" && passcode !== "AdminPass") {
+    if (user.userType === "admin" && passcode != "AdminPass") {
       return res.status(401).json({ message: "Passcode required for admin or enter correct passcode" });
     }
 
@@ -29,9 +29,9 @@ userController.register = async (req, res) => {
     user.password = hashedPassword;
     const verificationToken= Math.floor(100000 + Math.random() * 900000).toString();
     user.verificationToken=verificationToken;
-    console.log(verificationToken)
+    // console.log(verificationToken)
     await user.save();
-    sendVerificationEamil({email:user.email,message:'Verify your account',verficationToken:verificationToken});
+    sendVerificationEamil({email:user.email,message:'Verify your account',verificationToken:verificationToken});
     return res.status(201).json(user);
   } catch (error) {
     console.log(error);
@@ -42,14 +42,11 @@ userController.register = async (req, res) => {
 //verify email
 userController.verfiyEmail = async(req,res)=>{
   try {
-      const {code}=req.body 
-      const user= await User.findOne({
-          verificationToken:code
-      })
+      const {code,email}=req.body 
+      const user = await User.findOne({ email, verificationToken: code });
       if (!user) {
-          return res.status(400).json({success:false,message:"Inavlid or Expired Code"})
-              
-          }
+          return res.status(400).json({success:false,message:"Inavlid or Expired Code"})      
+      }
         
    user.isVerified=true;
    user.verificationToken=undefined;
@@ -59,7 +56,7 @@ userController.verfiyEmail = async(req,res)=>{
          
   } catch (error) {
       console.log(error)
-      return res.status(400).json({success:false,message:"internal server error"})
+      return res.status(500).json({success:false,message:"internal server error"})
   }
 };
 
@@ -91,7 +88,7 @@ userController.forgotPassword = async(req,res)=>{
 
   }catch(error){
     console.log(error)
-    return res.status(400).json({success:false,message:"internal server error"})
+    return res.status(500).json({success:false,message:"internal server error"})
   }
 }
 
@@ -121,14 +118,34 @@ userController.resetPassword = async(req,res)=>{
        return res.json({success:true,message:'password chenged succefully'})
   } catch (error) {
     console.log(error)
-    return res.status(400).json({success:false,message:"internal server error"})
+    return res.status(500).json({success:false,message:"internal server error"})
   }
 }
 
+userController.loginOtp = async (req,res) => {
+  const {email} = req.body; 
+   try{
+    const user = await User.findOne({email});
+    const verificationToken= Math.floor(100000 + Math.random() * 900000).toString();
+    if(user){
+      user.verificationToken=verificationToken;
+      user.tokenExpires = Date.now() + 5 * 60 * 1000; // 5 minutes expiry
+      await user.save();
+      sendVerificationEamil({email:user.email,message:'Login OTP',verificationToken:verificationToken});
+      return res.status(200).json({message:'otp send successfully check email'});
+    }
+
+    return res.status(404).json({message:'enter valid email'})
+   }catch(error){
+    console.log(error)
+    return res.status(500).json({success:false,message:"internal server error"})
+   }
+}
 // user login controller
 userController.login = async (req, res) => {
-  console.log(process.env.JWT_SECRET)
-  const { password, email } = req.body;
+  // console.log(process.env.JWT_SECRET)
+  const { password, email,otp } = req.body;
+  console.log(password, email,otp );
   try {
     const user = await User.findOne({ email: email });
     if (!user) {
@@ -136,7 +153,14 @@ userController.login = async (req, res) => {
     }
 
     if(!user.isVerified){
-      return res.json({message:"please verify your account!"})
+      return res.json({message:"please verify your account!"});
+    }
+
+    if(otp != user.verificationToken){
+      return res.json({message:"please please enter valid OTP"});
+    }
+    if (user.tokenExpires < Date.now()) {
+      return res.json({ message: "OTP has expired resend otp" });
     }
     const isMatch = await bcryptjs.compare(password, user.password);
     // console.log(isVerified)
@@ -148,6 +172,9 @@ userController.login = async (req, res) => {
     const token = jsonwebtoken.sign(tokenData, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
+
+    
+    await user.save();
     return res.json({ token: token });
   } catch (error) {
     console.log(error);
