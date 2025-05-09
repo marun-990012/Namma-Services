@@ -28,6 +28,7 @@ const userSchema=new Schema({
         type:String
     },
     verificationToken:String,
+    tokenExpires :String,
     passwordResetToken:String,
     passwordResetExpires:String
     
