@@ -37,6 +37,8 @@ export const userLogin = createAsyncThunk('/auth/userLogin',async(formData,{reje
     try{
         const response = await axiosInstance.post('/auth/login',formData);
         console.log(response.data);
+        localStorage.setItem('token',response.data.token);
+        localStorage.setItem('isLoggedIn',true);
         return response.data;
     }catch(error){
         console.log(error);
