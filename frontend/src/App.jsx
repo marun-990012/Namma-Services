@@ -3,6 +3,7 @@ import { Routes,Route,Link } from "react-router-dom";
 import MainLayout from "./pages/layout/MainLayout";
 import AuthPage from "./pages/user-auth/AuthPage";
 import EmailVerification from "./pages/user-auth/EmailVerification";
+import ProfilePage from "./pages/profilePage/ProfilePage";
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <Route path="/login" element={<AuthPage/>}/>
           <Route path="/register" element={<AuthPage/>}/>
           <Route path="/email-verification/:id" element={<EmailVerification/>}/>
+          <Route path="/profile" element={<ProfilePage/>}/>
 
           </Route>
           
