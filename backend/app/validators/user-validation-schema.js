@@ -10,8 +10,12 @@ export const userRegisterValidation = {
             errorMessage:"name field requires"
         },
         notEmpty:{
-            errorMessage:'name field should naot be empty'
+            errorMessage:'name field should not be empty'
         },
+        isLength: {
+            options: { min: 3 },
+            errorMessage: 'Name must be at least 3 characters long',
+          },
         trim:true,
 
     },
