@@ -9,7 +9,7 @@ export const sendVerificationEamil=(user)=>{
         to: user.email,
         subject: user.message,
         text: user.message,
-        html:verificationEmailTemplate.replace("{verificationCode}",user.verficationToken)
+        html:verificationEmailTemplate.replace("{verificationCode}",user.verificationToken)
     };
 
     try{
