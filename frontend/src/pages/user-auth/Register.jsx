@@ -62,7 +62,7 @@ const handleRegister = async (e) => {
       const res = await dispatch(userRegister(formData)).unwrap(); // Redux thunk
       console.log("Registration response:", res)
       toast.success("Registration successful. Please check your email for the verification code.", {
-        duration: 6000 // in milliseconds (e.g., 4 seconds)
+        duration: 6000 // in milliseconds (e.g., 6 seconds)
       });
       navigate(`/email-verification/${res._id}`, { state: { email } });
     } catch (err) {
