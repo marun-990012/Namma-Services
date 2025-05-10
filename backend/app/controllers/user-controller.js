@@ -135,7 +135,7 @@ userController.loginOtp = async (req,res) => {
       return res.status(200).json({message:'otp send successfully check email'});
     }
 
-    return res.status(404).json({message:'enter valid email'})
+    return res.status(404).json({message:'Invalid email or no account found.'})
    }catch(error){
     console.log(error)
     return res.status(500).json({success:false,message:"internal server error"})
