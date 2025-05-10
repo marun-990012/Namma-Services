@@ -22,6 +22,7 @@ authRoute.post('/register',checkSchema(userRegisterValidation),inputValidator,us
 authRoute.post('/verify',checkSchema(emailVerificationValidation),inputValidator,userController.verfiyEmail);
 authRoute.post('/forgot/paswword',checkSchema(forgotPasswordValidation),inputValidator,userController.forgotPassword);
 authRoute.post('/reset/paswword',checkSchema(resetPasswordValidation),inputValidator,userController.resetPassword);
+authRoute.post('/login-otp',userController.loginOtp);
 authRoute.post('/login',checkSchema(userLoginValidation),inputValidator,userController.login);
 authRoute.get('/user',userController.list);
 authRoute.get('/account',authentication,userController.account);
