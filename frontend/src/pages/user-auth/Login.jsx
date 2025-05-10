@@ -1,4 +1,4 @@
-import { useLocation, Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
@@ -6,6 +6,8 @@ import { loginOtp, userLogin } from "../../redux/slices/authSlice";
 
 function Login() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [otp, setOtp] = useState('');
@@ -31,7 +33,7 @@ function Login() {
   };
 
   const handleSendOtp = async (e) => {
-    e.preventDefault(); // prevent full form submission
+    e.preventDefault(); // prevent reload
     if (!otpValidation()) return;
 
     try {
@@ -59,7 +61,10 @@ function Login() {
       if(res.message){
         toast.error(res.message);
       }else{
-        toast.success("Login successful",res.message);
+        toast.success("Login successful",{
+        duration: 5000 // in milliseconds (e.g., 5 seconds)
+      });
+        navigate('/profile');
       }
     } catch (error) {
       const errorMessage = error?.message || "Login failed";
@@ -80,7 +85,7 @@ function Login() {
             <label htmlFor="" className="mb-1">Eamil</label>
             <div className="flex justify-between">
               <input
-                type="text"
+                type="email"
                 placeholder="Ex : example@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
