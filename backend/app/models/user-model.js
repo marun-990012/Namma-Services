@@ -11,7 +11,7 @@ const userSchema=new Schema({
     profileImage:String,
     bio:String,    
     images:[String],
-    serviceType:{},
+    serviceType:Schema.Types.ObjectId,
     isActive:{
         type:Boolean,
         default:false
