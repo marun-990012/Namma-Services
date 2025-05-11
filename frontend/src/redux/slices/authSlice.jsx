@@ -29,7 +29,7 @@ export const loginOtp = createAsyncThunk('/auth/loginOtp',async(formData,{reject
         return response.data;
     } catch (error) {
         console.log(error);
-        return rejectWithValue(error?.response?.data ||{ message : "Email verification failed"})
+        return rejectWithValue(error?.response?.data ||{ message : "otp send failed"})
     }
 });
 
@@ -42,7 +42,7 @@ export const userLogin = createAsyncThunk('/auth/userLogin',async(formData,{reje
         return response.data;
     }catch(error){
         console.log(error);
-        return rejectWithValue(error?.response?.data ||{ message : "Login failed. Please try again"})
+        return rejectWithValue(error?.response?.data ||{ message : "Login failed. Please try again"});
     }
 });
 
