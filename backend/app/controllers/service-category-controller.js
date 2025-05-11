@@ -3,9 +3,9 @@ const serviceCategoryController={};
 
 // controller for create service category 
 serviceCategoryController.create = async (req,res)=>{
-    const {name,description} = req.body;
+    const {name,description,imageUrl} = req.body;
     try{
-        const category = await Service.create({name,description});
+        const category = await Service.create({name,description,imageUrl});
         return res.status(201).json(category);
     }catch(error){
         console.log(error);
@@ -28,9 +28,9 @@ serviceCategoryController.list = async(req,res)=>{
 // service category update controller
 serviceCategoryController.update = async(req,res)=>{
     const id = req.params.id;
-    const {name,description} = req.body;
+    const {name,description,imageUrl} = req.body;
     try{
-        const category = await Service.findByIdAndUpdate(id,{name,description},{new:true});
+        const category = await Service.findByIdAndUpdate(id,{name,description,imageUrl},{new:true});
         if(!category){
             return res.status(404).json({error:"Service Category is not found"});
         }
