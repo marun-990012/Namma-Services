@@ -1,8 +1,13 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector} from "react-redux";
-import { listCategories } from "../../redux/slices/serviceCategorySlice";
+import { useNavigate } from "react-router-dom";
+import { SquarePen, Trash2,CopyPlus   } from 'lucide-react';
+import toast from "react-hot-toast";
+import { listCategories,deleteCategory } from "../../redux/slices/serviceCategorySlice";
 function CategoryList(){
     const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     useEffect(()=>{
         dispatch(listCategories());
     },[dispatch]);
@@ -11,7 +16,28 @@ function CategoryList(){
         return state.services;
     });
 
-    console.log(serviceData);
+    const handleEdit = (id)=>{
+      navigate(`/category/edit/${id}`);
+    }
+
+    const handleDelete = async(id)=>{
+        try {
+        const res = await dispatch(deleteCategory(id)).unwrap()
+        console.log(res)
+          if(res.message){
+          toast.error(res.message);
+      }else{
+        toast.success("deleted successful",{
+        duration: 5000 // in milliseconds (e.g., 5 seconds)
+      })}
+
+        } catch (error) {
+           const errorMessage = error?.message || "Login failed";
+           toast.error(errorMessage);
+        }
+    };
+
+
     return (
        <div className="bg py-6 pb-7 px-4 rounded-[8px] border-2 border-white mb-4">
   <h2 className="text-2xl font-bold text-center mb-6 border-b border-white pb-2 ">Trending  service categories</h2>
@@ -25,11 +51,21 @@ function CategoryList(){
           className="w-20 h-20 object-contain mb-3"
         />
         <p className="text-sm font-medium text-gray-700">{cat.name}</p>
-        <button className="mt-2 bg-green-500 hover:bg-green-600 text-white text-[13px] px-11 py-1 rounded cursor-pointer">
-          Select
+        <div className="flex w-[90%] justify-between">
+          <button onClick={()=>{handleEdit(cat._id)}} className="mt-2 bg-green-500 hover:bg-green-600 text-white text-[13px] px-5 py-1 rounded cursor-pointer flex items-center gap-[2px]">
+          <SquarePen size={17}/> edit 
         </button>
+        <button onClick={()=>{handleDelete(cat._id)}} className="mt-2 bg-red-500 hover:bg-red-600 text-white text-[13px] px-4 py-1 rounded cursor-pointer flex items-center gap-[2px]">
+         <Trash2 size={17}/>  Delete 
+        </button>
+        </div>
       </div>
     ))}
+
+
+  </div>
+  <div className="mt-5">
+    <button onClick={()=>{navigate('/category/new')}} className="mt-2 bg-green-500 hover:bg-green-600 text-white text-[13px] px-5 py-1 rounded cursor-pointer flex items-center gap-[4px]"> <CopyPlus size={17}/> Add Category</button>
   </div>
 </div>
 
