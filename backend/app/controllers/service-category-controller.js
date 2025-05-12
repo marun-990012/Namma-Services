@@ -9,7 +9,7 @@ serviceCategoryController.create = async (req,res)=>{
         return res.status(201).json(category);
     }catch(error){
         console.log(error);
-        return res.status(500).json({error:"Something went wrong"});
+        return res.status(500).json({message:"Something went wrong"});
     }
 };
 
@@ -52,7 +52,7 @@ serviceCategoryController.remove = async(req,res)=>{
         return res.json(category);
     }catch(error){
         console.log(error);
-        return res.status(500).json({error:"Something went wrong"});
+        return res.status(500).json({message:"Something went wrong"});
     }
 };
 
