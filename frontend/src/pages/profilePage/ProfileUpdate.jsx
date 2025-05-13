@@ -1,0 +1,168 @@
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
+import { useDispatch,useSelector } from "react-redux";
+import { fetchAccount,updateProfile} from "../../redux/slices/profileSlice";
+import { fetchAddress, updateAddress } from "../../redux/slices/profileAddressSlice";
+function ProfileUpdate(){
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+// {street,city,state,postalCode,country}
+// const {bio,name,phoneNumber}
+    const [name,setName] = useState('');
+    const [bio,setBio] = useState('');
+    const [phoneNumber,setPhoneNumber] = useState('');
+    const [street,setStreet] = useState('');
+    const [city,setCity] = useState('');
+    const [postalCode,setPostalCode] = useState('');
+    const [state,setState] = useState('');
+    const [country,setCountry] = useState('');
+
+     useEffect(()=>{
+         dispatch(fetchAccount());
+         dispatch(fetchAddress());
+    },[dispatch]);
+
+    const userAddress = useSelector((state)=>{
+        return state.address;
+    }).data;
+
+    const userAccount = useSelector((state)=>{
+        return state.profile;
+    }).data;
+
+    console.log(name)
+    console.log(userAccount?.name)
+
+   useEffect(() => {
+  if (userAccount && userAddress ) {
+    
+      setName(userAccount?.name || '');
+      setBio(userAccount?.bio || '');
+      setPhoneNumber(userAccount?.phoneNumber || '');
+      setStreet(userAddress.street);
+      setCity(userAddress.city);
+      setPostalCode(userAddress.postalCode);
+      setState(userAddress.state);
+      setCountry(userAddress.country);
+      
+    
+  }
+}, [userAccount, userAddress]);
+
+const validations = ()=>{
+    if(name.trim().length<2){
+        toast.error('Name field required');
+        return false;
+    }
+
+    if(phoneNumber.trim().length<10){
+        toast.error('Number required');
+        return false;
+    }
+
+    if(street.trim().length<5){
+        toast.error('Street required');
+        return false;
+    }
+
+    if(city.trim().length<2){
+        toast.error('City required');
+        return false;
+    }
+
+    if(postalCode.trim().length<4){
+        toast.error('postalCode required');
+        return false;
+    }
+
+    if(state.trim().length<2){
+        toast.error('state required');
+        return false;
+    }
+
+    if(country.trim().length<4){
+        toast.error('country required');
+        return false;
+    }
+
+    return true;
+}
+const handleSubmit = async (e)=>{
+    e.preventDefault();
+
+    if(!validations()) return;
+
+    try {
+    const profileRes = await dispatch(updateProfile({name,bio,phoneNumber })).unwrap();
+    const addressRes = await dispatch(updateAddress({street,city,state,postalCode,country})).unwrap();
+    navigate('/profile');
+      if(profileRes && addressRes){
+        toast.success("Profile updated successfully");
+      }
+    } catch (error) {
+      toast.error(error);
+    }
+    
+}
+    return(
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-tranparent bg-opacity-50 backdrop-blur-md ">
+            <div className="bg-white p-7 rounded-[8px] border border-gray-300 shadow-[10px]">
+               <div className="flex justify-between">
+                <p className="text-[20px]">Edit Profile</p>
+                <button onClick={(()=>{navigate('/profile')})} className="bg-red-400 hover:bg-red-600 text-white cursor-pointer px-3 rounded outline-none border-none">Cancel</button>
+               </div>
+              <div>
+                <form onSubmit={handleSubmit}>
+                  <div className="flex flex-col">
+                    <label htmlFor="" className="text-gray-600">Name</label>
+                    <input type="text" placeholder="Ex : Mr xyz" value={name} onChange={(e)=>{setName(e.target.value)}} className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"/>
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label htmlFor="" className="text-gray-600">Bio</label>
+                    <input type="text" placeholder="Ex : My bio" value={bio} onChange={(e)=>{setBio(e.target.value)}} className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"/>
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label htmlFor="" className="text-gray-600">Phone Number</label>
+                    <input type="text" placeholder="Ex : 1234567890" value={phoneNumber} onChange={(e)=>{setPhoneNumber(e.target.value)}}  className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"/>
+                  </div>
+
+                  <div className="flex flex-col">
+                    <label htmlFor="" className="text-gray-600">Street</label>
+                    <input type="text" placeholder="Ex : my address city postal address" value={street} onChange={(e)=>{setStreet(e.target.value)}} className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"/>
+                  </div>
+
+                   <div className="flex flex-col">
+                    <label htmlFor="" className="text-gray-600">City</label>
+                    <input type="text" placeholder="Ex : my address city postal address" value={city} onChange={(e)=>{setCity(e.target.value)}} className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"/>
+                  </div>
+
+                  <div className="flex gap-2">
+                   <div className="flex flex-col">
+                     <label htmlFor="" className="text-gray-600">PostalCode</label>
+                    <input type="text" placeholder="Ex : 123456" value={postalCode} onChange={(e)=>{setPostalCode(e.target.value)}}  className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px] w-26"/>
+                   </div>
+
+                   <div className="flex flex-col">
+                     <label htmlFor="" className="text-gray-600">State</label>
+                    <input type="text" placeholder="Ex : State" value={state} onChange={(e)=>{setState(e.target.value)}}  className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px] w-40"/>
+                   </div>
+
+                   <div className="flex flex-col">
+                     <label htmlFor="" className="text-gray-600">Country</label>
+                    <input type="text" placeholder="Ex:Country" value={country} onChange={(e)=>{setCountry(e.target.value)}} className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[3px] py-[4px] text-center w-22"/>
+                   </div>
+                  </div>
+
+                  <div className="mt-5 text-center">
+                    <button className="bg-green-500 hover:bg-green-700 text-white text-[17px] w-full py-2 rounded-[5px] cursor-pointer">Save Changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+    )
+}
+export default ProfileUpdate;
