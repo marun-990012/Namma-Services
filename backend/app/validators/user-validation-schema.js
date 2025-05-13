@@ -208,7 +208,7 @@ export const resetPasswordValidation ={
 
 
 export const ImageUploadValidation = {
-    image:{
+    imageUrl:{
         in:['body'],
         exists:{
             errorMessage:'Image field is required'
@@ -220,17 +220,10 @@ export const ImageUploadValidation = {
     }
 };
 
+
+
 export const updateProfileValidation = {
-    bio:{
-        in:['body'],
-        exists:{
-            errorMessage:'bio field is required'
-        },
-        notEmpty:{
-            errorMessage:'bio field should not be empty'
-        },
-        trim:true,
-    },
+    
     name:{
         in:['body'],
         exists:{
