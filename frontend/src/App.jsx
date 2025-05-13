@@ -22,6 +22,7 @@ function App() {
             <Route path="/category/edit/:id" element={<CategoryForm/>}/>
             <Route path="/service-category" element={<CategoryList/>}/>
             <Route path="/profile" element={<ProfilePage/>}/>
+            <Route path="/profile/edit/:id" element={<ProfilePage/>}/>
 
           </Route>
           
