@@ -26,10 +26,10 @@ authRoute.post('/login-otp',userController.loginOtp);
 authRoute.post('/login',checkSchema(userLoginValidation),inputValidator,userController.login);
 authRoute.get('/user',userController.list);
 authRoute.get('/account',authentication,userController.account);
-authRoute.put('/update-profile-image/:id',authentication,checkSchema(ImageUploadValidation),checkSchema(idValidationSchema),inputValidator,userController.updateProfileImage);
-authRoute.post('/upload-images/:id',authentication,checkSchema(ImageUploadValidation),checkSchema(idValidationSchema),inputValidator,userController.uploadPhotos);
-authRoute.put('/update-profile/:id',authentication,checkSchema(updateProfileValidation),checkSchema(idValidationSchema),inputValidator,userController.updateProfile);
-authRoute.put('/address/:id',authentication,checkSchema(updateAddressValidation),checkSchema(idValidationSchema),inputValidator,userController.updateAddress); 
+authRoute.put('/update-profile-image',authentication,checkSchema(ImageUploadValidation),inputValidator,userController.updateProfileImage);
+authRoute.post('/upload-images',authentication,userController.uploadPhotos);
+authRoute.put('/update-profile',authentication,checkSchema(updateProfileValidation),inputValidator,userController.updateProfile);
+// authRoute.put('/address/:id',authentication,checkSchema(updateAddressValidation),checkSchema(idValidationSchema),inputValidator,userController.updateAddress); 
 authRoute.delete('/account/:id',authentication,userController.remove);
 
 
