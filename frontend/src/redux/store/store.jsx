@@ -3,6 +3,7 @@ import authReducer from '../slices/authSlice';
 import serviceCategoryReducer from '../slices/serviceCategorySlice';
 import profileReducer from '../slices/profileSlice';
 import imageUploadReduces from '../slices/imageUploadSlice';
+import addressReducer from '../slices/profileAddressSlice'
 
 
 const store = configureStore({
@@ -10,7 +11,8 @@ const store = configureStore({
         auth:authReducer,
         services:serviceCategoryReducer,
         profile:profileReducer,
-        image:imageUploadReduces
+        image:imageUploadReduces,
+        address:addressReducer
     }
 });
 
