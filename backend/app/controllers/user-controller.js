@@ -2,6 +2,7 @@ import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import crypto from 'crypto';
 import User from "../models/user-model.js";
+import { createBlankAddressForUser } from "../helpers/user-address.js";
 
 import { sendVerificationEamil,senWelcomeEmail,sendResetPasswordEmail } from "../helpers/send-mail.js";
 const userController = {};
@@ -19,7 +20,7 @@ userController.register = async (req, res) => {
     } else {
       user.isActive = false;
     }
-
+    
     if (user.userType === "admin" && passcode != "AdminPass") {
       return res.status(401).json({ message: "Passcode required for admin or enter correct passcode" });
     }
@@ -31,6 +32,9 @@ userController.register = async (req, res) => {
     user.verificationToken=verificationToken;
     // console.log(verificationToken)
     await user.save();
+    if(user.userType != 'admin'){
+      await createBlankAddressForUser(user._id);
+    }
     sendVerificationEamil({email:user.email,message:'Verify your account',verificationToken:verificationToken});
     return res.status(201).json(user);
   } catch (error) {
@@ -206,17 +210,13 @@ userController.account = async (req, res) => {
 
 //profile image update controller
 userController.updateProfileImage = async(req,res)=>{
-    const id = req.params.id;
-    const {image} = req.body;
+    const {imageUrl} = req.body;
     try{
-        if(req.userId==id){
-            const user = await User.findByIdAndUpdate(id,{profileImage:image},{new:true});
+            const user = await User.findByIdAndUpdate(req.userId,{profileImage:imageUrl},{new:true});
             if(!user){
                 return res.status(404).json({message:"user not found"});
             }
-            return res.json({user,message:"succefully updated"});
-        }
-        return res.json({error:"Unauthorized access"});
+            return res.json(user);
     }catch(error){
         console.log(error);
         return res.status(500).json({ error: "Something went wrong" });
@@ -226,17 +226,14 @@ userController.updateProfileImage = async(req,res)=>{
 
 //upload image controller
 userController.uploadPhotos = async(req,res)=>{
-    const id = req.params.id;
     const {image} = req.body;
     try{
-        if(req.userId==id){
-            const user = await User.findByIdAndUpdate(id,{image},{new:true});
+     
+            const user = await User.findByIdAndUpdate(req.userId,{images:image},{new:true});
             if(!user){
                 return res.status(404).json({message:"user not found"});
             }
             return res.json({user,message:"succefully updated"});
-        }
-        return res.json({error:"Unauthorized access"});
     }catch(error){
         console.log(error);
         return res.status(500).json({ error: "Something went wrong" });
@@ -245,43 +242,40 @@ userController.uploadPhotos = async(req,res)=>{
 
 //profile update controller
 userController.updateProfile = async(req,res)=>{
-    const id = req.params.id;
     const {bio,name,phoneNumber} = req.body;
     try{
-        if(req.userId==id){
-            const user = await User.findByIdAndUpdate(id,{bio,name,phoneNumber},{new:true});
-            if(!user){
-                return res.status(404).json({message:"user not found"});
-            }
-            return res.json({user,message:"succefully updated"});
-        }
-        return res.json({error:"Unauthorized access"});
-    }catch(error){
-        console.log(error);
-        return res.status(500).json({ error: "Something went wrong" });
-    }
-};
-
-
-//address update controller(not done)
-userController.updateAddress = async(req,res)=>{
-    const id = req.params.id;
-    const {address} = req.body;
-    try{
         
-        if(req.userId==id){
-            const user = await User.findByIdAndUpdate(id,{address},{new:true});
+            const user = await User.findByIdAndUpdate(req.userId,{bio,name,phoneNumber},{new:true});
             if(!user){
                 return res.status(404).json({message:"user not found"});
             }
-            return res.json({user,message:"succefully updated"});
-        }
-        return res.json({error:"Unauthorized access"});
+            return res.json(user);
     }catch(error){
         console.log(error);
         return res.status(500).json({ error: "Something went wrong" });
     }
 };
+
+
+// //address update controller(not done)
+// userController.updateAddress = async(req,res)=>{
+//     const id = req.params.id;
+//     const {address} = req.body;
+//     try{
+        
+//         if(req.userId==id){
+//             const user = await User.findByIdAndUpdate(id,{address},{new:true});
+//             if(!user){
+//                 return res.status(404).json({message:"user not found"});
+//             }
+//             return res.json({user,message:"succefully updated"});
+//         }
+//         return res.json({error:"Unauthorized access"});
+//     }catch(error){
+//         console.log(error);
+//         return res.status(500).json({ error: "Something went wrong" });
+//     }
+// };
 
 //delete account controller
 userController.remove = async(req,res)=>{
