@@ -1,170 +1,3 @@
-// import { Star,BadgeCheck,ImagePlus,PhoneCall,Mail,MapPinHouse,Camera } from "lucide-react";
-// import { useEffect,useState } from "react";
-// import { useSelector ,useDispatch} from "react-redux";
-// import { fetchAccount } from "../../redux/slices/profileSlice";
-// import { imageUpload } from "../../redux/slices/imageUploadSlice";
-// function ProfilePage() {
-//   const dispatch = useDispatch();
-
-//   const [imageUrl, setImageUrl] = useState("");
-//   const [file, setFile] = useState("");
-
-//   useEffect(()=>{
-//     dispatch(fetchAccount());
-//   },[dispatch]);
-
-//   const userAccount = useSelector((state)=>{
-//     return state.profile;
-//   });
-
-//    useEffect(() => {
-//       if (!file) return;
-
-//       const upload = async () => {
-//         try {
-//           const fileData = new FormData();
-//           fileData.append("file", file);
-
-//           const response = await dispatch(imageUpload(fileData)).unwrap();
-//           setImageUrl(response);
-//         } catch (error) {
-//           console.error("Image upload failed:", error);
-//         }
-//       };
-//       upload();
-//     }, [file, dispatch]);
-
-//   return (
-//     <div>
-//       <div className="flex justify-center border-5 border-white rounded-[10px] shadow-[8px] mb-4">
-//         <div className=" w-full rounded-tl-[10px] rounded-tr-[10px]">
-//             {/* banner image div */}
-//           <div>
-//             <img
-//               className="rounded-tl-[10px] rounded-tr-[10px] w-full h-50"
-//               src="https://res.cloudinary.com/dxludspye/image/upload/v1746890819/Namma-Services/ugqpmgx9texs3ybispn9.png"
-//               alt=""
-//             />
-//           </div>
-
-//           {/* profile div */}
-//           <div className="flex justify-between p-5">
-//             <div className="flex justify-evenly w-[52%]">
-//               {/* <div className="mt-[-75px] p-2 bg-[#e3e7ef] rounded-full">
-//                 <img
-//                   className="w-40 rounded-full"
-//                   src="https://res.cloudinary.com/dxludspye/image/upload/v1746891160/Namma-Services/fvcjr2ts3hvs9d7dod64.png"
-//                   alt=""
-//                 />
-
-//               </div> */}
-//               <div className="bg-[#e3e7ef] p-2 rounded-full mt-[-75px]">
-//               <div className="h-40 w-40  bg-[#e3e7ef] rounded-full bg-cover bg-center relative"style={{ backgroundImage: `url(https://res.cloudinary.com/dxludspye/image/upload/v1746891160/Namma-Services/fvcjr2ts3hvs9d7dod64.png)` }}>
-//               {/* File input button */}
-//               <label className="absolute bottom-[10px] right-4 bg-green-500 p-1 rounded-full cursor-pointer">
-//                 <Camera color="white" size={20} />
-//                 <input type="file" className="hidden" />
-//               </label>
-//             </div>
-//             </div>
-//               <div className="mt-[-13px]">
-//                 <p className="text-[25px] flex items-center">{userAccount.data?.name} < BadgeCheck color="#06f"  className="ml-2" /></p>
-//                 <p className="text-gray-600">{userAccount.data?.userType} - electrician</p>
-//                 <p className="text-gray-800">
-//                   Arun Rathod Service Provider Service Provider
-//                 </p>
-//               </div>
-//             </div>
-
-//             <div>
-//               <p>Social Media</p>
-//             </div>
-//           </div>
-
-//           <div className=" flex justify-center mt-[-240px]">
-//             <div className="bg-white w-60 h-60">
-//               <p>hello</p>
-//             </div>
-//           </div>
-
-//           {/*contact details div  */}
-//           <div className=" mb-4 mt-3 flex gap-2 ml-22">
-//             <div className="bg-white px-2 py-1 rounded">
-//               <p className="text-gray-700 flex items-center gap-3 "><PhoneCall size={20}/>   <span className="text-gray-500">9900126189</span></p>
-//             </div>
-
-//              <div className="bg-white px-2 py-1 rounded">
-//               <p className="text-gray-700 flex items-center gap-3"><Mail size={20}/> <span className="text-gray-500">{userAccount.data?.email}</span></p>
-//             </div>
-
-//              <div className="bg-white px-2 py-1 rounded">
-//               <p className="text-[#2E073F] flex items-center gap-3"><MapPinHouse  size={20}/> <span className="text-gray-500">gandhi bazar basavanagudi bangalore karnataka 560004</span></p>
-//             </div>
-//           </div>
-
-//           {/* review and rating div */}
-//           <div className="flex justify-center p-4">
-//             <div className=" mt-1 flex justify-evenly h-50 w-[98%]">
-//               <div className="bg-white w-112 p-4 rounded-[8px]">
-//                 <p className="text-[17px] font-medium">Review and Ratings</p>
-//                 <div className="mt-2 flex justify-between mr-7 ">
-//                   <div>
-//                     <p className="flex items-center font-medium text-[35px]">
-//                       {[...Array(5)].map((_, i) => (
-//                         <Star key={i} color="#ecd909" />
-//                       ))}
-//                       <span className="ml-2">4.5</span>
-//                     </p>
-//                   </div>
-//                    <div>
-//                     <p>
-//                       <span className="text-[17px]">All reviews</span> - <span className="text-[35px] font-medium">123</span>
-//                     </p>
-//                    </div>
-//                 </div>
-//                 <div className="text-center mt-9">
-//                     <button className="bg-[#640D6B] hover:bg-orange-600 cursor-pointer w-75 py-2 rounded text-[17px] text-white">View all reviews</button>
-//                 </div>
-//               </div>
-
-//               <div className="bg-white w-112 p-4 rounded-[8px]">
-//                 <p className="text-[17px] font-medium">Total work completed</p>
-//                 <div className="mt-2 flex justify-center mr-7 ">
-
-//                    <div>
-//                     <p>
-//                       <span className="text-[17px]">Total work</span> - <span className="text-[35px] font-medium">304</span>
-//                     </p>
-//                    </div>
-//                 </div>
-//                 <div className="text-center mt-9">
-//                     <button className="bg-[#640D6B] hover:bg-orange-600 cursor-pointer w-75 py-2 rounded text-[17px] text-white">View completed works</button>
-//                 </div>
-//               </div>
-//             </div>
-//           </div>
-
-//           {/* work releted images div */}
-//           <div className=" mb-4 mt-3 mx-21 ">
-//             <p className="text-[17px] font-medium">Work releted images</p>
-//             <div className="mt-3 p-2 rounded bg-white flex justify-evenly">
-//                 <img className="w-45 rounded border" src="https://res.cloudinary.com/dxludspye/image/upload/v1746891160/Namma-Services/fvcjr2ts3hvs9d7dod64.png" alt="" />
-//                 <img className="w-45 rounded" src="https://res.cloudinary.com/dxludspye/image/upload/v1746891160/Namma-Services/fvcjr2ts3hvs9d7dod64.png" alt="" />
-//                 <img className="w-45 rounded" src="https://res.cloudinary.com/dxludspye/image/upload/v1746891160/Namma-Services/fvcjr2ts3hvs9d7dod64.png" alt="" />
-//                 <img className="w-45 rounded" src="https://res.cloudinary.com/dxludspye/image/upload/v1746891160/Namma-Services/fvcjr2ts3hvs9d7dod64.png" alt="" />
-//                 {/* <img className="w-45 rounded" src="https://res.cloudinary.com/dxludspye/image/upload/v1746891160/Namma-Services/fvcjr2ts3hvs9d7dod64.png" alt="" /> */}
-//                 <div className="w-45 h-45 flex items-center justify-center border border-[#989695] rounded">
-//                     <p><ImagePlus size={30} color="#989695"/></p>
-//                 </div>
-//             </div>
-//           </div>
-
-//         </div>
-//       </div>
-//     </div>
-//   );
-// }
-// export default ProfilePage;
 
 import {
   Star,
@@ -174,24 +7,47 @@ import {
   Mail,
   MapPinHouse,
   Camera,
+  UserRound,
 } from "lucide-react";
+import toast from "react-hot-toast";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { fetchAccount } from "../../redux/slices/profileSlice";
+import { useNavigate,useParams, useLocation} from "react-router-dom";
 import { imageUpload } from "../../redux/slices/imageUploadSlice";
+import ProfileUpdate from "./ProfileUpdate";
+import { fetchAccount,updateProfileImage} from "../../redux/slices/profileSlice";
+import { fetchAddress } from "../../redux/slices/profileAddressSlice";
+import WorkImageUpload from "./WorkImageUpload";
 
 function ProfilePage() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const path = useLocation().pathname;
+  const {id} = useParams();
+
   const [imageUrl, setImageUrl] = useState("");
+  const [hasUploaded, setHasUploaded] = useState(false);
   const [file, setFile] = useState(null);
   const [showImagePopup, setShowImagePopup] = useState(false);
 
-  useEffect(() => {
-    dispatch(fetchAccount());
-  }, [dispatch]);
+
+  // images
+  const [selectedImage, setSelectedImage] = useState(null);
+
+  const handleSelect = (image) => {
+    setSelectedImage(image);
+  };
+  useEffect(()=>{
+          dispatch(fetchAccount());
+          dispatch(fetchAddress());
+     },[dispatch]);
 
   const userAccount = useSelector((state) => state.profile);
+  const userAddress = useSelector((state)=>{
+        return state.address;
+    })?.data;
 
+console.log(userAccount.data)
   useEffect(() => {
     if (!file) return;
     const upload = async () => {
@@ -207,6 +63,32 @@ function ProfilePage() {
     upload();
   }, [file, dispatch]);
 
+useEffect(() => {
+  if (!imageUrl || hasUploaded) return;
+
+  const updateProImage = async () => {
+    try {
+      await dispatch(updateProfileImage({ imageUrl })).unwrap();
+      toast.success("Profile image updated successfully");
+      setHasUploaded(true);
+      setImageUrl('');
+    } catch (error) {
+      toast.error("Image upload failed");
+    }
+  };
+
+  updateProImage();
+}, [imageUrl, dispatch, hasUploaded]);
+
+
+const segments = path.split("/");
+const result = `${segments[1]}/${segments[2]}`;
+const showProfileUpdate = id && path.startsWith("/profile/edit");
+
+const handleUpdate = (id)=>{
+  navigate(`/profile/edit/${id}`);
+}
+
   return (
     <div>
       <div className="flex justify-center border-5 border-white rounded-[10px] shadow-[8px] mb-4">
@@ -220,17 +102,23 @@ function ProfilePage() {
           </div>
 
           <div className="flex justify-between p-5">
-            <div className="flex justify-evenly w-[52%]">
+            <div className="flex justify-evenly w-[40%] ml-10">
               <div className="bg-[#e3e7ef] p-2 rounded-full mt-[-75px]">
                 <div
-                  className="h-40 w-40 bg-[#e3e7ef] rounded-full bg-cover bg-center relative"
-                  style={{
-                    backgroundImage: `url(${
-                      imageUrl ||
-                      "https://res.cloudinary.com/dxludspye/image/upload/v1746891160/Namma-Services/fvcjr2ts3hvs9d7dod64.png"
-                    })`,
-                  }}
+                  className="h-40 w-40 bg-[#e3e7ef] border border-white rounded-full bg-cover bg-center relative"
+                  style={
+                    userAccount.data?.profileImage
+                      ? {
+                          backgroundImage: `url(${userAccount.data.profileImage})`,
+                        }
+                      : {}
+                  }
                 >
+                  {!userAccount.data?.profileImage && (
+                    <div className="flex items-center justify-center h-full w-full text-gray-600 bg-[#8e959d] rounded-full">
+                      <UserRound size={147} />
+                    </div>
+                  )}
                   <label
                     className="absolute bottom-[10px] right-4 bg-green-500 p-1 rounded-full cursor-pointer"
                     onClick={() => setShowImagePopup(true)}
@@ -247,7 +135,7 @@ function ProfilePage() {
                 <p className="text-gray-600">
                   {userAccount.data?.userType} - electrician
                 </p>
-                <p className="text-gray-800">Arun Rathod Service Provider</p>
+                { userAccount.data?.bio &&(<p className="text-gray-800">{userAccount.data?.bio}</p>)}
               </div>
             </div>
             <div>
@@ -255,27 +143,38 @@ function ProfilePage() {
             </div>
           </div>
 
+          <div className="">
+            {/* <p className="ml-28 text-black font-medium inline-block px-3 cursor-pointer hover:underline">Edit profile</p> */}
+            <button onClick={()=>{handleUpdate(userAccount.data?._id)}} className="ml-28 text-black font-medium inline-block px-3 cursor-pointer hover:underline">Edit profile</button>
+          </div>
+          {/* profile div */}
           <div className="mb-4 mt-3 flex gap-2 ml-22">
-            <div className="bg-white px-2 py-1 rounded">
+            {userAccount.data?.phoneNumber &&(
+              <div className="bg-white px-2 py-1 rounded">
               <p className="text-gray-700 flex items-center gap-3">
                 <PhoneCall size={20} />{" "}
-                <span className="text-gray-500">9900126189</span>
+                <span className="text-gray-500">{userAccount.data?.phoneNumber}</span>
               </p>
             </div>
+            )}
             <div className="bg-white px-2 py-1 rounded">
               <p className="text-gray-700 flex items-center gap-3">
                 <Mail size={20} />{" "}
                 <span className="text-gray-500">{userAccount.data?.email}</span>
               </p>
             </div>
-            <div className="bg-white px-2 py-1 rounded">
+
+            {userAddress?.address &&(
+              <div className="bg-white px-2 py-1 rounded">
               <p className="text-[#2E073F] flex items-center gap-3">
                 <MapPinHouse size={20} />{" "}
                 <span className="text-gray-500">
-                  gandhi bazar basavanagudi bangalore karnataka 560004
+                 {userAddress?.address}
                 </span>
               </p>
             </div>
+            )}
+
           </div>
 
           <div className="flex justify-center p-4">
@@ -324,25 +223,33 @@ function ProfilePage() {
             </div>
           </div>
 
-          <div className="mb-4 mt-3 mx-21">
+          {/* images div */}
+        
+            <div className="mb-4 mt-3 mx-21">
             <p className="text-[17px] font-medium">Work related images</p>
             <div className="mt-3 p-2 rounded bg-white flex justify-evenly">
-              {[...Array(4)].map((_, i) => (
+              {userAccount.data?.images.map((image, i) => (
                 <img
                   key={i}
                   className="w-45 rounded border"
-                  src="https://res.cloudinary.com/dxludspye/image/upload/v1746891160/Namma-Services/fvcjr2ts3hvs9d7dod64.png"
+                  src={image}
                   alt=""
                 />
               ))}
-              <div className="w-45 h-45 flex items-center justify-center border border-[#989695] rounded">
-                <ImagePlus size={30} color="#989695" />
-              </div>
+              
             </div>
           </div>
+          
 
+          <div className="mb-4">
+            <button className="ml-25 bg-gray-400 hover:bg-gray-500 text-white rounded-[5px] cursor-pointer px-3 py-[3px]">Add images</button>
+          </div>
+
+          {/* select images */}
+          {/* <WorkImageUpload/> */}
+          {/*profile image update popup */}
           {showImagePopup && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-tranparent bg-opacity-200 backdrop-blur-md">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-tranparent bg-opacity-50 backdrop-blur-md">
               <div className="bg-white w-60 h-60 rounded-[8px] shadow-lg flex flex-col items-center justify-center relative">
                 <button
                   onClick={() => setShowImagePopup(false)}
@@ -365,17 +272,30 @@ function ProfilePage() {
                       }
                     }}
                   />
-                  <img
+                  {userAccount.data?.profileImage &&(
+                    <img
                     className="border-2 border-gray-200 w-30 h-30 p-3 rounded-[10px] shadow-[8px]"
-                    src={imageUrl}
+                    src={userAccount.data?.profileImage}
                     alt="Profile"
                   />
+                  )}
+
+                  {!userAccount.data?.profileImage && (
+                    <div className="flex items-center justify-center h-30 w-30 text-gray-600 bg-[#8e959d] rounded-[10px] shadow-[8px]  ">
+                      <UserRound size={140} />
+                    </div>
+                  )}
                   <p className="text-center mt-4 bg-green-200 text-green-500 px-3 py-1">
                     Add or Change
                   </p>
                 </label>
               </div>
             </div>
+          )}
+
+          {/* Profile update popup */}
+          {showProfileUpdate && (
+            <ProfileUpdate/>
           )}
         </div>
       </div>
