@@ -2,13 +2,14 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import toast from "react-hot-toast";
+import { ImagePlus ,Save } from "lucide-react";
 
 import { imageUpload } from "../../redux/slices/imageUploadSlice";
 import { uploadWorkImages } from "../../redux/slices/profileSlice";
 
 function WorkImageUpload() {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [images, setImages] = useState([]);
   const [files, setFiles] = useState([]);
@@ -53,59 +54,105 @@ function WorkImageUpload() {
     setImages(images.filter((_, i) => i !== index));
   };
 
-  const handleSaveImages = async()=>{
+  const handleSaveImages = async () => {
     try {
-    const res =  await dispatch(uploadWorkImages({ image:images })).unwrap();
-       if(res){
-        toast.success("image uploaded successfully");
-       }
-      
+      if (!images || images.length === 0) {
+        toast.error("Please select at least one image before uploading.");
+        return;
+      }
+
+      const res = await dispatch(uploadWorkImages({ image: images })).unwrap();
+
+      toast.success("Images uploaded successfully");
+      navigate("/profile");
     } catch (error) {
-      toast.error("Image upload failed");
+      console.error("Upload error:", error);
+      toast.error(error?.message || "Image upload failed");
     }
-  }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 backdrop-blur-md">
+    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50 backdrop-blur-md">
       <div className="bg-white rounded-md shadow-lg p-4 max-w-md w-full">
-        <div className="flex justify-between items-center mb-4">
+        <div className="flex justify-between items-center mb-10">
           <h2 className="text-lg font-semibold">Upload Work Images</h2>
           <button
-            className="text-gray-500 hover:text-black"
-            onClick={() => window.location.reload()}
+            className="text-gray-500 hover:text-black border border-gray-300 px-3 rounded "
+            onClick={() => navigate("/profile")}
           >
-            ✕
+          Cancel
           </button>
         </div>
 
-        {files.map((_, index) => (
-          <div key={index} className="flex items-center mb-2">
-            <input
-              type="file"
-              onChange={(e) => handleFileChange(e, index)}
-              className="border border-[#c4c4c4] rounded shadow px-2 py-[3px] focus:border-blue-500 outline-none w-[70%] cursor-pointer"
-            />
+        <div className="flex flex-wrap gap-4">
+          {files.map((_, index) => (
+            <div key={index} className="relative w-16 h-16">
+              {images[index] ? (
+                <div className="relative w-full h-full">
+                  <img
+                    src={images[index]}
+                    alt={`Uploaded ${index}`}
+                    className="w-full h-full object-cover rounded"
+                  />
+                  <button
+                    onClick={() => {
+                      const updatedFiles = files.filter((_, i) => i !== index);
+                      const updatedImages = images.filter(
+                        (_, i) => i !== index
+                      );
+                      setFiles(updatedFiles);
+                      setImages(updatedImages);
+                    }}
+                    className="absolute top-0 right-0 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+                  >
+                    ✕
+                  </button>
+                </div>
+              ) : (
+                <label className="cursor-pointer w-full h-full border border-dashed flex items-center justify-center text-3xl rounded">
+                  <input
+                    type="file"
+                    className="hidden"
+                    onChange={(e) => handleFileChange(e, index)}
+                  />
+                  +
+                </label>
+              )}
+
+              {uploading.includes(index) && (
+                <span className="absolute bottom-0 left-0 text-yellow-600 text-xs bg-white px-1 rounded">
+                  Uploading...
+                </span>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="flex justify-evenly ">
+          <div className="text-center">
+            <p className="inline-block  p-1 rounded-full bg-white mb-[-20px]">
+              <ImagePlus size={20} color="#FF9F00" />
+            </p>
             <button
-              onClick={() => removeInput(index)}
-              className="ml-2 text-red-500 text-sm"
+              onClick={addNewInput}
+              className=" w-30 bg-[#c100ff] hover:bg-[#8711ad] cursor-pointer text-white px-2 pb-[2px] pt-[10px] rounded  flex justify-evenly"
             >
-              ✕
+              Add More
             </button>
-            {uploading.includes(index) ? (
-              <span className="ml-2 text-yellow-600 text-sm">Uploading...</span>
-            ) : images[index] ? (
-              <span className="ml-2 text-green-600 text-sm">✅</span>
-            ) : null}
           </div>
-        ))}
 
-        <button
-          onClick={addNewInput}
-          className="mt-4 bg-blue-500 text-white px-4 py-2 rounded w-full"
-        >
-          Add More
-        </button>
-
-        <button onClick={handleSaveImages}>Save Images</button>
+          <div className="text-center">
+            <p className="inline-block  p-1 rounded-full bg-white mb-[-20px]">
+              <Save  size={20} color="green" />
+            </p>
+            <button
+              onClick={handleSaveImages}
+              className="w-30 bg-green-400 hover:bg-green-500 cursor-pointer text-white px-2 pb-[2px] pt-[10px] rounded  flex justify-evenly"
+            >
+              Save Images
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
