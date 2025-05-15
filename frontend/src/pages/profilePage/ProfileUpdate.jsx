@@ -4,12 +4,13 @@ import toast from "react-hot-toast";
 import { useDispatch,useSelector } from "react-redux";
 import { fetchAccount,updateProfile} from "../../redux/slices/profileSlice";
 import { fetchAddress, updateAddress } from "../../redux/slices/profileAddressSlice";
+import { listCategories } from "../../redux/slices/serviceCategorySlice";
 function ProfileUpdate(){
     const navigate = useNavigate();
     const dispatch = useDispatch();
-// {street,city,state,postalCode,country}
-// const {bio,name,phoneNumber}
+
     const [name,setName] = useState('');
+    const [service,setService] = useState('');
     const [bio,setBio] = useState('');
     const [phoneNumber,setPhoneNumber] = useState('');
     const [street,setStreet] = useState('');
@@ -21,6 +22,7 @@ function ProfileUpdate(){
      useEffect(()=>{
          dispatch(fetchAccount());
          dispatch(fetchAddress());
+         dispatch(listCategories());
     },[dispatch]);
 
     const userAddress = useSelector((state)=>{
@@ -31,7 +33,10 @@ function ProfileUpdate(){
         return state.profile;
     }).data;
 
-    console.log(name)
+    const listCategory = useSelector((state)=>{
+      return state.services;
+    }).data
+    console.log(service)
     console.log(userAccount?.name)
 
    useEffect(() => {
@@ -53,6 +58,11 @@ function ProfileUpdate(){
 const validations = ()=>{
     if(name.trim().length<2){
         toast.error('Name field required');
+        return false;
+    }
+
+    if(service.trim().length<2){
+        toast.error('Select Service Type');
         return false;
     }
 
@@ -94,29 +104,44 @@ const handleSubmit = async (e)=>{
     if(!validations()) return;
 
     try {
-    const profileRes = await dispatch(updateProfile({name,bio,phoneNumber })).unwrap();
-    const addressRes = await dispatch(updateAddress({street,city,state,postalCode,country})).unwrap();
-    navigate('/profile');
-      if(profileRes && addressRes){
-        toast.success("Profile updated successfully");
-      }
-    } catch (error) {
-      toast.error(error);
-    }
+  const [profileRes, addressRes] = await Promise.all([
+    dispatch(updateProfile({ name, bio, phoneNumber,serviceType:service })).unwrap(),
+    dispatch(updateAddress({ street, city, state, postalCode, country })).unwrap()
+  ]);
+
+  toast.success("Profile updated successfully");
+  navigate('/profile');
+
+} catch (error) {
+  toast.error(error?.message || "Profile update failed");
+}
+
     
 }
     return(
-        <div className="fixed inset-0 z-50 flex justify-center items-center bg-tranparent bg-opacity-50 backdrop-blur-md ">
-            <div className="bg-white p-7 rounded-[8px] border border-gray-300 shadow-[10px]">
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-opacity-50 backdrop-blur-md ">
+            <div className="bg-white px-7 py-5 rounded-[8px] border border-gray-300 shadow-[10px]">
                <div className="flex justify-between">
                 <p className="text-[20px]">Edit Profile</p>
-                <button onClick={(()=>{navigate('/profile')})} className="bg-red-400 hover:bg-red-600 text-white cursor-pointer px-3 rounded outline-none border-none">Cancel</button>
+                <button onClick={(()=>{navigate('/profile')})} className="border border-gray-400 hover:bg-gray-300 text-gray-500 cursor-pointer px-3 rounded outline-none ">Cancel</button>
                </div>
               <div>
                 <form onSubmit={handleSubmit}>
                   <div className="flex flex-col">
                     <label htmlFor="" className="text-gray-600">Name</label>
                     <input type="text" placeholder="Ex : Mr xyz" value={name} onChange={(e)=>{setName(e.target.value)}} className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"/>
+                  </div>
+
+                  <div className="flex flex-col mt-2">
+                    {/* <label htmlFor="" className="text-gray-600">Select service type</label> */}
+                    <select name="" className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]" value={service} onChange={(e)=>{setService(e.target.value)}} id="">
+                      <option value="" className="text-gray-500">Select service type</option>
+                      {listCategory.map((service)=>{
+                        return(
+                          <option key={service._id} value={service._id}>{service.name}</option>
+                        )
+                      })}
+                    </select>
                   </div>
 
                   <div className="flex flex-col">
