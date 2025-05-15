@@ -2,22 +2,27 @@
 import {
   Star,
   BadgeCheck,
-  ImagePlus,
   PhoneCall,
   Mail,
   MapPinHouse,
   Camera,
   UserRound,
+  Instagram ,
+  Facebook ,
+  Twitter 
 } from "lucide-react";
 import toast from "react-hot-toast";
-import { useEffect, useState } from "react";
+import { FastAverageColor } from 'fast-average-color';
+import { useEffect, useState,useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate,useParams, useLocation} from "react-router-dom";
 import { imageUpload } from "../../redux/slices/imageUploadSlice";
 import ProfileUpdate from "./ProfileUpdate";
 import { fetchAccount,updateProfileImage} from "../../redux/slices/profileSlice";
 import { fetchAddress } from "../../redux/slices/profileAddressSlice";
+import { listCategories } from "../../redux/slices/serviceCategorySlice";
 import WorkImageUpload from "./WorkImageUpload";
+import ViewImage from "./ViewImage";
 
 function ProfilePage() {
   const dispatch = useDispatch();
@@ -29,25 +34,26 @@ function ProfilePage() {
   const [hasUploaded, setHasUploaded] = useState(false);
   const [file, setFile] = useState(null);
   const [showImagePopup, setShowImagePopup] = useState(false);
-
-
+ 
   // images
   const [selectedImage, setSelectedImage] = useState(null);
-
+ 
   const handleSelect = (image) => {
     setSelectedImage(image);
   };
   useEffect(()=>{
           dispatch(fetchAccount());
           dispatch(fetchAddress());
+          dispatch(listCategories());
      },[dispatch]);
 
   const userAccount = useSelector((state) => state.profile);
-  const userAddress = useSelector((state)=>{
-        return state.address;
-    })?.data;
-
-console.log(userAccount.data)
+  const userAddress = useSelector((state)=> state.address)?.data;
+  const services = useSelector((state)=> state.services)?.data;
+  const myServiceType = services.find((service)=>{
+    return service._id == userAccount.data?.serviceType;
+  })
+console.log(myServiceType);
   useEffect(() => {
     if (!file) return;
     const upload = async () => {
@@ -80,40 +86,46 @@ useEffect(() => {
   updateProImage();
 }, [imageUrl, dispatch, hasUploaded]);
 
-
-const segments = path.split("/");
-const result = `${segments[1]}/${segments[2]}`;
 const showProfileUpdate = id && path.startsWith("/profile/edit");
+const showImagesUpload = path.startsWith("/profile/image/upload");
+const viewImage =id && path.startsWith("/profile/image/view");
 
 const handleUpdate = (id)=>{
   navigate(`/profile/edit/${id}`);
 }
 
+const showImageUpload = ()=>{
+  navigate('/profile/image/upload');
+}
   return (
     <div>
       <div className="flex justify-center border-5 border-white rounded-[10px] shadow-[8px] mb-4">
         <div className="w-full rounded-tl-[10px] rounded-tr-[10px]">
-          <div>
+          <div className={`h-50 bg-gray-300 flex flex-col justify-center items-center `}>
             <img
-              className="rounded-tl-[10px] rounded-tr-[10px] w-full h-50"
-              src="https://res.cloudinary.com/dxludspye/image/upload/v1746890819/Namma-Services/ugqpmgx9texs3ybispn9.png"
+              className="rounded-tl-[10px] rounded-tr-[10px] w-80 h-80 opacity-30 mb-8 "
+              src="https://res.cloudinary.com/dxludspye/image/upload/v1747219488/Namma-Services/x4rxf0fq5p5ymhzu81kd.png"
               alt="banner"
             />
+          
           </div>
 
           <div className="flex justify-between p-5">
-            <div className="flex justify-evenly w-[40%] ml-10">
+            <div className="flex justify-evenly w-[55%] ml-9">
               <div className="bg-[#e3e7ef] p-2 rounded-full mt-[-75px]">
                 <div
                   className="h-40 w-40 bg-[#e3e7ef] border border-white rounded-full bg-cover bg-center relative"
                   style={
                     userAccount.data?.profileImage
                       ? {
-                          backgroundImage: `url(${userAccount.data.profileImage})`,
+                          backgroundImage: `url(${userAccount.data?.profileImage})`,
                         }
                       : {}
                   }
+
+                  
                 >
+                  
                   {!userAccount.data?.profileImage && (
                     <div className="flex items-center justify-center h-full w-full text-gray-600 bg-[#8e959d] rounded-full">
                       <UserRound size={147} />
@@ -127,25 +139,29 @@ const handleUpdate = (id)=>{
                   </label>
                 </div>
               </div>
-              <div className="mt-[-13px]">
+              <div className="mt-[-13px]  mr-30">
                 <p className="text-[25px] flex items-center">
                   {userAccount.data?.name}{" "}
                   <BadgeCheck color="#06f" className="ml-2" />
                 </p>
                 <p className="text-gray-600">
-                  {userAccount.data?.userType} - electrician
+                  {userAccount.data?.userType} {myServiceType?.name ? ` - ${myServiceType?.name}` : ''}
                 </p>
                 { userAccount.data?.bio &&(<p className="text-gray-800">{userAccount.data?.bio}</p>)}
               </div>
             </div>
-            <div>
-              <p>Social Media</p>
+            <div className=" w-40 mr-10">
+              <div className="flex justify-evenly">
+                <Instagram size={45} color="orange" className="bg-white p-2 rounded-[8px] cursor-pointer"/>
+                <Facebook size={45} color="orange" className="bg-white p-2 rounded-[8px] cursor-pointer"/>
+                <Twitter size={45} color="orange" className="bg-white p-2 rounded-[8px] cursor-pointer"/>
+              </div>
             </div>
           </div>
 
           <div className="">
             {/* <p className="ml-28 text-black font-medium inline-block px-3 cursor-pointer hover:underline">Edit profile</p> */}
-            <button onClick={()=>{handleUpdate(userAccount.data?._id)}} className="ml-28 text-black font-medium inline-block px-3 cursor-pointer hover:underline">Edit profile</button>
+            <button onClick={()=>{handleUpdate(userAccount.data?._id)}} className="ml-26 text-black font-medium inline-block px-3 cursor-pointer hover:underline">Edit profile</button>
           </div>
           {/* profile div */}
           <div className="mb-4 mt-3 flex gap-2 ml-22">
@@ -227,26 +243,35 @@ const handleUpdate = (id)=>{
         
             <div className="mb-4 mt-3 mx-21">
             <p className="text-[17px] font-medium">Work related images</p>
-            <div className="mt-3 p-2 rounded bg-white flex justify-evenly">
-              {userAccount.data?.images.map((image, i) => (
+           {userAccount.data?.images?.length >0 && (
+             <div className="mt-3 p-2 rounded bg-white flex flex-wrap gap-[11px] text-ceter">
+              {userAccount.data?.images?.map((image, i) => (
                 <img
                   key={i}
-                  className="w-45 rounded border"
+                  className="w-37 h-37 rounded border border-gray-300 shadow-[8px] cursor-pointer"
                   src={image}
                   alt=""
+                  onClick={()=>{navigate(`/profile/image/view/${i}`)}}
                 />
               ))}
               
             </div>
+           )}
           </div>
           
 
           <div className="mb-4">
-            <button className="ml-25 bg-gray-400 hover:bg-gray-500 text-white rounded-[5px] cursor-pointer px-3 py-[3px]">Add images</button>
+            <button onClick={()=>{showImageUpload()}} className="ml-25 bg-gray-400 hover:bg-gray-500 text-white rounded-[5px] cursor-pointer px-3 py-[3px]">Add images</button>
           </div>
 
           {/* select images */}
-          {/* <WorkImageUpload/> */}
+          { showImagesUpload && (
+            <WorkImageUpload/>
+          )}
+          {viewImage && (
+            <ViewImage/>
+          )}
+
           {/*profile image update popup */}
           {showImagePopup && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-tranparent bg-opacity-50 backdrop-blur-md">
