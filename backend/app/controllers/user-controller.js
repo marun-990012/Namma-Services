@@ -225,27 +225,39 @@ userController.updateProfileImage = async(req,res)=>{
 
 
 //upload image controller
-userController.uploadPhotos = async(req,res)=>{
-    const {image} = req.body;
-    try{
-     
-            const user = await User.findByIdAndUpdate(req.userId,{images:image},{new:true});
-            if(!user){
-                return res.status(404).json({message:"user not found"});
-            }
-            return res.json({user,message:"succefully updated"});
-    }catch(error){
-        console.log(error);
-        return res.status(500).json({ error: "Something went wrong" });
+userController.uploadPhotos = async (req, res) => {
+  const { image } = req.body;
+
+  try {
+
+    // Validating image input is array
+    if (!Array.isArray(image) || image.length === 0) {
+      return res.status(400).json({ message: "No images provided or invalid format" });
     }
+
+    const user = await User.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Appending new images to existing array
+    user.images.push(...image);
+    await user.save();
+
+    return res.status(200).json(user);
+  } catch (error) {
+    console.error("Upload error:", error);
+    return res.status(500).json({ error: "Something went wrong while uploading images" });
+  }
 };
+
 
 //profile update controller
 userController.updateProfile = async(req,res)=>{
-    const {bio,name,phoneNumber} = req.body;
+    const {bio,name,phoneNumber,serviceType} = req.body;
     try{
         
-            const user = await User.findByIdAndUpdate(req.userId,{bio,name,phoneNumber},{new:true});
+            const user = await User.findByIdAndUpdate(req.userId,{bio,name,phoneNumber,serviceType},{new:true});
             if(!user){
                 return res.status(404).json({message:"user not found"});
             }
