@@ -28,7 +28,25 @@ function MainLayout(){
     {/* Sidebar */}
     {isLoggedIn &&(
       <div className="w-[7%] h-[100vh] bg-white ml-2 rounded-[10px] shadow fixed left-0  z-40 ">
-      <div className="p-4 text-gray-800">Sidebar</div>
+      <div className="p-4 text-gray-800 flex flex-col gap-4">Sidebar
+        <Link to="/profile" className="hover:underline">
+        profile
+      </Link>
+
+      <Link to="/category/new" className="hover:underline">
+        create service
+      </Link>
+
+       <Link to="/service-category" className="hover:underline">
+        services
+      </Link>
+
+      <Link to="/job/post/new" className="hover:underline">
+        job post
+      </Link>
+      
+      
+      </div>
     </div>
     )}
 
