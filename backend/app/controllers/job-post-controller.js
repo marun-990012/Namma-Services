@@ -6,7 +6,7 @@ const jobPostController={};
 
 //Controller for create job Post
 jobPostController.create = async(req,res)=>{
-    const {title,description,address,postalCode,salary,images} = req.body;
+    const {title,description,serviceCategory,address,postalCode,salary,images} = req.body;
 
     const apiKey = '414f3b4ff1ad47088654fae1b1c6ca01';
     const encodedAddress = encodeURIComponent(`${address} ${postalCode}`);
@@ -18,7 +18,7 @@ jobPostController.create = async(req,res)=>{
       const location = response.data.features[0].properties;
       // return { lat: location.lat, lng: location.lon };
 
-        const jobPost = await Job.create({title,description,address:location.formatted,postalCode:location.postcode,location: {type: 'Point',coordinates: [location.lon, location.lat]},salary,images,postedBy:req.userId});
+        const jobPost = await Job.create({title,description,serviceCategory,address:location.formatted,postalCode:location.postcode,location: {type: 'Point',coordinates: [location.lon, location.lat]},salary,images,postedBy:req.userId});
         return res.status(201).json(jobPost);
         // return res.json(location)
     }catch(error){
