@@ -10,7 +10,7 @@ import authorization from '../../app/middlewares/user-authorization.js';
 const jobPostRoute = express.Router();
 
 jobPostRoute.post('/create',authentication,authorization(['work-provider']),checkSchema(jobPostValidation),inputValidator,jobPostController.create);
-jobPostRoute.get('/list',jobPostController.list);
+jobPostRoute.get('/list',authentication,jobPostController.list);
 jobPostRoute.get('/my-posts',authentication,jobPostController.myJobPosts);
 jobPostRoute.put('/update/:id',authentication,authorization(['work-provider']),checkSchema(jobPostValidation),checkSchema(idValidationSchema),inputValidator,jobPostController.updatePost);
 jobPostRoute.delete('/delete/:id',authentication,authorization(['work-provider']),checkSchema(idValidationSchema),inputValidator,jobPostController.remove);
