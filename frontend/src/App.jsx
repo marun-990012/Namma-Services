@@ -6,7 +6,11 @@ import EmailVerification from "./pages/user-auth/EmailVerification";
 import CategoryForm from "./pages/service-category/CategoryForm";
 import CategoryList from "./pages/service-category/CategoryList";
 import ProfilePage from "./pages/profilePage/ProfilePage";
-
+import JobPostForm from "./pages/job-post/JobPostForm";
+import MyJobPosts from "./pages/job-post/MyJobPosts";
+import JobPostDetail from "./pages/job-post/JobPostDetail";
+import JobRequests from "./pages/job-post/JobRequests";
+import JobConsider from "./pages/job-post/JobConsider";
 function App() {
   return (
     <>
@@ -23,6 +27,13 @@ function App() {
             <Route path="/service-category" element={<CategoryList/>}/>
             <Route path="/profile" element={<ProfilePage/>}/>
             <Route path="/profile/edit/:id" element={<ProfilePage/>}/>
+            <Route path="/profile/image/upload" element={<ProfilePage/>}/>
+            <Route path="/profile/image/view/:id" element={<ProfilePage/>}/>
+            <Route path="/job/post/new" element={<JobPostForm/>}/>
+            <Route path="/job/posts" element={<MyJobPosts/>}/>
+            <Route path="/job/post/detail/:id" element={<JobPostDetail/>}/>
+            <Route path="/job/post/details/requests/:id" element={<JobPostDetail/>}/>
+            <Route path="/job/post/details/considers/:id" element={<JobPostDetail/>}/>
 
           </Route>
           
