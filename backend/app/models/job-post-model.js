@@ -8,6 +8,7 @@ const jobPostSchema = new Schema({
     description:String,
     salary:Number,
     address:String,
+    serviceCategory:Schema.Types.ObjectId,
     postalCode:String,
     location:{
       type: {
