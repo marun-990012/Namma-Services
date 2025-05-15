@@ -10,6 +10,7 @@ function Login() {
 
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [otpStatus, setOtpStatus] = useState(false);
   const [otp, setOtp] = useState('');
 
   const otpValidation = () => {
@@ -38,7 +39,7 @@ function Login() {
 
     try {
       const res = await dispatch(loginOtp({ email })).unwrap();
-      console.log("OTP sent:", res);
+      setOtpStatus(true);
       toast.success("OTP sent successfully. Check your email.", {
         duration: 5000,
       });
@@ -93,10 +94,10 @@ function Login() {
               />
               <button
                 type="button"
-                className="bg-orange-500 px-1 rounded text-white outline-none"
+                className={otpStatus ? 'bg-green-500 px-1 rounded text-white outline-none':'bg-orange-500 px-1 rounded text-white outline-none'}
                 onClick={handleSendOtp}
               >
-                Send OTP
+                {otpStatus ? 'Sent OTP':'Send OTP'}
               </button>
             </div>
           </div>
