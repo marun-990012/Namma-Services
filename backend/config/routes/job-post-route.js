@@ -11,6 +11,7 @@ const jobPostRoute = express.Router();
 
 jobPostRoute.post('/create',authentication,authorization(['work-provider']),checkSchema(jobPostValidation),inputValidator,jobPostController.create);
 jobPostRoute.get('/list',authentication,jobPostController.list);
+jobPostRoute.get('/show/:id',authentication,checkSchema(idValidationSchema),jobPostController.show);
 jobPostRoute.get('/my-posts',authentication,jobPostController.myJobPosts);
 jobPostRoute.put('/update/:id',authentication,authorization(['work-provider']),checkSchema(jobPostValidation),checkSchema(idValidationSchema),inputValidator,jobPostController.updatePost);
 jobPostRoute.delete('/delete/:id',authentication,authorization(['work-provider']),checkSchema(idValidationSchema),inputValidator,jobPostController.remove);
