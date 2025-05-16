@@ -4,7 +4,7 @@ import axiosInstance from "../../utils/axiosInstancs";
 export const fetchAddress = createAsyncThunk('/address/fetchAddress',async()=>{
     try {
         const response = await axiosInstance.get('/address/find',{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response);
+        console.log(response.data);
         return response.data;
     } catch (error) {
         console.log(error);
