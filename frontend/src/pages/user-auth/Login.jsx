@@ -39,10 +39,10 @@ function Login() {
 
     try {
       const res = await dispatch(loginOtp({ email })).unwrap();
-      setOtpStatus(true);
       toast.success("OTP sent successfully. Check your email.", {
         duration: 5000,
       });
+       setOtpStatus(true);
     } catch (err) {
       const errorMessage =
         Array.isArray(err?.error) && err.error[0]?.msg
