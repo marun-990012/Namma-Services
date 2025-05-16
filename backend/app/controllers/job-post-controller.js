@@ -39,6 +39,20 @@ jobPostController.list = async(req,res)=>{
     }
 }; 
 
+//controller for show job detail
+jobPostController.show = async (req,res) =>{
+    const id = req.params.id;
+  try {
+    const job = await Job.findById(id);
+    if(!job){
+      return res.status(404).json({message:'Job post not found'})
+    }
+    return res.status(200).json(job);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({error:"Something went wrong"});
+  }
+}
 
 //controller for list all the job posts belongs to users
 jobPostController.myJobPosts = async (req,res) =>{
