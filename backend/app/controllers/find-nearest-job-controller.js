@@ -29,7 +29,7 @@ findNearestJobController.nearestJob = async(req,res)=>{
         if(jobs.length>0){
              // Convert distance from meters to kilometers
              const jobsInKilometers = jobs.map((job) => {
-                return ({...job,dist: {...job.dist,calculated: job.dist.calculated / 1000},})
+                return ({...job,dist: {...job.dist,calculated: (job.dist.calculated / 1000).toFixed(2)+' '+'KM'},})
             });
             return res.status(200).json(jobsInKilometers);
         }else{
