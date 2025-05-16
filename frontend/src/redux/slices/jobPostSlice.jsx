@@ -26,43 +26,45 @@ export const listJobPosts = createAsyncThunk('/jobs/listJobPosts',async(_,{rejec
     }
 });
 
-// export const deleteCategory = createAsyncThunk('/services/deleteCategory',async(id,{rejectWithValue})=>{
-//     try{
-//         const response = await axiosInstance.delete(`/category/delete/${id}`,{headers:{
-//             Authorization:localStorage.getItem('token')
-//         }});
-//         console.log(response.data);
-//         return response.data;
-//     }catch(error){
-//         console.log(error);
-//         return rejectWithValue(error?.response?.data);
+export const findNearestJobs = createAsyncThunk('/jobs/findNearestJobs',async({lat,lng},{rejectWithValue})=>{
+    try{
+        const response = await axiosInstance.get(`/nearby/job/find?lat=${lat}&lng=${lng}`,{headers:{
+            Authorization:localStorage.getItem('token')
+        }});
+        console.log(response.data);
+        return response.data;
+    }catch(error){
+        console.log(error);
+        return rejectWithValue(error?.response?.data);
 
-//     }
-// });
+    }
+});
 
+export const showJobPostDetail = createAsyncThunk('/jobs/showJobPostDetail',async(id,{rejectWithValue})=>{
+    try{
+        const response = await axiosInstance.get(`/job/show/${id}`,{headers:{
+            Authorization:localStorage.getItem('token')
+        }});
+        console.log(response.data);
+        return response.data;
+    }catch(error){
+        console.log(error);
+        return rejectWithValue(error?.response?.data);
 
-// export const updateCategory = createAsyncThunk('/services/updateCategory',async({id,formData},{rejectWithValue})=>{
-//     try{
-//         const response = await axiosInstance.put(`/category/update/${id}`,formData,{headers:{Authorization:localStorage.getItem('token')}});
-//         console.log(response.data);
-//         return response.data;
-//     }catch(error){
-//         console.log(error);
-//         return rejectWithValue(error?.response?.data);
-//     }
-// })
-
+    }
+});
 
 const jobPostSlice = createSlice({
     name:"jobs",
     initialState:{
         data:[],
+        job:{},
         loading:false,
         error:null, 
     },
     extraReducers:(builder)=>{
         builder
-        //create category
+        //create job post
         .addCase(createJobPost.pending,(state,action)=>{
             state.loading = true;
             state.error = null;
@@ -79,7 +81,7 @@ const jobPostSlice = createSlice({
             state.error = action.payload;
         })
 
-        //list categories 
+        //list jobposts 
         .addCase(listJobPosts.pending,(state,action)=>{
             state.loading = true;
             state.error = null;
@@ -96,48 +98,41 @@ const jobPostSlice = createSlice({
             state.error = action.payload;
         })
         
-        // //delete category
-        // .addCase(deleteCategory.pending,(state,action)=>{
-        //     state.loading = true;
-        //     state.error = null;
-        // })
+        //list nearest jobs 
+        .addCase(findNearestJobs.pending,(state,action)=>{
+            state.loading = true;
+            state.error = null;
+        })
 
-        // .addCase(deleteCategory.fulfilled,(state,action)=>{
-        //     // const index = state.data.findIndex((cat)=>{
-        //     //     return cat._id == action.payload._id;
-        //     // });
-        //     state.data = state.data.filter((category)=>{
-        //         return category._id != action.payload._id;
-        //     });
-        //     state.loading = false;
-        //     state.error = null;
-        // })
+        .addCase(findNearestJobs.fulfilled,(state,action)=>{
+            state.data = action.payload;
+            state.loading = false;
+            state.error = null;
+        })
 
-        // .addCase(deleteCategory.rejected,(state,action)=>{
-        //     state.loading = false;
-        //     state.error = action.payload;
-        // })
+        .addCase(findNearestJobs.rejected,(state,action)=>{
+            state.loading = false;
+            state.error = action.payload;
+        })
 
 
-        // //update category
-        // .addCase(updateCategory.pending,(state,action)=>{
-        //     state.loading = true;
-        //     state.error = null;
-        // })
+        //show job post details
+        .addCase(showJobPostDetail.pending,(state,action)=>{
+            state.loading = true;
+            state.error = null;
+        })
 
-        // .addCase(updateCategory.fulfilled,(state,action)=>{
-        //     const index = state.data.findIndex((cat)=>{
-        //         return cat._id == action.payload._id;
-        //     });
-        //     state.data[index] = action.payload;
-        //     state.loading = false;
-        //     state.error = null;
-        // })
+        .addCase(showJobPostDetail.fulfilled,(state,action)=>{
+            state.data = action.payload;
+            state.loading = false;
+            state.error = null;
+        })
 
-        // .addCase(updateCategory.rejected,(state,action)=>{
-        //     state.loading = false;
-        //     state.error = action.payload;
-        // })
+        .addCase(showJobPostDetail.rejected,(state,action)=>{
+            state.loading = false;
+            state.error = action.payload;
+        })
+        
     }
 });
 
