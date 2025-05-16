@@ -45,6 +45,10 @@ function MainLayout(){
         job post
       </Link>
       
+      <Link to="/jobs/recent" className="hover:underline">
+        job Recent
+      </Link>
+      
       
       </div>
     </div>
