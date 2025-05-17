@@ -119,7 +119,8 @@ jobPostController.remove = async(req,res)=>{
 jobPostController.jobRequest = async (req, res) => {
     const id = req.params.id;
     const {serviceProvider,messages} = req.body;
-  
+
+    // console.log(serviceProvider,messages)
     try {
       const jobPost = await Job.findById(id);
       if (!jobPost) {
@@ -138,7 +139,7 @@ jobPostController.jobRequest = async (req, res) => {
       jobPost.jobRequests.push({serviceProvider,messages});
       await jobPost.save();
   
-      return res.status(201).json(jobPost);
+      return res.json(jobPost);
     } catch (error) {
       console.error(error);
       return res.status(500).json({ error: "Something went wrong" });
