@@ -13,6 +13,7 @@ import JobRequests from "./pages/job-post/JobRequests";
 import JobConsider from "./pages/job-post/JobConsider";
 import LatestJobPosts from "./pages/job-post/LatestJobPosts";
 import JobDetails from "./pages/job-post/JobDetails";
+import SendJobRequest from "./pages/job-post/SendJobRequest";
 function App() {
   return (
     <>
@@ -37,7 +38,9 @@ function App() {
             <Route path="/job/post/details/requests/:id" element={<JobPostDetail/>}/>
             <Route path="/job/post/details/considers/:id" element={<JobPostDetail/>}/>
             <Route path="/jobs/recent" element={<LatestJobPosts/>}/>
-            <Route path="/jobs/recent/detail/:id" element={<JobDetails/>}/>
+            <Route path="/jobs/recent/detail/:id/:dist" element={<JobDetails/>}/>
+            <Route path="/jobs/recent/request/:id" element={<SendJobRequest/>}/>
+            <Route path="/jobs/recent/request/confirm/:id/" element={<SendJobRequest/>}/>
 
           </Route>
           
