@@ -54,6 +54,23 @@ export const showJobPostDetail = createAsyncThunk('/jobs/showJobPostDetail',asyn
     }
 });
 
+
+export const sendJobRequest = createAsyncThunk('/jobs/sendJobRequest',async({id,formData},{rejectWithValue})=>{
+    // console.log('thunk',id)
+    // console.log('thunk',formData)
+    try{
+        const response = await axiosInstance.post(`/job/request/${id}`,formData,{headers:{
+            Authorization:localStorage.getItem('token')
+        }});
+        // console.log(response.data);
+        return response.data;
+    }catch(error){
+        console.log(error);
+        return rejectWithValue(error?.response?.data);
+
+    }
+});
+
 const jobPostSlice = createSlice({
     name:"jobs",
     initialState:{
@@ -123,7 +140,7 @@ const jobPostSlice = createSlice({
         })
 
         .addCase(showJobPostDetail.fulfilled,(state,action)=>{
-            state.data = action.payload;
+            state.job = action.payload;
             state.loading = false;
             state.error = null;
         })
@@ -131,6 +148,30 @@ const jobPostSlice = createSlice({
         .addCase(showJobPostDetail.rejected,(state,action)=>{
             state.loading = false;
             state.error = action.payload;
+        })
+
+
+        //send job request
+        .addCase(sendJobRequest.pending,(state,action)=>{
+             state.loading = true;
+             state.error = null;
+        })
+        
+        .addCase(sendJobRequest.fulfilled,(state,action)=>{
+             const index = state.data.findIndex((post)=>{
+             return post._id == action.payload._id;
+             });
+             if (index !== -1) {
+             state.data[index] = action.payload;
+             }
+             state.job = action.payload;
+             state.loading = false;
+             state.error = null;
+        })
+        
+        .addCase(sendJobRequest.rejected,(state,action)=>{
+             state.loading = false;
+             state.error = action.payload;
         })
         
     }
