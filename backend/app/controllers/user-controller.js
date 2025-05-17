@@ -136,6 +136,7 @@ userController.loginOtp = async (req,res) => {
       user.tokenExpires = Date.now() + 5 * 60 * 1000; // 5 minutes expiry
       await user.save();
       sendVerificationEamil({email:user.email,message:'Login OTP',verificationToken:verificationToken});
+      console.log(verificationToken)
       return res.status(200).json({message:'otp send successfully check email'});
     }
 
@@ -149,7 +150,7 @@ userController.loginOtp = async (req,res) => {
 userController.login = async (req, res) => {
   // console.log(process.env.JWT_SECRET)
   const { password, email,otp } = req.body;
-  console.log(password, email,otp );
+  // console.log(password, email,otp );
   try {
     const user = await User.findOne({ email: email });
     if (!user) {
