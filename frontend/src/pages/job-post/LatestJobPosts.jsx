@@ -59,10 +59,10 @@ function LatestJobPosts() {
             </div>
             <div className="flex gap-10 mt-1 text-sm ">
                 <p className="text-gray-700 font-semibold">
-                Salary: Rs. <span className="text-gray-600 font-normal">{job.salary}</span>
+                Salary: Rs. <span className="text-gray-600 font-normal">{job?.salary}</span>
               </p>
               <p className="text-gray-700 font-semibold">
-                Distance: <span className="text-gray-600 font-normal">{job.dist.calculated}</span>
+                Distance: <span className="text-gray-600 font-normal">{job?.dist?.calculated} KM</span>
               </p>
               <p className="text-gray-700 font-semibold">
                 Applicants:{" "}
@@ -74,7 +74,7 @@ function LatestJobPosts() {
             </div>
           </div>
           <div>
-            <Link to={`/jobs/recent/detail/${job._id}`}>
+            <Link to={`/jobs/recent/detail/${job._id}/${job.dist.calculated}`}>
             <button className="bg-green-300 hover:bg-green-400 text-green-600 hover:text-green-800 px-6 py-1 rounded-[6px] font-semibold shadow-sm cursor-pointer">
               View
             </button>
