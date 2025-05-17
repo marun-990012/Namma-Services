@@ -274,7 +274,7 @@ const showImageUpload = ()=>{
 
           {/*profile image update popup */}
           {showImagePopup && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-tranparent bg-opacity-50 backdrop-blur-md">
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-md">
               <div className="bg-white w-60 h-60 rounded-[8px] shadow-lg flex flex-col items-center justify-center relative">
                 <button
                   onClick={() => setShowImagePopup(false)}
