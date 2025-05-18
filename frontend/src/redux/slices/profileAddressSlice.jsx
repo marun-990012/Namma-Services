@@ -23,13 +23,25 @@ export const updateAddress = createAsyncThunk('/address/updateAddress',async(for
     }
 });
 
+export const listAddress = createAsyncThunk('/address/listAddress',async(_,{rejectWithValue})=>{
+    try {
+        const response = await axiosInstance.get('/address/list',{headers:{Authorization:localStorage.getItem('token')}});
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+        return rejectWithValue(error?.response?.data || { message : "error while updating address"})
+    }
+});
+
 const addressSlice = createSlice({
     name:'address',
-    initialState:{
-        data:null,
-        loading:false,
-        error:null
-    },
+    initialState: {
+    currentAddress: null,    // renamed for clarity
+    addressList: [],         // renamed for clarity
+    loading: false,
+    error: null
+},
     reducers:{},
     extraReducers:(builder)=>{
         builder
@@ -67,6 +79,22 @@ const addressSlice = createSlice({
             state.loading = false;
             state.error = action.payload;
         })
+
+        //list address
+        .addCase(listAddress.pending, (state) => {
+    state.loading = true;
+    state.error = null;
+})
+.addCase(listAddress.fulfilled, (state, action) => {
+    state.addressList = action.payload;
+    state.loading = false;
+    state.error = null;
+})
+.addCase(listAddress.rejected, (state, action) => {
+    state.loading = false;
+    state.error = action.payload;
+})
+
     }
 });
 
