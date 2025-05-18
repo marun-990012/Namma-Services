@@ -66,15 +66,15 @@ function LatestJobPosts() {
               </p>
               <p className="text-gray-700 font-semibold">
                 Applicants:{" "}
-                <span className="text-gray-600 font-normal">{job.jobRequests.length}</span>
+                <span className="text-gray-600 font-normal">{job?.jobRequests?.length}</span>
               </p>
               <p className="text-gray-700 font-semibold">
-                Considered: <span className="text-gray-600 font-normal">{job.considerations.length}</span>
+                Considered: <span className="text-gray-600 font-normal">{job?.considerations?.length}</span>
               </p>
             </div>
           </div>
           <div>
-            <Link to={`/jobs/recent/detail/${job._id}/${job.dist.calculated}`}>
+            <Link to={`/jobs/recent/detail/${job?._id}/${job?.dist?.calculated}`}>
             <button className="bg-green-300 hover:bg-green-400 text-green-600 hover:text-green-800 px-6 py-1 rounded-[6px] font-semibold shadow-sm cursor-pointer">
               View
             </button>
