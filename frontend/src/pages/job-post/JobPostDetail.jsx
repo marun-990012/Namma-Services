@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
 import { BadgeCheck, Star } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { showJobPostDetail } from "../../redux/slices/jobPostSlice";
+import { fetchServiceProviders } from "../../redux/slices/userSlice";
 import JobRequests from "./JobRequests";
 import JobConsider from "./JobConsider";
 function JobPostDetail() {
-  const navigate = useNavigate();
   const { id } = useParams();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   console.log(id);
   const location = useLocation();
@@ -21,6 +25,20 @@ function JobPostDetail() {
     setConsidered(location.pathname.startsWith("/job/post/details/considers"));
     setRequested(location.pathname.startsWith("/job/post/details/requests"));
   }, [location.pathname]);
+
+  useEffect(() => {
+      dispatch(showJobPostDetail(id));
+      dispatch(fetchServiceProviders());
+    }, [dispatch]);
+  
+    const jobPost = useSelector((state) =>state.jobs).job;
+    const users = useSelector((state) => state.users).data;
+    
+    const selectedServiceProvider = users.find((user)=>{
+      return user._id == jobPost.selectedServiceProvider;
+    });
+
+    console.log(selectedServiceProvider)
 
   return (
     <div className="flex justify-center items-center border-3 border-white p-10 pt-4 rounded-[8px] mb-4">
@@ -41,26 +59,25 @@ function JobPostDetail() {
     {/* Left Section */}
     <div className="rounded-xl shadow-md bg-white p-5 w-[70%]  flex flex-col gap-2">
       <p className="text-[17px]">
-        Title: <span className="text-gray-400">Electric fan repair</span>
+        Title: <span className="text-gray-400">{jobPost.title}</span>
       </p>
       <p className="text-[17px]">
         Description:{" "}
         <span className="text-gray-400">
-          We are seeking a skilled and certified Electrician to join our team...
+          {jobPost.description}
         </span>
       </p>
       <p className="text-[17px] break-words">
         Work location:{" "}
         <span className="text-gray-400">
-          Gandhi Bazaar, Basavanagudi, Sunkenahalli, Bangalore - 560004, Karnataka,
-          India, Near Bull Temple, Next to Post Office, Landmark: Opposite XYZ...
+          {jobPost.address}
         </span>
       </p>
       <p className="text-[17px]">
-        Salary: <span className="text-gray-400">Rs.2400</span>
+        Salary: Rs. <span className="text-gray-400">{jobPost.salary}</span>
       </p>
       <p className="text-[17px]">
-        Work Status: <span className="text-gray-400">Started</span>
+        Work Status: <span className="text-gray-400">{jobPost.workStatus}</span>
       </p>
 
       <div className="mt-5 w-[37%] flex flex-row justify-between">
@@ -78,7 +95,7 @@ function JobPostDetail() {
       <div className="relative">
         <img
           className="w-full h-48 object-cover"
-          src="https://res.cloudinary.com/dxludspye/image/upload/v1747306608/Namma-Services/rpkkgdua0dnhpt2hwstr.jpg"
+          src={selectedServiceProvider?.profileImage}
           alt="User profile"
         />
         <span className="absolute top-2 left-2 bg-green-600 text-white text-xs font-semibold px-1 py-[2px] rounded">
@@ -97,26 +114,15 @@ function JobPostDetail() {
           </p>
         </div>
         <p className="mt-[1px] text-[20px] text-black flex items-center">
-          Arun Rathod <BadgeCheck size={20} color="#06f" className="ml-2" />
+          {selectedServiceProvider?.name} <BadgeCheck size={20} color="#06f" className="ml-2" />
         </p>
-        <p className="mt-2 text-gray-500">Phone: 9900126189</p>
-        <p className="mt-1 text-gray-500">Email: arunrathod@gmail.com</p>
+        <p className="mt-2 text-gray-500">Phone: {selectedServiceProvider?.phoneNumber}</p>
+        <p className="mt-1 text-gray-500">Email: {selectedServiceProvider?.email}</p>
       </div>
     </div>
   </div>
 </div>
 
-
-        {/* address div */}
-        {/* <div className="flex justify-center w-full mt-7">
-          <div className="bg-white w-[90%] px-6 shadow-md rounded-[8px] p-4">
-            <p>Work address</p>
-            <p className="text-gray-500">
-              Work address electrical systems in residential, commercial, and
-              industrial settings
-            </p>
-          </div>
-        </div> */}
 
         {/* requested users list */}
         <div className="flex justify-center w-full mt-7">
