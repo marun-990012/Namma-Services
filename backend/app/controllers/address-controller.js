@@ -56,6 +56,20 @@ addressController.updateAddress = async(req,res)=>{
 addressController.find = async(req,res)=>{
     try {
         const address = await Address.findOne({userId:req.userId});
+        if(!address){
+            return res.status(404).json({message:'address not found'});
+        }
+        return res.json(address);
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({error:'Something went wrong'});
+    }
+}
+
+
+addressController.listAddress = async(req,res)=>{
+    try {
+        const address = await Address.find();
         return res.json(address);
     } catch (error) {
         console.log(error);
