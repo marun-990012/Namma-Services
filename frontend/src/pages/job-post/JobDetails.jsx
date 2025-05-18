@@ -11,7 +11,9 @@ function JobDetails() {
   const { id,dist } = useParams();
   const [applicant,setApplicant] = useState('requested');
   useEffect(() => {
-    dispatch(showJobPostDetail(id));
+    if(id){
+      dispatch(showJobPostDetail(id));
+    }
   }, [dispatch]);
 
   const jobPost = useSelector((state) => {
@@ -33,7 +35,7 @@ function JobDetails() {
         </div>
       </div>
       <div className="flex justify-center gap-4 w-[95%]">
-        <div className="bg-white p-4 w-[45%] rounded-[8px] shadow-md h-95">
+        <div className="bg-white p-4 w-[80%] rounded-[8px] shadow-md min-h-[20rem] max-h-[26rem] overflow-y-auto">
           <p className="text-[18px] text-gray-800 font-semibold mb-2">
             {jobPost.title}
           </p>
@@ -83,7 +85,7 @@ function JobDetails() {
           </div>
 
           <div>
-            {applicant=='requested' ? <JobRequests id={id}/> : <JobConsider/>}
+            {applicant=='requested' ? <JobRequests/> : <JobConsider/>}
           </div>
         </div>
       </div>
