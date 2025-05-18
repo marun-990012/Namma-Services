@@ -44,6 +44,7 @@ jobPostController.show = async (req,res) =>{
     const id = req.params.id;
   try {
     const job = await Job.findById(id);
+    // console.log(job)
     if(!job){
       return res.status(404).json({message:'Job post not found'})
     }
@@ -274,21 +275,21 @@ jobPostController.removeConsideration = async (req, res) => {
   //select service Provider
   jobPostController.selectServiceProvider = async (req, res) => {
     const { id } = req.params;
-    const { requestId } = req.body;
+    const { serviceProvider } = req.body;
   
     try {
       const jobPost = await Job.findById(id);
       if (!jobPost) {
         return res.status(404).json({ error: "This post is no longer available." });
       }
-  
-      const request = jobPost.jobRequests.find(req => req._id.toString() === requestId);
+     
+      const request = jobPost.jobRequests.find(req => req.serviceProvider.toString() === serviceProvider);
       
       if (!request) {
         return res.status(404).json({ message: "Job request not found." });
       }
   
-      jobPost.selectedServiceProvider = requestId;
+      jobPost.selectedServiceProvider = serviceProvider;
       jobPost.workStatus = 'started';
   
       await jobPost.save();
