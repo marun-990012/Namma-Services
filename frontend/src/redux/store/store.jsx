@@ -5,6 +5,7 @@ import profileReducer from '../slices/profileSlice';
 import imageUploadReduces from '../slices/imageUploadSlice';
 import addressReducer from '../slices/profileAddressSlice';
 import jobPostReducer from '../slices/jobPostSlice';
+import userReducer from '../slices/userSlice';
 
 
 const store = configureStore({
@@ -14,7 +15,8 @@ const store = configureStore({
         profile:profileReducer,
         image:imageUploadReduces,
         address:addressReducer,
-        jobs:jobPostReducer
+        jobs:jobPostReducer,
+        users:userReducer
     }
 });
 
