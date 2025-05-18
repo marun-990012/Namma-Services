@@ -14,5 +14,6 @@ const addressRoute = express.Router();
 // addressRoute.post('/create',authentication,authorization(["work-provider","service-provider"]),checkSchema(addressValidation),inputValidator,addressController.createAddress);
 addressRoute.put('/update',authentication,authorization(["work-provider","service-provider"]),checkSchema(addressValidation),inputValidator,addressController.updateAddress);
 addressRoute.get('/find',authentication,addressController.find);
+addressRoute.get('/list',authentication,addressController.listAddress);
 
 export default addressRoute;
