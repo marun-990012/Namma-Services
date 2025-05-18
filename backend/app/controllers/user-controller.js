@@ -198,6 +198,30 @@ userController.list = async (req, res) => {
   }
 };
 
+userController.fetchServiceProviders = async (req, res) => {
+  try {
+    const users = await User.find(
+      { userType: "service-provider" }, // filter condition
+      {
+        name: 1,
+        email: 1,
+        phoneNumber: 1,
+        userType: 1,
+        profileImage: 1,
+        bio: 1,
+        images: 1,
+        serviceType: 1
+      }
+    );
+
+    return res.json(users);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+
 //account controller
 userController.account = async (req, res) => {
    try{
