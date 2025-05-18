@@ -48,7 +48,7 @@ function ProfilePage() {
      },[dispatch]);
 
   const userAccount = useSelector((state) => state.profile);
-  const userAddress = useSelector((state)=> state.address)?.data;
+  const userAddress = useSelector((state)=> state.address)?.currentAddress;
   const services = useSelector((state)=> state.services)?.data;
   const myServiceType = services.find((service)=>{
     return service._id == userAccount.data?.serviceType;
