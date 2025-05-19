@@ -1,15 +1,17 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { showJobPostDetail } from "../../redux/slices/jobPostSlice";
+import { showJobPostDetail,considerServiceProvider,selectServiceProvider } from "../../redux/slices/jobPostSlice";
 import { fetchServiceProviders } from "../../redux/slices/userSlice";
 import { listAddress } from "../../redux/slices/profileAddressSlice";
-import { selectServiceProvider } from "../../redux/slices/jobPostSlice";
+import { useSelectServiceProvider } from "../../hooks/useSelectServiceProvider";
 
 function JobRequests() {
   const {id} = useParams();
+  const {select} = useSelectServiceProvider();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [showPopup, setShowPopup] = useState(false);
   const [selectedServiceProviderId, setSelectedServiceProviderId] = useState(null);
 
@@ -42,7 +44,14 @@ const requestedUsers = serviceProviders.map(user => {
   };
 });
 
-console.log(requestedUsers);
+const handleConsider = async(serviceProviderId)=>{
+   try {
+      const res = await dispatch(considerServiceProvider({id,serviceProviderId})).unwrap();
+      toast.success("Service provider has been consider for job.");
+    } catch (error) {
+      toast.error(error.message || "Failed to consider the service provider. Please try again.");
+    }
+}
 
 const handleSelect = (serviceProviderId) => {
   setSelectedServiceProviderId(serviceProviderId); // store ID
@@ -51,12 +60,14 @@ const handleSelect = (serviceProviderId) => {
 
  const handleConfirm = async() => {
     setShowPopup(false);
-    try {
-      const res = await dispatch(selectServiceProvider({id,selectedServiceProviderId})).unwrap();
-      toast.success("Service provider has been selected successfully.");
-    } catch (error) {
-      toast.error("Failed to select the service provider. Please try again.");
-    }
+    // try {
+    //   const res = await dispatch(selectServiceProvider({id,selectedServiceProviderId})).unwrap();
+    //   toast.success("Service provider has been selected successfully.");
+    // } catch (error) {
+    //   toast.error("Failed to select the service provider. Please try again.");
+    // }
+    const formData = {id,selectedServiceProviderId}
+    select(formData)
   };
   
  const handleCancel = () => {
@@ -78,13 +89,15 @@ const handleSelect = (serviceProviderId) => {
   </div>
 
    <div className="flex gap-1">
-     <button className="bg-green-400 hover:bg-green-500 text-white px-3 py-1 text-sm rounded">
+  <button onClick={()=>{handleConsider(user?._id)}} className="bg-green-400 hover:bg-green-500 text-white px-3 py-1 text-sm rounded">
     consider
   </button>
    <button onClick={()=>{handleSelect(user?._id)}} className="bg-green-400 hover:bg-green-500 text-white px-3 py-1 text-sm rounded">
     Select
   </button>
-    <button className="bg-green-400 hover:bg-green-500 text-white px-3 py-1 text-sm rounded">
+    <button onClick={()=>{
+      navigate(`/view/job/request/${user?._id}/${id}`);
+      }} className="bg-green-400 hover:bg-green-500 text-white px-3 py-1 text-sm rounded">
     View
   </button>
    </div>
