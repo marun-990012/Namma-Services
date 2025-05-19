@@ -130,7 +130,7 @@ jobPostController.jobRequest = async (req, res) => {
   
       // Prevent duplicate request by serviceProvider
       const alreadyRequested = jobPost.jobRequests.some(
-        (r) => r.serviceProvider.toString() === serviceProvider
+        (r) => r.sender.toString() === sender
       );
   
       if (alreadyRequested) {
@@ -166,9 +166,6 @@ jobPostController.sendMessage = async(req,res)=>{
         const newMessage = {
           _id: new mongoose.Types.ObjectId(),
           textMessage: message.textMessage,
-          response: message.response || [],
-          name: message.name,
-          profileImage: message.profileImage,
         };
     
         request.messages.push(newMessage);
@@ -184,24 +181,26 @@ jobPostController.sendMessage = async(req,res)=>{
 //controller for reply to message
 jobPostController.sendReply = async(req,res)=>{
     const id = req.params.id;
-    const {requestId,messageId,reply} = req.body
+    const {sender,serviceProvider,reply} = req.body
+    // console.log(serviceProvider ,'id')
     try{
       const jobPost = await Job.findOne({ _id: id, postedBy: req.userId });
         if(!jobPost){
             return res.status(404).json({error:"job post not found or unauthorized access"})
         }
 
-        const request = jobPost.jobRequests.id(requestId);
+        const request = jobPost.jobRequests.find((req) => req.serviceProvider.toString() === serviceProvider.toString());
+        // const request = jobPost.jobRequests.id(requestId);
+        console.log(request)
         if (!request) {
           return res.status(404).json({ error: "Job request not found." });
         }
-
-       const message = request.messages.id(messageId);
-        if (!message) {
-            return res.status(404).json({ error: "Message not found." });
-        }
-
-        message.response.push(reply);
+        const newMessage = {
+              message: reply,
+              sender: sender
+             };
+        // const response=reply
+       request.messages.push(newMessage);
         await jobPost.save();
         return res.json(jobPost);
     }catch(error){
@@ -214,24 +213,24 @@ jobPostController.sendReply = async(req,res)=>{
 //controller for considerations 
 jobPostController.consideration  = async(req,res)=>{
     const id = req.params.id;
-    const {requestId} = req.body
+    const {serviceProvider} = req.body
     try{
         const jobPost = await Job.findById(id);
         if(!jobPost){
             return res.status(404).json({error:"this post no longer available."})
         }
 
-        const request = jobPost.jobRequests.id(requestId);
+        const request = jobPost.jobRequests.find((req) => req.serviceProvider.toString() === serviceProvider.toString());
         if (!request) {
           return res.status(404).json({ error: "Job request not found." });
         }
 
        // Prevent duplicate entries in considerations
-      if(!jobPost.considerations.includes(request._id)) {
-        jobPost.considerations.push(request._id);
+      if(!jobPost.considerations.includes(request.serviceProvider)) {
+        jobPost.considerations.push(request.serviceProvider);
         await jobPost.save();
       }else{
-        return res.json({message:"This service provider is already in the consideration list."})
+        return res.status(400).json({ message: "This service provider is already in the consideration list."});
       }
         return res.json(jobPost);
     }catch(error){
