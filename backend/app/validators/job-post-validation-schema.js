@@ -129,28 +129,16 @@ export const jobRequestValidation = {
 
 
 export const sendMessageReplyValidation = {
-    requestId:{
+    serviceProvider:{
         in: ['body'],
         exists: {
-            errorMessage: 'requestId field is required',
+            errorMessage: 'serviceProvider field is required',
         },
         notEmpty: {
-            errorMessage: 'requestId field should not be empty',
+            errorMessage: 'serviceProvider field should not be empty',
         },
         isMongoId: {
             errorMessage: 'Invalid requestId format',
-        }
-    },
-    messageId:{
-        in: ['body'],
-        exists: {
-            errorMessage: 'messageId field is required',
-        },
-        notEmpty: {
-            errorMessage: 'messageId field should not be empty',
-        },
-        isMongoId: {
-            errorMessage: 'Invalid messageId format',
         }
     },
     reply:{
@@ -166,7 +154,7 @@ export const sendMessageReplyValidation = {
 
 
 export const considerationValidation = {
-    requestId:{
+    serviceProvider:{
         in: ['body'],
         exists: {
             errorMessage: 'requestId field is required',
