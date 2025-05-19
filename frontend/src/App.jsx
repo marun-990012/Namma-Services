@@ -14,6 +14,7 @@ import JobConsider from "./pages/job-post/JobConsider";
 import LatestJobPosts from "./pages/job-post/LatestJobPosts";
 import JobDetails from "./pages/job-post/JobDetails";
 import SendJobRequest from "./pages/job-post/SendJobRequest";
+import ViewJobRequest from "./pages/job-post/ViewJobRequest";
 function App() {
   return (
     <>
@@ -41,6 +42,7 @@ function App() {
             <Route path="/jobs/recent/detail/:id/:dist" element={<JobDetails/>}/>
             <Route path="/jobs/recent/request/:id" element={<SendJobRequest/>}/>
             <Route path="/jobs/recent/request/confirm/:id/" element={<SendJobRequest/>}/>
+            <Route path="/view/job/request/:userId/:id" element={<ViewJobRequest/>}/>
 
           </Route>
           
