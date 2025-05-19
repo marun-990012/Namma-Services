@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams } from "react-router-dom";
-import { BadgeCheck, Star } from "lucide-react";
+import { BadgeCheck, Star,UserRound } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { showJobPostDetail } from "../../redux/slices/jobPostSlice";
 import { fetchServiceProviders } from "../../redux/slices/userSlice";
@@ -41,7 +41,7 @@ function JobPostDetail() {
     console.log(selectedServiceProvider)
 
   return (
-    <div className="flex justify-center items-center border-3 border-white p-10 pt-4 rounded-[8px] mb-4">
+    <div className="flex justify-center items-center border-3 border-white p-10 pt-4 rounded-[8px] mb-2">
       <div className="w-[90%]">
         <div>
           <button
@@ -91,7 +91,9 @@ function JobPostDetail() {
     </div>
 
     {/* Right Section */}
-    <div className="w-full lg:max-w-[30%] bg-white rounded-xl shadow-md overflow-hidden">
+    {/* jobPost.selectedServiceProvider */}
+    {jobPost.selectedServiceProvider ? (
+      <div className="w-full lg:max-w-[30%] bg-white rounded-xl shadow-md overflow-hidden">
       <div className="relative">
         <img
           className="w-full h-48 object-cover"
@@ -120,6 +122,18 @@ function JobPostDetail() {
         <p className="mt-1 text-gray-500">Email: {selectedServiceProvider?.email}</p>
       </div>
     </div>
+    ):(
+      <div className="w-full lg:max-w-[30%] bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100">
+  <div className="flex flex-col items-center p-6">
+    <div className="w-36 h-36 flex items-center justify-center bg-gray-100 rounded-full mb-4">
+      <UserRound size={72} className="text-gray-400" />
+    </div>
+    <p className="text-gray-500 text-center text-sm">No Candidate Selected</p>
+  </div>
+</div>
+
+    )}
+
   </div>
 </div>
 
