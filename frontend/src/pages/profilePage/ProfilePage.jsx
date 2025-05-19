@@ -274,49 +274,58 @@ const showImageUpload = ()=>{
 
           {/*profile image update popup */}
           {showImagePopup && (
-            <div className="fixed inset-0 z-50 flex items-center justify-center bg-opacity-50 backdrop-blur-md">
-              <div className="bg-white w-60 h-60 rounded-[8px] shadow-lg flex flex-col items-center justify-center relative">
-                <button
-                  onClick={() => setShowImagePopup(false)}
-                  className="absolute top-2 right-2 text-gray-600 hover:text-red-600 cursor-pointer"
-                >
-                  ✕
-                </button>
-                <p className="mb-4 text-gray-700 font-medium">
-                  Select Profile Image
-                </p>
-                <label className="cursor-pointer">
-                  <input
-                    type="file"
-                    className="hidden"
-                    onChange={(e) => {
-                      const selectedFile = e.target.files[0];
-                      if (selectedFile) {
-                        setFile(selectedFile);
-                        setShowImagePopup(false);
-                      }
-                    }}
-                  />
-                  {userAccount.data?.profileImage &&(
-                    <img
-                    className="border-2 border-gray-200 w-30 h-30 p-3 rounded-[10px] shadow-[8px]"
-                    src={userAccount.data?.profileImage}
-                    alt="Profile"
-                  />
-                  )}
+  <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/30 backdrop-blur-sm">
+    <div className="bg-white w-72 p-6 rounded-xl shadow-xl relative flex flex-col items-center">
+      
+      {/* Close Button */}
+      <button
+        onClick={() => setShowImagePopup(false)}
+        className="absolute top-3 right-3 text-gray-500 hover:text-red-500 transition"
+      >
+        ✕
+      </button>
 
-                  {!userAccount.data?.profileImage && (
-                    <div className="flex items-center justify-center h-30 w-30 text-gray-600 bg-[#8e959d] rounded-[10px] shadow-[8px]  ">
-                      <UserRound size={140} />
-                    </div>
-                  )}
-                  <p className="text-center mt-4 bg-green-200 text-green-500 px-3 py-1">
-                    Add or Change
-                  </p>
-                </label>
-              </div>
-            </div>
-          )}
+      {/* Title */}
+      <p className="text-lg font-semibold text-gray-800 mb-4">
+        Select Profile Image
+      </p>
+
+      {/* File Input */}
+      <label className="cursor-pointer w-full flex flex-col items-center">
+        <input
+          type="file"
+          className="hidden"
+          onChange={(e) => {
+            const selectedFile = e.target.files[0];
+            if (selectedFile) {
+              setFile(selectedFile);
+              setShowImagePopup(false);
+            }
+          }}
+        />
+
+        {/* Current or Placeholder Image */}
+        {userAccount.data?.profileImage ? (
+          <img
+            src={userAccount.data?.profileImage}
+            alt="Profile"
+            className="w-32 h-32 rounded-full object-cover border-2 border-gray-300 shadow-md"
+          />
+        ) : (
+          <div className="w-32 h-32 flex items-center justify-center rounded-full bg-gray-200 text-gray-500 shadow-md">
+            <UserRound size={64} />
+          </div>
+        )}
+
+        {/* Action Text */}
+        <span className="mt-4 text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full">
+          Add or Change
+        </span>
+      </label>
+    </div>
+  </div>
+)}
+
 
           {/* Profile update popup */}
           {showProfileUpdate && (
