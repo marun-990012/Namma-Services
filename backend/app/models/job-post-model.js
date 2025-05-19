@@ -30,10 +30,8 @@ const jobPostSchema = new Schema({
           },
         messages:[
           {
-            textMessage:String,
-            response:[String],
-            name:String,
-            profileImage:String
+           sender: { type: Schema.Types.ObjectId, ref: 'User' }, // optional: track who sent it
+           message: { type: String }
           }
         ],
     }],
