@@ -42,10 +42,8 @@ function SendJobRequest() {
         serviceProvider:userAccount._id,
         messages:[
           {
-            textMessage:message,
-            response:[],
-            name:userAccount.name,
-            profileImage:userAccount.profileImage
+            message:message,
+            sender:userAccount._id
           }
         ]
     }
