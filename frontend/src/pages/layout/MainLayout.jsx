@@ -48,6 +48,10 @@ function MainLayout(){
       <Link to="/jobs/recent" className="hover:underline">
         job Recent
       </Link>
+
+      <Link to="/dashboard" className="hover:underline">
+        Dashboard
+      </Link>
       
       
       </div>
