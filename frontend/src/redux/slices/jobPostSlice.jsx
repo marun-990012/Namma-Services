@@ -116,6 +116,21 @@ export const replyToServiceProvider = createAsyncThunk('/jobs/replyToServiceProv
     }
 });
 
+
+export const fetchJobList = createAsyncThunk('/jobs/fetchJobList',async(_,{rejectWithValue})=>{
+    // console.log(formData)
+    try{
+        const response = await axiosInstance.get('/job/list',{headers:{
+            Authorization:localStorage.getItem('token')}});
+        console.log(response.data);
+        return response.data;
+    }catch(error){
+        console.log(error);
+        return rejectWithValue(error?.response?.data);
+
+    }
+});
+
 const jobPostSlice = createSlice({
     name:"jobs",
     initialState:{
@@ -287,6 +302,24 @@ const jobPostSlice = createSlice({
         })
         
         .addCase(replyToServiceProvider.rejected,(state,action)=>{
+             state.loading = false;
+             state.error = action.payload;
+        })
+
+
+        //list jobs
+        .addCase(fetchJobList.pending,(state,action)=>{
+             state.loading = true;
+             state.error = null;
+        })
+        
+        .addCase(fetchJobList.fulfilled,(state,action)=>{
+             state.data = action.payload;
+             state.loading = false;
+             state.error = null;
+        })
+        
+        .addCase(fetchJobList.rejected,(state,action)=>{
              state.loading = false;
              state.error = action.payload;
         })
