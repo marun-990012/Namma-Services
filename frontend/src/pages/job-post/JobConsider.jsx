@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams,useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
 import { showJobPostDetail,considerServiceProvider,selectServiceProvider } from "../../redux/slices/jobPostSlice";
@@ -8,6 +8,7 @@ import { listAddress } from "../../redux/slices/profileAddressSlice";
 function JobConsider(){
   const {id} = useParams();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
    useEffect(() => {
     if(id){
@@ -53,21 +54,13 @@ function JobConsider(){
   </div>
 
    <div className="flex gap-1">
-  <button  className="bg-green-400 hover:bg-green-500 text-white px-3 py-1 text-sm rounded">
-    consider
-  </button>
-   <button  className="bg-green-400 hover:bg-green-500 text-white px-3 py-1 text-sm rounded">
-    Select
-  </button>
-    <button className="bg-green-400 hover:bg-green-500 text-white px-3 py-1 text-sm rounded">
-    View
+    <button onClick={()=>{navigate(`/view/job/request/${user?._id}/${id}`);}} className="bg-green-400 hover:bg-green-500 text-white px-3 py-1 text-sm rounded">
+    View Request
   </button>
    </div>
 
 </div>
 ))}
-
-
     </div>
 )
 }
