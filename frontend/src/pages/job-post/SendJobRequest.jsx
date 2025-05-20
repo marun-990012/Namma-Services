@@ -49,12 +49,12 @@ function SendJobRequest() {
     }
 
     const toastId = toast.loading('Sending request...');
+    setShowPopup(false);
 try {
   const res = await dispatch(sendJobRequest({ id, formData })).unwrap();
    console.log('Success response:', res); // <--- add this
   toast.dismiss(toastId);
   toast.success('Job request sent successfully!');
-  setShowPopup(false);
 } catch (error) {
   toast.dismiss(toastId);
   toast.error(error?.error || 'Failed to send request');
