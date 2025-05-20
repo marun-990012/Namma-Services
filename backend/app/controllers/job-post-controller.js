@@ -30,6 +30,7 @@ jobPostController.create = async(req,res)=>{
 
 //controller for list all the job posts
 jobPostController.list = async(req,res)=>{
+  console.log('hi')
     try{
         const jobPosts = await Job.find();
         return res.json(jobPosts);
@@ -130,7 +131,7 @@ jobPostController.jobRequest = async (req, res) => {
   
       // Prevent duplicate request by serviceProvider
       const alreadyRequested = jobPost.jobRequests.some(
-        (r) => r.sender.toString() === sender
+        (r) => r.serviceProvider.toString() === serviceProvider
       );
   
       if (alreadyRequested) {
