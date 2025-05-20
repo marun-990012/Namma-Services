@@ -46,7 +46,7 @@ function JobPostDetail() {
         <div>
           <button
             onClick={() => {
-              navigate(-1);
+              navigate('/job/posts');
             }}
             className="bg-gray-300 hover:bg-[#b4b9c1] px-4 rounded cursor-pointer"
           >
