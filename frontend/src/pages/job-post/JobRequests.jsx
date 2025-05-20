@@ -28,8 +28,10 @@ function JobRequests() {
   const users = useSelector((state) => state.users).data;
   const addresses = useSelector((state) => state.address).addressList;
 
-  const serviceProviderIds = jobPost?.jobRequests?.map(req => req.serviceProvider.toString());
-  // console.log(jobPost)
+  const serviceProviderIds = jobPost?.jobRequests
+  ?.filter(req => !jobPost.considerations?.includes(req.serviceProvider.toString()))
+  ?.map(req => req.serviceProvider.toString());
+
 
 const serviceProviders = users.filter(user =>
   serviceProviderIds?.includes(user._id.toString())
@@ -44,35 +46,29 @@ const requestedUsers = serviceProviders.map(user => {
   };
 });
 
-const handleConsider = async(serviceProviderId)=>{
-   try {
-      const res = await dispatch(considerServiceProvider({id,serviceProviderId})).unwrap();
-      toast.success("Service provider has been consider for job.");
-    } catch (error) {
-      toast.error(error.message || "Failed to consider the service provider. Please try again.");
-    }
-}
+// const handleConsider = async(serviceProviderId)=>{
+//    try {
+//       const res = await dispatch(considerServiceProvider({id,serviceProviderId})).unwrap();
+//       toast.success("Service provider has been consider for job.");
+//     } catch (error) {
+//       toast.error(error.message || "Failed to consider the service provider. Please try again.");
+//     }
+// }
 
-const handleSelect = (serviceProviderId) => {
-  setSelectedServiceProviderId(serviceProviderId); // store ID
-  setShowPopup(true); // show confirmation popup
-};
+// const handleSelect = (serviceProviderId) => {
+//   setSelectedServiceProviderId(serviceProviderId); // store ID
+//   setShowPopup(true); // show confirmation popup
+// };
 
- const handleConfirm = async() => {
-    setShowPopup(false);
-    // try {
-    //   const res = await dispatch(selectServiceProvider({id,selectedServiceProviderId})).unwrap();
-    //   toast.success("Service provider has been selected successfully.");
-    // } catch (error) {
-    //   toast.error("Failed to select the service provider. Please try again.");
-    // }
-    const formData = {id,selectedServiceProviderId}
-    select(formData)
-  };
+//  const handleConfirm = async() => {
+//     setShowPopup(false);
+//     const formData = {id,selectedServiceProviderId}
+//     select(formData)
+//   };
   
- const handleCancel = () => {
-    setShowPopup(false);
-  };
+//  const handleCancel = () => {
+//     setShowPopup(false);
+//   };
   return (
     <div className="mt-4 space-y-4 max-w-6xl mx-auto px-2">
       {requestedUsers.map((user, index) => (
@@ -89,16 +85,11 @@ const handleSelect = (serviceProviderId) => {
   </div>
 
    <div className="flex gap-1">
-  <button onClick={()=>{handleConsider(user?._id)}} className="bg-green-400 hover:bg-green-500 text-white px-3 py-1 text-sm rounded">
-    consider
-  </button>
-   <button onClick={()=>{handleSelect(user?._id)}} className="bg-green-400 hover:bg-green-500 text-white px-3 py-1 text-sm rounded">
-    Select
-  </button>
+
     <button onClick={()=>{
       navigate(`/view/job/request/${user?._id}/${id}`);
       }} className="bg-green-400 hover:bg-green-500 text-white px-3 py-1 text-sm rounded">
-    View
+    View Request
   </button>
    </div>
 
@@ -106,7 +97,7 @@ const handleSelect = (serviceProviderId) => {
 ))}
 
 {/* show popup */}
- {showPopup && (
+ {/* {showPopup && (
   <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/30 backdrop-blur-sm">
     <div className="bg-white text-gray-800 p-6 rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-purple-200">
       <h2 className="text-lg font-semibold text-purple-700 mb-3">
@@ -132,7 +123,7 @@ const handleSelect = (serviceProviderId) => {
       </div>
     </div>
   </div>
-)}
+)} */}
 
     </div>
   );
