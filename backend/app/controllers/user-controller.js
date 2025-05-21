@@ -2,6 +2,7 @@ import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
 import crypto from 'crypto';
 import User from "../models/user-model.js";
+import Wallet from "../models/wallet-model.js";
 import { createBlankAddressForUser } from "../helpers/user-address.js";
 
 import { sendVerificationEamil,senWelcomeEmail,sendResetPasswordEmail } from "../helpers/send-mail.js";
@@ -30,7 +31,7 @@ userController.register = async (req, res) => {
     user.password = hashedPassword;
     const verificationToken= Math.floor(100000 + Math.random() * 900000).toString();
     user.verificationToken=verificationToken;
-    // console.log(verificationToken)
+    console.log(verificationToken)
     await user.save();
     if(user.userType != 'admin'){
       await createBlankAddressForUser(user._id);
@@ -51,10 +52,13 @@ userController.verfiyEmail = async(req,res)=>{
       if (!user) {
           return res.status(400).json({success:false,message:"Inavlid or Expired Code"})      
       }
-        
-   user.isVerified=true;
+        // varunvarun23@gmail.com
+   user.isVerified = true;
    user.verificationToken=undefined;
    await user.save()
+    if(user.userType == 'service-provider'){
+      await Wallet.create({userId:user._id,coins:1});
+    }
    await senWelcomeEmail({email:user.email,name:user.name,message:"Email Verifed Successfully! Welcome to website"})
    return res.status(200).json({success:true,message:"Email Verifed Successfully"})
          
