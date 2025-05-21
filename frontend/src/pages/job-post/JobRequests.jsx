@@ -29,7 +29,7 @@ function JobRequests() {
   const addresses = useSelector((state) => state.address).addressList;
 
   const serviceProviderIds = jobPost?.jobRequests
-  ?.filter(req => !jobPost.considerations?.includes(req.serviceProvider.toString()))
+  ?.filter(req => !jobPost.considerations?.includes(req.serviceProvider.toString()) && req.serviceProvider.toString() != jobPost.selectedServiceProvider?.toString())
   ?.map(req => req.serviceProvider.toString());
 
 
