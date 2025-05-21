@@ -8,7 +8,7 @@ const paymentController = {};
 
 paymentController.order = (req, res) => {
   const { amount } = req.body; // Amount is in INR, but we need it in paisa (multiply by 100)
-console.log('order',req.userId);
+  console.log('order')
   try {
     const options = {
       amount: amount * 100, // Convert amount to paisa (1 INR = 100 paisa)
@@ -26,8 +26,7 @@ console.log('order',req.userId);
         return res.status(500).json({ error: 'Internal server error while creating order' });
       }
 
-      console.log('Order created:', order);
-
+      console.log('order created')
       return res.json({
         data: order // Send the order data to frontend
       });
@@ -40,10 +39,8 @@ console.log('order',req.userId);
 
 
 paymentController.verify = async (req, res) => {
-  // console.log("Received body:", req.body.razorpay_signature); // Log the received data to ensure proper fields
-  // console.log('verify',req.userId);
-  // console.log('verify',req.body.amount);
   const { razorpay_order_id, razorpay_payment_id, razorpay_signature,amount } = req.body;
+  console.log(amount)
 
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -52,19 +49,17 @@ paymentController.verify = async (req, res) => {
   try {
     // Step 1: Construct the sign string
     const sign = `${razorpay_order_id}|${razorpay_payment_id}`;
-    // console.log("Constructed Sign String:", sign); // Log the constructed sign string
 
     // Step 2: Generate the expected signature using the key secret
     const expectedSignature = crypto
-      .createHmac('sha256', "nvv3jxWSqIrXxm2SbB2AlOIZ")  // Use your Razorpay secret key here
+      .createHmac('sha256', "5DrtcuKEVGGvv0L57aPiAi8A")  // Use your Razorpay secret key here
       .update(sign.toString())
       .digest('hex');
-    // console.log("Generated Expected Signature:", expectedSignature); // Log expected signature
 
     // Step 3: Compare expected signature with Razorpay's signature
-    console.log(expectedSignature === razorpay_signature)
     if (expectedSignature === razorpay_signature) {
       // Signature matched, payment is verified
+      console.log('verified')
       const payment = new Payment({
         razorpay_order_id,
         razorpay_payment_id,
@@ -75,9 +70,10 @@ paymentController.verify = async (req, res) => {
 
       // Save payment details in the database
       await payment.save();
-      const coinsToAdd = Math.floor(amount /1000);; // 1 coin = Rs.10
+      const coinsToAdd = Math.floor(amount /10);; // 1 coin = Rs.10
 
       const wallet = await Wallet.findOne({ userId: req.userId });
+      console.log(wallet)
       if (!wallet) {
         return res.status(404).json({ error: "Wallet not found" });
       }
@@ -86,7 +82,7 @@ paymentController.verify = async (req, res) => {
       await wallet.save();
 
 
-      return res.json({ success: true, message: 'Payment verified successfully' });
+      return res.json({ success: true, message: 'Payment verified successfully', wallet:wallet});
     } else {
       // Signature mismatch, authentication failed
       return res.status(400).json({ error: 'Payment verification failed, signature mismatch' });
