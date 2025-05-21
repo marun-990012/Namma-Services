@@ -8,7 +8,7 @@ const transactionSchema = new Schema({
   },
   type: {
     type: String,
-    enum: ['buy', 'spend', 'refund', 'tip', 'bonus'],
+    enum: ['buy', 'spend', 'tip', 'bonus'],
   },
   amount: {
     type: Number,
@@ -21,7 +21,16 @@ const transactionSchema = new Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Job',
     default: null
-  }
+  },
+  status: {
+    type: String,
+    enum: ['pending', 'success', 'failed'],
+    default: 'success',
+  },
+  date: {
+    type: Date,
+    default: Date.now,
+  },
 }, { timestamps: true });
 
 const Transaction = model('Transaction', transactionSchema);
