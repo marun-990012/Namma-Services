@@ -1,24 +1,33 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import {BadgeCheck,Star,MessageSquareShare,SendHorizontal,} from "lucide-react";
-import { Link,useNavigate } from "react-router-dom";
+import {
+  BadgeCheck,
+  Star,
+  MessageSquareShare,
+  SendHorizontal,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { useParams } from "react-router-dom";
 import toast from "react-hot-toast";
-import {showJobPostDetail,replyToServiceProvider,} from "../../redux/slices/jobPostSlice";
+import {
+  showJobPostDetail,
+  replyToServiceProvider,
+} from "../../redux/slices/jobPostSlice";
 import { fetchServiceProviders } from "../../redux/slices/userSlice";
 import { fetchAccount } from "../../redux/slices/profileSlice";
 import { useSelectServiceProvider } from "../../hooks/useSelectServiceProvider";
 import { useConsiderServiceProvider } from "../../hooks/useConsiderServiceProvider";
+import { usewithdrawConsider } from "../../hooks/useWithdrawConsider";
 function ViewJobRequest() {
   const { userId, id } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {select} = useSelectServiceProvider();
-  const {consider} = useConsiderServiceProvider();
-
+  const { select } = useSelectServiceProvider();
+  const { consider } = useConsiderServiceProvider();
+  const { withdraw } = usewithdrawConsider();
 
   const [replyMessage, setReplyMessage] = useState("");
-   const [showPopup, setShowPopup] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
 
   useEffect(() => {
     dispatch(showJobPostDetail(id));
@@ -29,9 +38,8 @@ function ViewJobRequest() {
   const jobPost = useSelector((state) => state.jobs).job;
   const users = useSelector((state) => state.users).data;
   const userAccount = useSelector((state) => state.profile).data;
-  console.log(userAccount);
+  console.log(jobPost);
 
-  
   const requestedServiceProvider = users.find((user) => {
     return user._id == userId;
   });
@@ -42,6 +50,9 @@ function ViewJobRequest() {
 
   console.log(requestMessages?.messages);
 
+  const isConsidered = jobPost?.considerations?.includes(userId);
+  console.log(isConsidered);
+
   const handleSendReply = async (e) => {
     e.preventDefault();
     const formData = {
@@ -51,30 +62,38 @@ function ViewJobRequest() {
     };
 
     try {
-      const res = await dispatch(replyToServiceProvider({ id, formData })).unwrap();
+      const res = await dispatch(
+        replyToServiceProvider({ id, formData })
+      ).unwrap();
       setReplyMessage("");
     } catch (error) {
       toast.error("Failed to send message");
     }
   };
 
-  const handleConsider = async()=>{
-    const formData = {id,serviceProviderId:userId}
-    consider(formData)
-  }
-
-const handleSelect = (serviceProviderId) => {
-  // setSelectedServiceProviderId(serviceProviderId); // store ID
-  setShowPopup(true); // show confirmation popup
-};
-
- const handleConfirm = async() => {
-    setShowPopup(false);
-    const formData = {id,selectedServiceProviderId:userId}
-    select(formData)
+  const handleConsider = async () => {
+    const formData = { id, serviceProviderId: userId };
+    consider(formData);
   };
-  
- const handleCancel = () => {
+
+  const handleWithdrawConsider = async () => {
+    const formData = { id, serviceProviderId: userId };
+    withdraw(formData);
+    // alert('hi')
+  };
+
+  const handleSelect = (serviceProviderId) => {
+    // setSelectedServiceProviderId(serviceProviderId); // store ID
+    setShowPopup(true); // show confirmation popup
+  };
+
+  const handleConfirm = async () => {
+    setShowPopup(false);
+    const formData = { id, selectedServiceProviderId: userId };
+    select(formData);
+  };
+
+  const handleCancel = () => {
     setShowPopup(false);
   };
 
@@ -94,10 +113,68 @@ const handleSelect = (serviceProviderId) => {
           </div>
 
           <div className="flex gap-2">
-            <button onClick={()=>{handleConsider()}} className="cursor-pointer px-4 py-[2px] bg-[#facc15] hover:bg-[#edc10f] rounded-[6px] outline-none">
-              Consider
-            </button>
-            <button onClick={()=>{handleSelect()}} className="cursor-pointer px-4 py-[2px] bg-[#22c55e] hover:bg-[#1cb856] text-white rounded-[6px] outline-none">
+            {isConsidered ? (
+              <button
+                onClick={() => handleWithdrawConsider()}
+                className="flex items-center gap-2 px-4 py-2 bg-red-100 text-red-600 hover:bg-red-200 hover:text-red-700 border border-red-300 rounded-xl transition duration-200 shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-red-300"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
+                </svg>
+                Withdraw Consideration
+              </button>
+            ) : (
+              <button
+                onClick={() => handleConsider()}
+                className="flex items-center gap-2 px-5 py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-medium rounded-lg shadow-sm transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-yellow-300"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 17v-6h13M5 17H3v-6h2m0 6V9.5a1.5 1.5 0 011.5-1.5H7"
+                  />
+                </svg>
+                Consider
+              </button>
+            )}
+
+            <button
+              onClick={() => handleSelect()}
+              className="flex items-center gap-2 px-5 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg shadow-sm transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-400"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M5 13l4 4L19 7"
+                />
+              </svg>
               Select
             </button>
           </div>
@@ -215,33 +292,33 @@ const handleSelect = (serviceProviderId) => {
       </div>
 
       {/* show popup */}
- {showPopup && (
-  <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/30 backdrop-blur-sm">
-    <div className="bg-white text-gray-800 p-6 rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-purple-200">
-      <h2 className="text-lg font-semibold text-purple-700 mb-3">
-        Confirm Selection
-      </h2>
-      <p className="text-sm sm:text-base mb-6 leading-relaxed text-gray-600">
-        Are you sure you want to assign this service provider to the job?
-      </p>
+      {showPopup && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/30 backdrop-blur-sm">
+          <div className="bg-white text-gray-800 p-6 rounded-2xl shadow-2xl max-w-md w-full mx-4 border border-purple-200">
+            <h2 className="text-lg font-semibold text-purple-700 mb-3">
+              Confirm Selection
+            </h2>
+            <p className="text-sm sm:text-base mb-6 leading-relaxed text-gray-600">
+              Are you sure you want to assign this service provider to the job?
+            </p>
 
-      <div className="flex justify-end gap-3">
-        <button
-          onClick={handleCancel}
-          className="px-4 py-2 text-sm font-medium rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
-        >
-          Cancel
-        </button>
-        <button
-          onClick={handleConfirm}
-          className="px-4 py-2 text-sm font-semibold rounded-md bg-yellow-400 text-purple-800 hover:bg-yellow-500 transition"
-        >
-          Confirm
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+            <div className="flex justify-end gap-3">
+              <button
+                onClick={handleCancel}
+                className="px-4 py-2 text-sm font-medium rounded-md bg-gray-100 text-gray-700 hover:bg-gray-200 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirm}
+                className="px-4 py-2 text-sm font-semibold rounded-md bg-yellow-400 text-purple-800 hover:bg-yellow-500 transition"
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
