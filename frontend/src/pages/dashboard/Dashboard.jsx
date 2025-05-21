@@ -12,6 +12,7 @@ function DashBoard() {
 
   const scrollToDetail = () => {
     detailRef.current?.scrollIntoView({ behavior: 'smooth',block: 'start' });
+    setWorkList('completed');
   };
 
     useEffect(()=>{
@@ -21,18 +22,18 @@ function DashBoard() {
 
     const jobList = useSelector((state)=>state.jobs)?.data;
     const userAccount = useSelector((state)=>state.profile)?.data;
-    console.log(userAccount)
+    // console.log(userAccount)
 
    const completedJobs = jobList.filter(job =>
     job.workStatus == "completed" && job.selectedServiceProvider == userAccount?._id  &&
     job.jobRequests?.some(req => req.serviceProvider === userAccount?._id)
    );
-   console.log(completedJobs)
+  //  console.log(completedJobs)
    const totalEarnings = completedJobs.reduce((acc,cv)=>{
     return acc+cv.salary
    },0);
 
-   console.log(totalEarnings)
+  //  console.log(totalEarnings)
   return (
     <div className="flex flex-col gap-5 justify-center items-center border-3 border-white p-4 rounded-[8px] w-full mb-4">
       
