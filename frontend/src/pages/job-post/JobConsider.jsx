@@ -53,7 +53,8 @@ function JobConsider(){
     <p className="text-sm font-medium text-gray-700">Rating 4.5</p>
   </div>
 
-   <div className="flex gap-1">
+   <div className="flex gap-6">
+    <p className="bg-green-200 text-green-800 px-4 rounded-full">Considered</p>
     <button onClick={()=>{navigate(`/view/job/request/${user?._id}/${id}`);}} className="bg-green-400 hover:bg-green-500 text-white px-3 py-1 text-sm rounded">
     View Request
   </button>
