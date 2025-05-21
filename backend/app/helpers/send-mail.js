@@ -51,5 +51,41 @@ export const sendResetPasswordEmail = async(data)=>{
     }catch(error){
         console.log(error)
     }
+};
+
+
+
+export const sendConsiderNotification = async(data)=>{
+    // console.log('invoked',data)
+    const mailOptions = {
+        from: 'arunlamani89@gmail.com',
+        to: data.email,
+        subject: 'Consider for Work',
+        text: `Good news! You're in consideration for the ${data.title} job.` ,
+        // html:welcomeEmailTemplate.replace("{name}",data.token)
+    };
+
+    try{
+        transporter.sendMail(mailOptions);
+    }catch(error){
+        console.log(error)
+    }
 }
 
+
+export const sendSelectNotification = async(data)=>{
+    // console.log('invoked',data)
+    const mailOptions = {
+        from: 'arunlamani89@gmail.com',
+        to: data.email,
+        subject: 'Selected for Work',
+        text: `Good news! You're Selected for the ${data.title} job.` ,
+        // html:welcomeEmailTemplate.replace("{name}",data.token)
+    };
+
+    try{
+        transporter.sendMail(mailOptions);
+    }catch(error){
+        console.log(error)
+    }
+}
