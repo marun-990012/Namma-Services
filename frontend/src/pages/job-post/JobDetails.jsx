@@ -1,25 +1,43 @@
 import { useEffect,useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { showJobPostDetail } from "../../redux/slices/jobPostSlice";
+import { useParams, useNavigate,useLocation } from "react-router-dom";
 import JobRequests from "./JobRequests";
 import JobConsider from "./JobConsider";
+import { showJobPostDetail } from "../../redux/slices/jobPostSlice";
+import InsufficientCoins from "../../components/popups/InsufficientCoins";
+import { fetchWallet } from "../../redux/slices/WalletSlice";
 
 function JobDetails() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation();
   const { id,dist } = useParams();
   const [applicant,setApplicant] = useState('requested');
+
+  const segments = location.pathname.split("/");
+  const lastSegment = segments[segments.length - 1];
+  const showPopup = lastSegment === "warning"; // or "warning"
+  
+
   useEffect(() => {
     if(id){
       dispatch(showJobPostDetail(id));
     }
+    dispatch(fetchWallet());
   }, [dispatch]);
 
-  const jobPost = useSelector((state) => {
-    return state.jobs;
-  }).job;
+  const jobPost = useSelector((state) =>  state.jobs)?.job;
+  const userWallet = useSelector((state) => state.wallet)?.wallet;
   // console.log(jobPost);
+
+  const handleSendRequest = () => {
+  if (userWallet.coins > 0) {
+    navigate(`/jobs/recent/request/${id}`);
+  } else {
+    navigate(`/jobs/recent/detail/${id}/${dist}/warning`,{ state: { from: location.pathname } });
+  }
+};
+
   return (
     <div className="flex flex-col justify-center items-center border-3 border-white rounded-[8px] p-3 mb-4">
       <div className="w-[95%] mb-3">
@@ -72,7 +90,7 @@ function JobDetails() {
             </span>
           </p>
           <div className="mt-4">
-            <button onClick={()=>{navigate(`/jobs/recent/request/${id}`)}} className="cursor-pointer bg-green-400 hover:bg-green-500 text-white px-2 py-1 border-4 rounded-[5px] border-green-200">
+            <button onClick={()=>{handleSendRequest()}} className="cursor-pointer bg-green-400 hover:bg-green-500 text-white px-2 py-1 border-4 rounded-[5px] border-green-200">
               Send Request
             </button>
           </div>
@@ -89,6 +107,8 @@ function JobDetails() {
           </div>
         </div>
       </div>
+
+      {showPopup && (<InsufficientCoins/>)}
     </div>
   );
 }
