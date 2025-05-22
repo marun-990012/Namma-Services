@@ -72,12 +72,28 @@ export const sendJobRequest = createAsyncThunk('/jobs/sendJobRequest',async({id,
 });
 
 export const considerServiceProvider = createAsyncThunk('/jobs/considerServiceProvider',async({id,serviceProviderId},{rejectWithValue})=>{
-    // console.log('thunk',id)
-    // console.log('thunk',serviceProviderIds)
     try{
         const response = await axiosInstance.post(`/job/consideration/${id}`,{serviceProvider:serviceProviderId},{headers:{
             Authorization:localStorage.getItem('token')
         }});
+        console.log(response.data);
+        return response.data;
+    }catch(error){
+        console.log(error);
+        return rejectWithValue(error?.response?.data);
+
+    }
+});
+
+
+export const withdrawConsider = createAsyncThunk('/jobs/withdrawConsider',async({id,serviceProviderId},{rejectWithValue})=>{
+    try{
+        const response = await axiosInstance.delete(`/job/consideration/${id}`, {
+        data: { serviceProvider: serviceProviderId },
+        headers: {
+          Authorization: localStorage.getItem('token'),
+        },
+      });
         console.log(response.data);
         return response.data;
     }catch(error){
@@ -254,6 +270,30 @@ const jobPostSlice = createSlice({
         })
         
         .addCase(considerServiceProvider.rejected,(state,action)=>{
+             state.loading = false;
+             state.error = action.payload;
+        })
+
+
+        //withdraw consider
+        .addCase(withdrawConsider.pending,(state,action)=>{
+             state.loading = true;
+             state.error = null;
+        })
+        
+        .addCase(withdrawConsider.fulfilled,(state,action)=>{
+             const index = state.data.findIndex((post)=>{
+             return post._id == action.payload._id;
+             });
+             if (index !== -1) {
+             state.data[index] = action.payload;
+             }
+             state.job = action.payload;
+             state.loading = false;
+             state.error = null;
+        })
+        
+        .addCase(withdrawConsider.rejected,(state,action)=>{
              state.loading = false;
              state.error = action.payload;
         })
