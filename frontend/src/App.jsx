@@ -17,6 +17,7 @@ import SendJobRequest from "./pages/job-post/SendJobRequest";
 import ViewJobRequest from "./pages/job-post/ViewJobRequest";
 import DashBoard from "./pages/dashboard/Dashboard";
 import Payment from "./pages/payment/Payment";
+import ViewMessages from "./pages/job-post/ViewMessages";
 function App() {
   return (
     <>
@@ -42,11 +43,14 @@ function App() {
             <Route path="/job/post/details/considers/:id" element={<JobPostDetail/>}/>
             <Route path="/jobs/recent" element={<LatestJobPosts/>}/>
             <Route path="/jobs/recent/detail/:id/:dist" element={<JobDetails/>}/>
+            <Route path="/jobs/recent/detail/:id/:dist/warning" element={<JobDetails/>}/>
             <Route path="/jobs/recent/request/:id" element={<SendJobRequest/>}/>
             <Route path="/jobs/recent/request/confirm/:id/" element={<SendJobRequest/>}/>
             <Route path="/view/job/request/:userId/:id" element={<ViewJobRequest/>}/>
             <Route path="/dashboard" element={<DashBoard/>}/>
             <Route path="/payment" element={<Payment/>}/>
+            <Route path="/payment/wallet/add/coins" element={<Payment/>}/>
+            <Route path="/job/request/message/:id" element={<ViewMessages/>}/>
 
           </Route>
           
