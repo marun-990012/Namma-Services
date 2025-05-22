@@ -2,6 +2,7 @@ import { razorpayInstance } from "../../config/razorpayConfig.js";
 import crypto from 'crypto';
 import Payment from "../models/paymentSchema.js";
 import Wallet from "../models/wallet-model.js";
+import { addCoinsInWallet } from "../services/walletService.js";
 
 
 const paymentController = {};
@@ -70,18 +71,7 @@ paymentController.verify = async (req, res) => {
 
       // Save payment details in the database
       await payment.save();
-      const coinsToAdd = Math.floor(amount /10);; // 1 coin = Rs.10
-
-      const wallet = await Wallet.findOne({ userId: req.userId });
-      console.log(wallet)
-      if (!wallet) {
-        return res.status(404).json({ error: "Wallet not found" });
-      }
-  
-      wallet.coins += coinsToAdd;
-      await wallet.save();
-
-
+      const wallet = await addCoinsInWallet(req.userId, amount);
       return res.json({ success: true, message: 'Payment verified successfully', wallet:wallet});
     } else {
       // Signature mismatch, authentication failed
