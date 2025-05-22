@@ -1,8 +1,9 @@
 import Job from "../models/job-post-model.js";
 import User from '../models/user-model.js';
-import { sendConsiderNotification, sendSelectNotification } from "../helpers/send-mail.js";
-import axios from "axios";
 import mongoose from 'mongoose';
+import axios from "axios";
+import { sendConsiderNotification, sendSelectNotification } from "../helpers/send-mail.js";
+import { deductCoin } from "../services/walletService.js";
 
 const jobPostController={};
 
@@ -121,57 +122,68 @@ jobPostController.remove = async(req,res)=>{
 
 //job Request Controller
 jobPostController.jobRequest = async (req, res) => {
-    const id = req.params.id;
-    const {serviceProvider,messages} = req.body;
+  const id = req.params.id;
+  const { serviceProvider, messages } = req.body;
 
-    // console.log(serviceProvider,messages)
-    try {
-      const jobPost = await Job.findById(id);
-      if (!jobPost) {
-        return res.status(404).json({ error: "You cannot send a request to this post because it is no longer available." });
-      }
-  
-      // Prevent duplicate request by serviceProvider
-      const alreadyRequested = jobPost.jobRequests.some(
-        (r) => r.serviceProvider.toString() === serviceProvider
-      );
-  
-      if (alreadyRequested) {
-        return res.status(409).json({ error: "You have already applied to this job." });
-      }
-  
-      jobPost.jobRequests.push({serviceProvider,messages});
-      await jobPost.save();
-  
-      return res.json(jobPost);
-    } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: "Something went wrong" });
+  try {
+    const jobPost = await Job.findById(id);
+    if (!jobPost) {
+      return res.status(404).json({
+        error: "You cannot send a request to this post because it is no longer available.",
+      });
     }
-  };
+
+    // Prevent duplicate request by serviceProvider
+    const alreadyRequested = jobPost.jobRequests.some(
+      (r) => r.serviceProvider.toString() === serviceProvider
+    );
+
+    if (alreadyRequested) {
+      return res.status(409).json({ error: "You have already applied to this job." });
+    }
+
+    // Deduct 1 coin BEFORE saving the job request
+    try {
+      await deductCoin(req.userId);
+    } catch (walletError) {
+      return res.status(400).json({ error: walletError.message });
+    }
+
+    // Now add the job request safely
+    jobPost.jobRequests.push({ serviceProvider, messages });
+    await jobPost.save();
+
+    return res.json(jobPost);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
   
 
 //controller for send message to requested job
 jobPostController.sendMessage = async(req,res)=>{
     const id = req.params.id;
-    const {requestId,message} = req.body;
+    const {message} = req.body;
     try{
         const jobPost = await Job.findById(id);
         if(!jobPost){
             return res.status(404).json({error:"job post not found "})
         }
 
-        const request = jobPost.jobRequests.id(requestId);
+        // const request = jobPost.jobRequests.id(req.userId);
+         const request = jobPost.jobRequests.find((req) => req.serviceProvider.toString() === req.userId);
         if (!request) {
           return res.status(404).json({ error: "Job request not found." });
         }
-
-        const newMessage = {
-          _id: new mongoose.Types.ObjectId(),
-          textMessage: message.textMessage,
-        };
-    
-        request.messages.push(newMessage);
+   
+      const newMessage = {
+              message: reply,
+              sender: req.userId
+             };
+        // const response=reply
+       request.messages.push(newMessage);
         await jobPost.save();
         return res.json(jobPost);
     }catch(error){
@@ -325,7 +337,12 @@ jobPostController.removeConsideration = async (req, res) => {
       if (!jobPost) {
         return res.status(404).json({ error: "This post is no longer available or aunauthorized access" });
       }
-      jobPost.workStatus='completed'
+      
+      jobPost.considerations = jobPost.considerations.filter((serviceProvider)=>{
+        return serviceProvider != jobPost.selectedServiceProvider
+      });
+      
+      jobPost.workStatus='completed';
        await jobPost.save();
        return res.status(201).json(jobPost);
     }catch(error){
