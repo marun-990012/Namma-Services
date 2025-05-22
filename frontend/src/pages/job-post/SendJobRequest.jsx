@@ -4,6 +4,7 @@ import { useDispatch,useSelector } from "react-redux";
 import { MessageSquareShare } from "lucide-react";
 import { fetchAccount } from "../../redux/slices/profileSlice";
 import { sendJobRequest } from "../../redux/slices/jobPostSlice";
+import { fetchWallet } from "../../redux/slices/WalletSlice";
 import toast from "react-hot-toast";
 
 function SendJobRequest() {
@@ -16,11 +17,11 @@ function SendJobRequest() {
 
   useEffect(()=>{
     dispatch(fetchAccount());
+    dispatch(fetchWallet());
   },[dispatch])
 
-  const userAccount = useSelector((state)=> {
-    return state.profile}
-).data;
+  const userAccount = useSelector((state)=> state.profile)?.data;
+  const userWallet = useSelector((state) => state.wallet)?.wallet;
   console.log(userAccount)
 
 
@@ -108,7 +109,7 @@ try {
           <div className="bg-gradient-to-br from-[#4f2bdf] via-[#6b4fd8] to-[#8e6df0] text-white p-6 rounded-xl shadow-xl max-w-md mx-auto border border-purple-200">
             <div className="mb-5">
               <p className="text-lg font-medium">
-                Your Wallet Balance: <span className="font-bold text-green-200">10</span>
+                Your Wallet Balance: <span className="font-bold text-green-200">{userWallet?.coins}</span>
               </p>
               <p className="text-lg font-medium">
                 Required Coins: <span className="font-bold text-yellow-300">1</span>
