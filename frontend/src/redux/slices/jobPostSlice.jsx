@@ -71,6 +71,21 @@ export const sendJobRequest = createAsyncThunk('/jobs/sendJobRequest',async({id,
     }
 });
 
+
+// Thunk to check if a service provider is working on a job
+export const checkIfWorking = createAsyncThunk('jobs/checkIfWorking',async (userId, {rejectWithValue}) => {
+    console.log(userId)
+    try {
+      const response = await axiosInstance.get(`/job/active/${userId}`,{headers:{Authorization:localStorage.getItem('token')}});
+      console.log(response.data)
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data || 'Something went wrong');
+    }
+  }
+);
+
+
 export const considerServiceProvider = createAsyncThunk('/jobs/considerServiceProvider',async({id,serviceProviderId},{rejectWithValue})=>{
     try{
         const response = await axiosInstance.post(`/job/consideration/${id}`,{serviceProvider:serviceProviderId},{headers:{
@@ -106,6 +121,21 @@ export const withdrawConsider = createAsyncThunk('/jobs/withdrawConsider',async(
 export const selectServiceProvider = createAsyncThunk('/jobs/selectServiceProvider',async({id,selectedServiceProviderId},{rejectWithValue})=>{
     try{
         const response = await axiosInstance.post(`/job/select/${id}`,{serviceProvider:selectedServiceProviderId},{headers:{
+            Authorization:localStorage.getItem('token')
+        }});
+        console.log(response.data);
+        return response.data;
+    }catch(error){
+        console.log(error);
+        return rejectWithValue(error?.response?.data);
+
+    }
+});
+
+
+export const sendMessage = createAsyncThunk('/jobs/sendMessage',async({id,formData},{rejectWithValue})=>{
+    try{
+        const response = await axiosInstance.post(`/job/message/${id}`,formData,{headers:{
             Authorization:localStorage.getItem('token')
         }});
         console.log(response.data);
@@ -154,6 +184,7 @@ const jobPostSlice = createSlice({
         job:{},
         loading:false,
         error:null, 
+        isWorking:false
     },
     extraReducers:(builder)=>{
         builder
@@ -250,6 +281,18 @@ const jobPostSlice = createSlice({
              state.error = action.payload;
         })
 
+        //check working status
+        .addCase(checkIfWorking.pending, (state) => {
+             state.loading = true;
+        })
+       .addCase(checkIfWorking.fulfilled, (state, action) => {
+            state.loading = false;
+            state.isWorking = action.payload.activeJobExists;
+        })
+       .addCase(checkIfWorking.rejected, (state, action) => {
+           state.loading = false;
+           state.error = action.payload;
+       })
 
         //consider service provider
         .addCase(considerServiceProvider.pending,(state,action)=>{
@@ -323,6 +366,30 @@ const jobPostSlice = createSlice({
         })
 
 
+        //send message
+        .addCase(sendMessage.pending,(state,action)=>{
+             state.loading = true;
+             state.error = null;
+        })
+        
+        .addCase(sendMessage.fulfilled,(state,action)=>{
+             const index = state.data.findIndex((post)=>{
+             return post._id == action.payload._id;
+             });
+             if (index !== -1) {
+             state.data[index] = action.payload;
+             }
+             state.job = action.payload;
+             state.loading = false;
+             state.error = null;
+        })
+        
+        .addCase(sendMessage.rejected,(state,action)=>{
+             state.loading = false;
+             state.error = action.payload;
+        })
+
+
         //reply to service provider
         .addCase(replyToServiceProvider.pending,(state,action)=>{
              state.loading = true;
@@ -363,6 +430,8 @@ const jobPostSlice = createSlice({
              state.loading = false;
              state.error = action.payload;
         })
+
+
         
     }
 });
