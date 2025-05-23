@@ -37,7 +37,7 @@ function LatestJobPosts() {
         {Array.isArray(nearestJobs) && nearestJobs?.map((job)=>{
             return(
             <div key={job._id} className="flex justify-center">
-        <div className="flex items-center justify-between bg-white w-[90%] py-2 px-6 rounded-[8px] shadow-md mt-4">
+        <div className="flex items-center justify-between bg-white w-full py-2 px-6 rounded-[8px] shadow-md mt-4">
           <div className="">
             <div className="flex gap-4 text-gray-400 text-[14px]">
                 <p> {job.postTime}</p>
