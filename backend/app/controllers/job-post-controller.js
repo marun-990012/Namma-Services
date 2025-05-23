@@ -166,6 +166,8 @@ jobPostController.jobRequest = async (req, res) => {
 jobPostController.sendMessage = async(req,res)=>{
     const id = req.params.id;
     const {message} = req.body;
+    // console.log(id,message)
+    // const userId = req.userId;
     try{
         const jobPost = await Job.findById(id);
         if(!jobPost){
@@ -173,17 +175,22 @@ jobPostController.sendMessage = async(req,res)=>{
         }
 
         // const request = jobPost.jobRequests.id(req.userId);
-         const request = jobPost.jobRequests.find((req) => req.serviceProvider.toString() === req.userId);
-        if (!request) {
+        //  const request = jobPost.jobRequests.find((req) => req.serviceProvider === req.userId);
+         const jobRequest = jobPost.jobRequests.find(
+        (request) => request.serviceProvider.toString() === req.userId
+         );
+
+         console.log(jobRequest)
+        if (!jobRequest) {
           return res.status(404).json({ error: "Job request not found." });
         }
    
       const newMessage = {
-              message: reply,
+              message: message,
               sender: req.userId
              };
         // const response=reply
-       request.messages.push(newMessage);
+       jobRequest.messages.push(newMessage);
         await jobPost.save();
         return res.json(jobPost);
     }catch(error){
@@ -223,6 +230,25 @@ jobPostController.sendReply = async(req,res)=>{
         return res.status(500).json({error:"Something went wrong"});
     }
 };
+
+// Controller to check if the service provider is currently working on another job
+jobPostController.isSelected = async(req,res)=>{
+    const serviceProvider = req.params.serviceProvider;
+    console.log(serviceProvider)
+    try {
+    
+    const exists = await Job.exists({
+      selectedServiceProvider: serviceProvider,
+      workStatus: "started",
+    });
+
+    // If a job exists, send true, otherwise false
+    res.status(200).json({ activeJobExists: !!exists });
+  } catch (error) {
+    console.error("Error checking active job:", error);
+    res.status(500).json({ message: "Internal server error." });
+  }
+}
 
 
 //controller for considerations 
