@@ -14,7 +14,7 @@ export const useSelectServiceProvider = () => {
       toast.success("Service provider has been selected successfully.");
       return res;
     } catch (error) {
-      toast.error("Failed to select the service provider. Please try again.");
+      toast.error(error.message || "Failed to select the service provider. Please try again.");
       throw error;
     }
   };
