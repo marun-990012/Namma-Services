@@ -18,6 +18,7 @@ jobPostRoute.delete('/delete/:id',authentication,authorization(['work-provider']
 jobPostRoute.post('/request/:id',authentication,authorization(['service-provider']),checkSchema(jobRequestValidation),checkSchema(idValidationSchema),inputValidator,jobPostController.jobRequest);
 jobPostRoute.post('/message/:id',authentication,authorization(['service-provider']),checkSchema(sendMessageValidation),checkSchema(idValidationSchema),inputValidator,jobPostController.sendMessage);
 jobPostRoute.post('/reply/:id',authentication,authorization(['work-provider']),checkSchema(sendMessageReplyValidation),checkSchema(idValidationSchema),inputValidator,jobPostController.sendReply);
+jobPostRoute.get('/active/:serviceProvider',authentication,authorization(['work-provider']),jobPostController.isSelected);
 jobPostRoute.post('/consideration/:id',authentication,authorization(['work-provider']),checkSchema(considerationValidation),checkSchema(idValidationSchema),inputValidator,jobPostController.consideration);
 jobPostRoute.delete('/consideration/:id',authentication,authorization(['work-provider']),checkSchema(considerationValidation),checkSchema(idValidationSchema),inputValidator,jobPostController.removeConsideration);
 jobPostRoute.post('/select/:id',authentication,authorization(['work-provider']),checkSchema(selectServiceProviderValidation),checkSchema(idValidationSchema),inputValidator,jobPostController.selectServiceProvider);
