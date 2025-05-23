@@ -1,10 +1,14 @@
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, useLocation } from "react-router-dom";
 import { fetchWallet } from "../../redux/slices/WalletSlice";
-import AddCoins from "./AddCoins";
+import AddCoins from "../../components/popups/AddCoins";
 function Wallet() {
   const dispatch = useDispatch();
-  const [showPopup,setShowPopup] = useState(false);
+  const navigate = useNavigate();
+  const location = useLocation();
+//   const [showPopup,setShowPopup] = useState(false);
+  const showPopup = location.pathname.startsWith('/payment/wallet/add/coins');
 
   useEffect(() => {
     dispatch(fetchWallet());
@@ -15,7 +19,8 @@ function Wallet() {
   console.log(userWallet)
 
   const handleAddCoins = () => {
-    setShowPopup(true);
+    // setShowPopup(true);
+    navigate('/payment/wallet/add/coins',{ state: { from: location.pathname } });
   };
   return (
     
@@ -40,7 +45,7 @@ function Wallet() {
       </button>
 
        {showPopup && (
-        <AddCoins show={showPopup} onClose={() => setShowPopup(false)}/>
+        <AddCoins/>
        )}
     </div>
   );
