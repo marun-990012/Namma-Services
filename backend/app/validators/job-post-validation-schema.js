@@ -112,18 +112,6 @@ export const jobRequestValidation = {
         notEmpty: {
             errorMessage: 'message field should not be empty',
         },
-        isObject: {
-            errorMessage: 'message should be an object',
-        },
-        custom: {
-            options: (value) => {
-                // Check if textMessage, name, and profileImage are present in the message object
-                if (!value.textMessage || !value.name || !value.profileImage) {
-                    throw new Error('message object is missing required fields (textMessage, name, profileImage)');
-                }
-                return true;
-            },
-        }
     }
 };
 
