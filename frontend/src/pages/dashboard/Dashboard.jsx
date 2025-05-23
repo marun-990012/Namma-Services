@@ -35,9 +35,9 @@ function DashBoard() {
 
   //  console.log(totalEarnings)
   return (
-    <div className="flex flex-col gap-5 justify-center items-center border-3 border-white p-4 rounded-[8px] w-full mb-4">
+    <div className="flex flex-col gap-3 justify-center items-center border-3 border-white p-10 rounded-[8px] w-full mb-4">
       
-        <div className=" flex justify-center itmes-center gap-4 w-full">
+        <div className=" flex justify- itmes-center gap-4 w-full">
           {/* Total Earnings Card */}
           <div className="bg-white p-6 rounded-2xl shadow-md w-109 ">
             <p className="text-lg font-semibold text-gray-800">
@@ -88,10 +88,11 @@ function DashBoard() {
           </div>
         </div>
 
-        <div ref={detailRef} className="w-[90%] mt- scroll-mt-7  p-4">
-            <div className=" bg-white w-80 flex justify-between p-2 rounded border border-gray-100">
+        <div ref={detailRef} className="w-full scroll-mt-7 mt-4">
+            <div className=" bg-white w-108 flex justify-between p-2 rounded border shadow-md border-gray-100">
             <button onClick={()=>{setWorkList('applied')}} className={workList=='applied' ? "cursor-pointer bg-green-400 hover:bg-green-500 text-white py-1  w-40 rounded": "cursor-pointer text-green-600 py-1  w-40 rounded"}>Applied works</button>
             <button onClick={()=>{setWorkList('completed')}} className={workList=='completed' ? "cursor-pointer bg-green-400 hover:bg-green-500 text-white py-1  w-40 rounded": "cursor-pointer text-green-600 py-1  w-40 rounded"}>Completed works</button>
+            <button onClick={()=>{setWorkList('pending')}} className={workList=='pending' ? "cursor-pointer bg-green-400 hover:bg-green-500 text-white py-1  w-40 rounded": "cursor-pointer text-green-600 py-1  w-40 rounded"}>Pending work</button>
             </div>
 
           <div className="mt-2">
