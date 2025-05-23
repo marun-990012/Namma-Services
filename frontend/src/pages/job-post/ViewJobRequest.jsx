@@ -12,6 +12,7 @@ import toast from "react-hot-toast";
 import {
   showJobPostDetail,
   replyToServiceProvider,
+  checkIfWorking,
 } from "../../redux/slices/jobPostSlice";
 import { fetchServiceProviders } from "../../redux/slices/userSlice";
 import { fetchAccount } from "../../redux/slices/profileSlice";
@@ -33,25 +34,26 @@ function ViewJobRequest() {
     dispatch(showJobPostDetail(id));
     dispatch(fetchServiceProviders());
     dispatch(fetchAccount());
+    dispatch(checkIfWorking(userId));
   }, [dispatch]);
 
-  const jobPost = useSelector((state) => state.jobs).job;
+  const jobPost = useSelector((state) => state.jobs);
   const users = useSelector((state) => state.users).data;
   const userAccount = useSelector((state) => state.profile).data;
-  console.log(jobPost);
+  console.log(jobPost.isWorking);
 
   const requestedServiceProvider = users.find((user) => {
     return user._id == userId;
   });
 
-  const requestMessages = jobPost?.jobRequests?.find((message) => {
+  const requestMessages = jobPost?.job?.jobRequests?.find((message) => {
     return message.serviceProvider == userId;
   });
 
   console.log(requestMessages?.messages);
 
-  const isConsidered = jobPost?.considerations?.includes(userId);
-  console.log(isConsidered);
+  const isConsidered = jobPost?.job?.considerations?.includes(userId);
+  // console.log(isConsidered);
 
   const handleSendReply = async (e) => {
     e.preventDefault();
@@ -135,9 +137,53 @@ function ViewJobRequest() {
                 Withdraw Consideration
               </button>
             ) : (
+              <div className="relative group inline-block">
+  {/* Button */}
+  <button
+    disabled={jobPost.isWorking}
+    onClick={() => handleConsider()}
+    className={`flex items-center gap-2 px-5 py-2 font-medium rounded-lg shadow-sm transition duration-200 ease-in-out focus:outline-none focus:ring-2
+      ${jobPost.isWorking
+        ? 'bg-gray-300 text-gray-600 cursor-not-allowed focus:ring-gray-300'
+        : 'bg-yellow-400 hover:bg-yellow-500 text-black focus:ring-yellow-300'
+      }`}
+  >
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className="h-5 w-5"
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+      strokeWidth={2}
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        d="M9 17v-6h13M5 17H3v-6h2m0 6V9.5a1.5 1.5 0 011.5-1.5H7"
+      />
+    </svg>
+    Consider
+  </button>
+
+  {/* Tooltip */}
+  {jobPost.isWorking && (
+    <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-gray-800 text-gray-100 text-xs rounded-md shadow-lg py-1.5 px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap border border-gray-700">
+      User is already working on another job
+    </div>
+  )}
+</div>
+
+            )}
+
+            <div className="relative group inline-block">
               <button
-                onClick={() => handleConsider()}
-                className="flex items-center gap-2 px-5 py-2 bg-yellow-400 hover:bg-yellow-500 text-black font-medium rounded-lg shadow-sm transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                disabled={!!jobPost.isWorking}
+                onClick={handleSelect}
+                className={`flex items-center gap-2 px-5 py-2 font-medium rounded-lg shadow-sm transition duration-200 ease-in-out focus:outline-none focus:ring-2 ${
+                  jobPost.isWorking
+                    ? "bg-gray-400 text-white cursor-not-allowed focus:ring-gray-300"
+                    : "bg-green-500 hover:bg-green-600 text-white focus:ring-green-400"
+                }`}
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -150,33 +196,18 @@ function ViewJobRequest() {
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
-                    d="M9 17v-6h13M5 17H3v-6h2m0 6V9.5a1.5 1.5 0 011.5-1.5H7"
+                    d="M5 13l4 4L19 7"
                   />
                 </svg>
-                Consider
+                Select
               </button>
-            )}
 
-            <button
-              onClick={() => handleSelect()}
-              className="flex items-center gap-2 px-5 py-2 bg-green-500 hover:bg-green-600 text-white font-medium rounded-lg shadow-sm transition duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-400"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-                strokeWidth={2}
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              Select
-            </button>
+              {jobPost.isWorking && (
+                <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-gray-800 text-gray-100 text-xs rounded-md shadow-lg py-1.5 px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap border border-gray-700">
+                  User is already working on another job
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
