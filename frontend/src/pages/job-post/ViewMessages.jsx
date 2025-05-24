@@ -54,20 +54,22 @@ function ViewMessages() {
     
   };
   return (
-    <div className="flex flex-col gap-4 justify-center items-center border-3 border-white p-8 rounded-[8px] w-full mb-4 max-h-[90vh]">
+    <div className="flex flex-col gap-4 justify-center items-center border-3 border-white p-5 rounded-[8px] w-full mb-4 max-h-[90vh]">
       <div className="flex flex-col lg:flex-row w-full max-w-6xl justify-between gap-3">
         {/* <div className="w-full lg:max-w-[30%] bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100"> */}
 
         {/* Details */}
         <div className="backdrop-blur-md bg-white border border-gray-200 rounded-2xl p-6 shadow-lg space-y-6 max-w-[35%] mx-auto">
           {/* Title */}
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold text-indigo-700 tracking-wide">
-              {jobPost.title}
-            </h2>
-            <span className="text-xs text-gray-500 font-medium">
+          <div className="">
+             <span className="text-xs text-gray-500 font-medium flex justify-end">
               Job Posting
             </span>
+
+            <h2 className="text-xl font-bold text-indigo-700 tracking-wide w-[78%]">
+              {jobPost.title}
+            </h2>
+           
           </div>
 
           {/* Job Information */}
@@ -100,17 +102,17 @@ function ViewMessages() {
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-400">Request Status</span>
               <span
-                className={`text-sm font-semibold px-4 py-1 rounded-full shadow-sm ${
-                  true
-                    ? "bg-green-100 text-green-700"
-                    : "bg-red-100 text-red-700"
-                }`}
+                // className={`text-sm font-semibold px-4 py-1 rounded-full shadow-sm ${
+                //   true
+                //     ? "bg-green-100 text-green-700"
+                //     : "bg-red-100 text-red-700"
+                // }`}
               >
                 {jobPost?.selectedServiceProvider === userAccount?._id ? (
-                  <span>Selected</span>
+                  <span className="bg-green-100 text-green-700 px-4 py-1 rounded-full shadow-sm">Selected</span>
                 ) : jobPost?.considerations?.includes(userAccount?._id) ? (
-                  <span>Considered</span>
-                ) : <span>not Considered</span>}
+                  <span className="bg-green-100 text-green-700 px-4 py-1 rounded-full shadow-sm">Considered</span>
+                ) : <span className="bg-red-100 text-red-700 px-4 py-1 rounded-full shadow-sm">not Considered</span>}
               </span>
             </div>
           </div>
@@ -138,7 +140,7 @@ function ViewMessages() {
                       : "bg-white border border-gray-200 rounded-tl-sm"
                   }`}
                 >
-                  {msg.message}
+                  {msg.message?msg.message:false}
                 </div>
               </div>
             ))}
