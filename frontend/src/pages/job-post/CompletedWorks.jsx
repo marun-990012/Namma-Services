@@ -22,7 +22,7 @@ function CompletedWorks() {
     // console.log(appliedJob)
   return (
     <div>
-        <p className="text-lg font-semibold text-gray-800 ml-2 ">All completed works - <span>{completedJobs?.length}</span></p>
+        <p className="text-lg font-semibold text-gray-800 ml-2 ">All completed works - <span className="bg-green-200 text-green-700 px-4 border border-green-300 rounded-full">{completedJobs?.length}</span></p>
       {completedJobs?.map((job) => {
         return (
           <div className="flex justify-center w-full">
