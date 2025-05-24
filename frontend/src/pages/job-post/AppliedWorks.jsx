@@ -26,7 +26,7 @@ function AppliedWorks() {
   return (
     <div>
       <p className="text-lg font-semibold text-gray-800 ml-2 ">
-        All recently applied works - <span>{appliedJob?.length}</span>
+        All recently applied works - <span className="bg-green-200 text-green-700 px-4 border border-green-300 rounded-full">{appliedJob?.length}</span>
       </p>
       {appliedJob?.map((job) => {
         return (
