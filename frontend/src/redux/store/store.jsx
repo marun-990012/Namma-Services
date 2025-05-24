@@ -7,6 +7,7 @@ import addressReducer from '../slices/profileAddressSlice';
 import jobPostReducer from '../slices/jobPostSlice';
 import userReducer from '../slices/userSlice';
 import walletReducer from '../slices/WalletSlice';
+import reviewRatingReducer from '../slices/reviewRatingSlice';
 
 
 const store = configureStore({
@@ -18,7 +19,8 @@ const store = configureStore({
         address:addressReducer,
         jobs:jobPostReducer,
         users:userReducer,
-        wallet:walletReducer
+        wallet:walletReducer,
+        review:reviewRatingReducer
     }
 });
 
