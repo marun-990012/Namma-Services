@@ -232,7 +232,7 @@ jobPostController.sendReply = async(req,res)=>{
 };
 
 // Controller to check if the service provider is currently working on another job
-jobPostController.isSelected = async(req,res)=>{
+jobPostController.checkIfWorking = async(req,res)=>{
     const serviceProvider = req.params.serviceProvider;
     console.log(serviceProvider)
     try {
