@@ -7,6 +7,7 @@ function Transactions(){
   { type: 'refund', amount: 10, description: 'Service Cancelled', date: '2025-05-19' },
   { type: 'refund', amount: 10, description: 'Service Cancelled', date: '2025-05-19' },
   { type: 'refund', amount: 10, description: 'Service Cancelled', date: '2025-05-19' },
+  { type: 'refund', amount: 10, description: 'Service Cancelled', date: '2025-05-19' },
 ];
     return(
         <div className='bg-white w-[67%] p-6 bg-white rounded-2xl shadow-md border border-gray-200 space-y-4"'>
@@ -29,7 +30,7 @@ function Transactions(){
           </h2>
 
           <div className="mt-1">
-            <ul className="space-y-3 max-h-80 overflow-y-auto">
+            <ul className="space-y-3 max-h-90 overflow-y-auto">
               {transactions.map((tx, index) => (
                 <li
                   key={index}
