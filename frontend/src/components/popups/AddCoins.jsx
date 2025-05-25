@@ -2,90 +2,28 @@ import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
 import toast from "react-hot-toast";
-import { createOrder, verifyPayment } from "../../redux/slices/WalletSlice";
+import { createOrder, verifyPayment } from "../../redux/slices/paymentSlice";
+import { fetchWallet } from "../../redux/slices/WalletSlice";
+import { useRazorpayPayment } from "../../hooks/useRazorpayPayment";
+import { usePaymentHandler } from "../../hooks/usePaymentHandlers";
 
 function AddCoins() {
+  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
   const from = location.state?.from || "/";
-
   const [coin, setCoin] = useState(0);
-  const [shouldOpenRazorpay, setShouldOpenRazorpay] = useState(false);
   const amount = coin * 10;
 
-  const { orderData } = useSelector((state) => state.wallet);
-
-  const loadRazorpayScript = () => {
-    return new Promise((resolve) => {
-      if (window.Razorpay) {
-        resolve(true);
-        return;
-      }
-
-      const script = document.createElement("script");
-      script.src = "https://checkout.razorpay.com/v1/checkout.js";
-      script.onload = () => resolve(true);
-      script.onerror = () => resolve(false);
-      document.body.appendChild(script);
-    });
-  };
-
-  useEffect(() => {
-    if (shouldOpenRazorpay && orderData) {
-      openRazorpay(orderData);
-      setShouldOpenRazorpay(false);
-    }
-  }, [orderData, shouldOpenRazorpay]);
-
-  const validations = () => {
-    if (coin <= 0) {
-      toast.error("Enter coins ex: 123");
-      return false;
-    }
-    return true;
-  };
-
-  const openRazorpay = (data) => {
-    const options = {
-      key: "rzp_test_d8jU7S0YhIAw1x",
-      amount: data.amount,
-      currency: data.currency || "INR",
-      name: "Namma-Services",
-      description: "Wallet Top-Up",
-      order_id: data.id,
-
-      handler: async (response) => {
-        try {
-          const res = await dispatch(verifyPayment({ response, amount })).unwrap();
-          toast.success("Successfully coins added in wallet");
-          navigate(from);
-        } catch (error) {
-          toast.error("Error while adding coins in wallet");
-        }
-      },
-
-      theme: {
-        color: "#4f2bdf",
-      },
-    };
-
-    const rzp = new window.Razorpay(options);
-    rzp.open();
-  };
+  // const { triggerPayment } = useRazorpayPayment();
+  const {payment} = usePaymentHandler(from);
 
   const handleBuyCoins = async (e) => {
     e.preventDefault();
-    if (!validations()) return;
 
-    const isLoaded = await loadRazorpayScript();
-    if (!isLoaded) {
-      alert("Razorpay SDK failed to load. Are you online?");
-      return;
-    }
-
-    setShouldOpenRazorpay(true);
-    dispatch(createOrder(amount));
+    await payment(coin,'wallet');
   };
 
   return (
