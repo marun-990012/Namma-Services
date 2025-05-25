@@ -40,15 +40,14 @@ function JobPostDetail() {
 
   console.log(selectedServiceProvider);
 
-  const handleComplet = ()=>{
-    // alert(jobPost.selectedServiceProvider)
-    navigate(`/review/write/${jobPost.selectedServiceProvider}/${jobPost._id}`)
-  }
+  const handleComplet = () => {
+    // navigate(`/review/write/${jobPost.selectedServiceProvider}/${jobPost._id}`);
+  };
 
   return (
     <div className="flex justify-center items-center border-3 border-white p-10 pt-4 rounded-[8px] mb-2">
       <div className="w-full">
-        <div>
+        <div className="ml-2">
           <button
             onClick={() => {
               navigate("/job/posts");
@@ -59,41 +58,69 @@ function JobPostDetail() {
           </button>
         </div>
 
-        <div className="flex justify-center items-start w-full mt-6">
+        <div className="flex justify-center items-start w-full mt-2">
           <div className="flex flex-col lg:flex-row w-full max-w-6xl justify-between gap-3">
             {/* Left Section */}
-            <div className="rounded-xl shadow-md bg-white p-5 w-[70%]  flex flex-col gap-2">
-              <p className="text-[17px]">
-                Title: <span className="text-gray-400">{jobPost.title}</span>
-              </p>
-              <p className="text-[17px]">
-                Description:{" "}
-                <span className="text-gray-400">{jobPost.description}</span>
-              </p>
-              <p className="text-[17px] break-words">
-                Work location:{" "}
-                <span className="text-gray-400">{jobPost.address}</span>
-              </p>
-              <p className="text-[17px]">
-                Salary: Rs.{" "}
-                <span className="text-gray-400">{jobPost.salary}</span>
-              </p>
-              <p className="text-[17px]">
-                Work Status:{" "}
-                <span className="text-gray-400">{jobPost.workStatus}</span>
-              </p>
+            <div className="bg-white shadow-lg rounded-2xl p-6 w-full max-w-4xl mx-auto space-y-4">
+              {/* Job Details */}
+              <div className="space-y-2">
+                <p className="text-lg font-semibold text-gray-800">
+                  Title:{" "}
+                  <span className="text-base font-normal text-gray-500">
+                    {jobPost.title}
+                  </span>
+                </p>
+                <p className="text-lg font-semibold text-gray-800">
+                  Description:{" "}
+                  <span className="text-base font-normal text-gray-500">
+                    {jobPost.description}
+                  </span>
+                </p>
+                <p className="text-lg font-semibold text-gray-800 break-words">
+                  Work Location:{" "}
+                  <span className="text-base font-normal text-gray-500">
+                    {jobPost.address}
+                  </span>
+                </p>
+                <p className="text-lg font-semibold text-gray-800">
+                  Salary:{" "}
+                  <span className="text-base font-normal text-gray-500">
+                    Rs. {jobPost.salary}
+                  </span>
+                </p>
+                <p className="text-lg font-semibold text-gray-800">
+                  Work Status:{" "}
+                  <span className="text-base font-normal text-gray-500">
+                    {jobPost.workStatus}
+                  </span>
+                </p>
+              </div>
 
-              <div className="mt-5 w-[50%] flex flex-row justify-between">
-                <button className="bg-yellow-400 hover:bg-yellow-500 px-4 rounded-[4px] cursor-pointer">
-                  Edit Post
-                </button>
-                <button className="bg-red-500 hover:bg-red-600 px-4 py-1 text-white rounded-[4px] cursor-pointer">
-                  Delete Post
-                </button>
-
-                <button onClick={handleComplet} className="bg-green-500 hover:bg-green-600 px-4 py-1 text-white rounded-[4px] cursor-pointer">
-                  Completed
-                </button>
+              {/* Action Buttons / Completion Section */}
+              <div className="pt-4 border-t border-gray-200">
+                {!selectedServiceProvider ? (
+                  <div className="flex gap-4 flex-wrap">
+                    <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg font-medium text-base transition-all">
+                      Edit Post
+                    </button>
+                    <button className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-medium text-base transition-all">
+                      Delete Post
+                    </button>
+                  </div>
+                ) : (
+                  <div className="bg-white p-5 space-y-3">
+                    <p className="text-gray-700 text-base">
+                      ✅ If the work has been completed, you can proceed with
+                      the payment.
+                    </p>
+                    <button
+                      onClick={handleComplet}
+                      className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-all"
+                    >
+                      Mark as Completed
+                    </button>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -113,7 +140,7 @@ function JobPostDetail() {
                 </div>
 
                 <div className="p-4 pt-2">
-                  <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold flex justify-between">
+                  <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold flex justify-between mt-2">
                     <p className="text-[12px]">Electrician</p>
                     <p className="flex">
                       {[...Array(5)].map((_, i) => (
@@ -150,7 +177,7 @@ function JobPostDetail() {
         </div>
 
         {/* requested users list */}
-        <div className="flex justify-center w-full mt-7">
+        <div className="flex justify-center w-full mt-4">
           <div className="bg-white w-full px-6 shadow-md rounded-[8px] p-4 ">
             <div className="bg-green-200 w-60 flex justify-between p-2 rounded">
               <button
