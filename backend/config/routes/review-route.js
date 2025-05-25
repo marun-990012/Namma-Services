@@ -1,7 +1,7 @@
 import express from 'express';
 import authentication from '../../app/middlewares/user-authentication.js';
 import authorization from '../../app/middlewares/user-authorization.js';
-import reviewRatingController from '../../app/controllers/rating-controller.js';
+import reviewRatingController from '../../app/controllers/review-controller.js';
 import { reviewRatingValidation,moreReviewValidation,updateReviewValidation } from '../../app/validators/review-rating-validation-schema.js';
 import { idValidationSchema,reviewIdValidation } from '../../app/validators/id-validation-schema.js';
 import inputValidator from '../../app/helpers/input-validation-helper.js';
