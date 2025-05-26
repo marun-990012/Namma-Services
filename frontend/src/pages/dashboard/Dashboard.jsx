@@ -88,7 +88,7 @@ function DashBoard() {
         </div>
       </div>
 
-      <div ref={detailRef} className="w-full scroll-mt-7 mt-4">
+      <div ref={detailRef} className="w-full scroll-mt-11 mt-4">
         <div className=" bg-white w-108 flex justify-between p-2 rounded border shadow-md border-gray-100">
           <button
             onClick={() => {
