@@ -46,7 +46,7 @@ function JobDetails() {
             onClick={() => {
               navigate(-1);
             }}
-            className="cursor-pointer bg-gray-300 hover:bg-gray-400 px-4 rounded-[4px]"
+            className="cursor-pointer bg-gray-300 hover:bg-gray-400 px-5 rounded-[4px]"
           >
             Back
           </button>
