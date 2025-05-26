@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import Payment from "../models/paymentSchema.js";
 import Wallet from "../models/wallet-model.js";
 import { addCoinsInWallet } from "../services/walletService.js";
+import { completeJob } from "../helpers/completJob.js";
 
 
 const paymentController = {};
@@ -40,8 +41,8 @@ paymentController.order = (req, res) => {
 
 
 paymentController.verify = async (req, res) => {
-  const { razorpay_order_id, razorpay_payment_id, razorpay_signature,amount } = req.body;
-  console.log(amount)
+  const { razorpay_order_id, razorpay_payment_id, razorpay_signature,amount,paymentType,jobId } = req.body;
+  // console.log(req.userId,jobId)
 
   if (!razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
     return res.status(400).json({ error: "Missing required fields" });
@@ -71,8 +72,17 @@ paymentController.verify = async (req, res) => {
 
       // Save payment details in the database
       await payment.save();
-      const wallet = await addCoinsInWallet(req.userId, amount);
-      return res.json({ success: true, message: 'Payment verified successfully', wallet:wallet});
+
+      if(paymentType=='wallet'){
+        const wallet = await addCoinsInWallet(req.userId, amount);
+        return res.json({ success: true, message: 'Payment verified successfully', wallet:wallet});
+      }
+
+      if(paymentType=='salary'){
+        const jobComplet = await completeJob({jobId, userId: req.userId });
+        return res.json({ success: true, message: 'Payment verified successfully', jobPost:jobComplet});
+      }
+
     } else {
       // Signature mismatch, authentication failed
       return res.status(400).json({ error: 'Payment verification failed, signature mismatch' });
