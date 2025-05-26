@@ -8,6 +8,7 @@ import Star from "./Star";
 
 function ReviewCard() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const {serviceProviderId,jobId} = useParams();
   const [rating, setRating] = useState(0);
   const [review,setReview] = useState('');
@@ -41,6 +42,7 @@ function ReviewCard() {
     }
      try {
       const response = await dispatch(createReview(formData)).unwrap();
+      navigate(`/job/post/details/requests/${jobId}`);
       toast.success('Thank you for your review!');
      } catch (error) {
       toast.error(error);
