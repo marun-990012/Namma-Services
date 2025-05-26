@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useLocation } from "react-router-dom";
-import toast from "react-hot-toast";
-import { createOrder, verifyPayment } from "../../redux/slices/paymentSlice";
-import { fetchWallet } from "../../redux/slices/WalletSlice";
-import { useRazorpayPayment } from "../../hooks/useRazorpayPayment";
 import { usePaymentHandler } from "../../hooks/usePaymentHandlers";
 
 function AddCoins() {
