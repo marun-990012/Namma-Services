@@ -19,13 +19,15 @@ export const createOrder = createAsyncThunk("wallet/createOrder",async (amount, 
 );
 
 // Thunk for verifying payment
-export const verifyPayment = createAsyncThunk("wallet/verifyPayment",async ({ response, amount }, { rejectWithValue }) => {
+export const verifyPayment = createAsyncThunk("wallet/verifyPayment",async ({ response, amount,paymentType ,jobId }, { rejectWithValue }) => {
     try {
       const verify = await axiosInstance.post("/payment/verify", {
         razorpay_order_id: response.razorpay_order_id,
         razorpay_payment_id: response.razorpay_payment_id,
         razorpay_signature: response.razorpay_signature,
         amount,
+        paymentType,
+        jobId
       }, {
         headers: {
           Authorization: localStorage.getItem("token"),
