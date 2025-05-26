@@ -1,18 +1,20 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+import { useNavigate, useLocation, useParams,Link } from "react-router-dom";
 import { BadgeCheck, Star, UserRound } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { showJobPostDetail } from "../../redux/slices/jobPostSlice";
 import { fetchServiceProviders } from "../../redux/slices/userSlice";
 import JobRequests from "./JobRequests";
 import JobConsider from "./JobConsider";
+import { usePaymentHandler } from "../../hooks/usePaymentHandlers";
 function JobPostDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-  console.log(id);
   const location = useLocation();
+  const from = location.state?.from || "/";
+
+  const { payment } = usePaymentHandler(from);
 
   const [considered, setConsidered] = useState(() =>
     location.pathname.startsWith("/job/post/details/considers")
@@ -38,9 +40,11 @@ function JobPostDetail() {
     return user._id == jobPost.selectedServiceProvider;
   });
 
-  console.log(selectedServiceProvider);
+  console.log(jobPost);
 
-  const handleComplet = () => {
+  const handleComplet = async () => {
+    await payment(NaN, "salary", jobPost._id, jobPost.salary);
+    // console.log(formData)
     // navigate(`/review/write/${jobPost.selectedServiceProvider}/${jobPost._id}`);
   };
 
@@ -107,6 +111,16 @@ function JobPostDetail() {
                       Delete Post
                     </button>
                   </div>
+                ) : jobPost.workStatus === "completed" ? (
+                  <div className="bg-green-50 border border-green-400 p-5 rounded-lg shadow-sm">
+                    <h3 className="text-green-700 font-semibold text-lg mb-2 flex items-center gap-2">
+                      ✅ Work Completed
+                    </h3>
+                    <p className="text-gray-700 text-sm">
+                      This job has been marked as completed. You can view the
+                      payment history or contact the service provider if needed.
+                    </p>
+                  </div>
                 ) : (
                   <div className="bg-white p-5 space-y-3">
                     <p className="text-gray-700 text-base">
@@ -159,6 +173,11 @@ function JobPostDetail() {
                   <p className="mt-1 text-gray-500">
                     Email: {selectedServiceProvider?.email}
                   </p>
+
+                  <div className="text-green-700 mt-2 hover:underline">
+                    <Link to={`/view/job/request/${selectedServiceProvider?._id}/${id}`}>View details</Link>
+                  </div>
+                  {/* <button className="text-center text-green-700 px-3 py-1 mt-2 rounded-[6px]">View details</button> */}
                 </div>
               </div>
             ) : (
