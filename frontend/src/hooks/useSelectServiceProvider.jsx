@@ -1,6 +1,6 @@
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { selectServiceProvider } from "../redux/slices/jobPostSlice";
+import { selectServiceProvider,showJobPostDetail, checkIfWorking } from "../redux/slices/jobPostSlice";
 import toast from "react-hot-toast";
 
 export const useSelectServiceProvider = () => {
@@ -13,7 +13,9 @@ export const useSelectServiceProvider = () => {
       const res = await dispatch(
         selectServiceProvider(formData)
       ).unwrap();
-      navigate(`/job/post/details/requests/${formData.id}`)
+      // navigate(`/job/post/details/requests/${formData.id}`)
+      dispatch(showJobPostDetail(formData.id));   
+      dispatch(checkIfWorking(formData.selectedServiceProviderId));
       toast.success("Service provider has been selected successfully.");
       return res;
     } catch (error) {
