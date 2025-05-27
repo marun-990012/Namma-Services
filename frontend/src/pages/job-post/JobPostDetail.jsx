@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, useLocation, useParams,Link } from "react-router-dom";
+import { useNavigate, useLocation, useParams, Link } from "react-router-dom";
 import { BadgeCheck, Star, UserRound } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import { showJobPostDetail } from "../../redux/slices/jobPostSlice";
@@ -13,6 +13,11 @@ function JobPostDetail() {
   const dispatch = useDispatch();
   const location = useLocation();
   const from = location.state?.from || "/";
+
+  const [showPopup, setShowPopup] = useState(false);
+  const [agree, setAgree] = useState(false);
+  const [extraPay, setExtraPay] = useState('');
+  console.log(agree);
 
   const { payment } = usePaymentHandler(from);
 
@@ -36,6 +41,7 @@ function JobPostDetail() {
   const jobPost = useSelector((state) => state.jobs).job;
   const users = useSelector((state) => state.users).data;
 
+  const salary = (Number(jobPost.salary) + Number(extraPay));
   const selectedServiceProvider = users.find((user) => {
     return user._id == jobPost.selectedServiceProvider;
   });
@@ -43,11 +49,17 @@ function JobPostDetail() {
   console.log(jobPost);
 
   const handleComplet = async () => {
-    await payment(NaN, "salary", jobPost._id, jobPost.salary);
-    // console.log(formData)
-    // navigate(`/review/write/${jobPost.selectedServiceProvider}/${jobPost._id}`);
+    setShowPopup(true);
   };
 
+  const handleConfirm = async () => {
+    await payment(NaN, "salary", jobPost._id, salary);
+    // alert("hello");
+  };
+
+  const handleCancel = () => {
+    setShowPopup(false);
+  };
   return (
     <div className="flex justify-center items-center border-3 border-white p-10 pt-4 rounded-[8px] mb-2">
       <div className="w-full">
@@ -175,7 +187,11 @@ function JobPostDetail() {
                   </p>
 
                   <div className="text-green-700 mt-2 hover:underline">
-                    <Link to={`/view/job/request/${selectedServiceProvider?._id}/${id}`}>View details</Link>
+                    <Link
+                      to={`/view/job/request/${selectedServiceProvider?._id}/${id}`}
+                    >
+                      View details
+                    </Link>
                   </div>
                   {/* <button className="text-center text-green-700 px-3 py-1 mt-2 rounded-[6px]">View details</button> */}
                 </div>
@@ -233,6 +249,116 @@ function JobPostDetail() {
           </div>
         </div>
       </div>
+
+      {/* Confirmation Popup */}
+      {showPopup && (
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-opacity-50 backdrop-blur-md">
+          <div className="bg-gradient-to-br from-[#5e3ae4] via-[#7556e0] to-[#a17cf7] text-white p-6 rounded-2xl shadow-2xl max-w-md mx-auto border border-purple-300 relative transition-transform duration-300 hover:scale-[1.01]">
+            {/* Payment Avatar or Icon */}
+            <div className="flex justify-center absolute left-1/2 transform -translate-x-1/2 -top-10">
+              <div className="bg-[#7556e0] rounded-full p-1 shadow-lg w-24 h-24 flex items-center justify-center">
+                <div className=" flex flex-col bg-yellow-300 w-21 h-21 rounded-full flex items-center justify-center text-white text-2xl font-semibold">
+                  Pay <span className="text-[13px] text-green-700">Secure</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Salary Display */}
+            <div className="pt-16 mb-6 text-center">
+              <p className="text-4xl font-bold tracking-tight">₹ {salary}</p>
+              <p className="text-[15px] text-white/80 mt-1">
+                Total Service Payment
+              </p>
+
+              {agree > 0 && (
+                <div className="mt-3 inline-block bg-white/10 px-4 py-2 rounded-lg border border-white/20 backdrop-blur-sm">
+                  <p className="text-sm text-white/90">
+                    Base: ₹{jobPost.salary}
+                    <span className="mx-2 text-white/50">+</span>
+                    Extra: ₹{extraPay !=0 && (<span>{extraPay}</span>)} {extraPay==0 &&(<span>0</span>)}
+                    <span className="mx-2 text-white/50">=</span>
+                    <strong className="text-yellow-300">₹{salary}</strong>
+                  </p>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-center">
+              <div className="w-[60%]">
+                <label className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    id="agree"
+                    className="peer hidden"
+                    checked={agree}
+                   onChange={(e) => {
+  const isChecked = e.target.checked;
+  setAgree(isChecked);
+  if (!isChecked) {
+    setExtraPay(0);
+  }
+}}
+                  />
+                  <div className="w-5 h-5 flex items-center justify-center border-2 border-yellow-400 rounded bg-white peer-checked:bg-green-300 transition-colors duration-200">
+                    <svg
+                      className="w-4 h-4 text-green-600 hidden peer-checked:block"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="3"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                  <span className="text-sm text-white">
+                    Agree to pay extra if required.
+                  </span>
+                </label>
+                {agree && (
+                  <div className="mt-3">
+                    <label className="block text-white text-sm mb-1 ml-1">
+                      Enter Extra Amount
+                    </label>
+                    <input
+                      type="number"
+                      value={extraPay}
+                      onChange={(e)=>{setExtraPay(e.target.value)}}
+                      placeholder="₹ 0.00"
+                      className="w-full px-4 py-2 bg-white text-[#4f2bdf] placeholder:text-gray-400 rounded-lg border border-purple-200 focus:outline-none focus:ring-2 focus:ring-yellow-300 transition-all duration-200"
+                    />
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Confirmation Message */}
+            <p className="text-base text-center mb-6 leading-relaxed text-white/90">
+              You're about to pay for the service. Please confirm to proceed
+              with the secure payment.
+            </p>
+
+            {/* Action Buttons */}
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={handleCancel}
+                className="bg-white text-[#5e3ae4] font-medium px-5 py-2 rounded-lg shadow hover:bg-gray-100 transition"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleConfirm}
+                className="bg-yellow-300 text-[#4f2bdf] font-semibold px-5 py-2 rounded-lg shadow hover:bg-yellow-400 transition"
+              >
+                Confirm & Pay
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
