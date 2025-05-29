@@ -16,7 +16,7 @@ import JobDetails from "./pages/job-post/JobDetails";
 import SendJobRequest from "./pages/job-post/SendJobRequest";
 import ViewJobRequest from "./pages/job-post/ViewJobRequest";
 import TotalWorks from "./pages/job-post/TotalWorks";
-import TotalReviews from "./pages/review/TotalReviews";
+import AllReviews from "./pages/review/AllReviews";
 import ReviewCard from "./pages/review/ReviewCard";
 import DashBoard from "./pages/dashboard/Dashboard";
 import Payment from "./pages/payment/Payment";
@@ -52,7 +52,7 @@ function App() {
             <Route path="/view/job/request/:userId/:id" element={<ViewJobRequest/>}/>
             <Route path="/total/completed/job/:id" element={<TotalWorks/>}/>
             <Route path="/review/write/:serviceProviderId/:jobId" element={<ReviewCard/>}/>
-            <Route path="/total/reviews/:id" element={<TotalReviews/>}/>
+            <Route path="/total/reviews/:id" element={<AllReviews/>}/>
             <Route path="/dashboard" element={<DashBoard/>}/>
             <Route path="/payment" element={<Payment/>}/>
             <Route path="/payment/wallet/add/coins" element={<Payment/>}/>
