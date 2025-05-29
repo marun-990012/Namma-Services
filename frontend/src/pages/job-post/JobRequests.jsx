@@ -57,11 +57,11 @@ function JobRequests() {
   return (
     <div className="mt-4 space-y-4 max-w-6xl mx-auto px-2">
   {requestedUsers.length > 0 ? (
-    <div>
+    <div className="">
       {requestedUsers.map((user, index) => (
         <div
           key={user?._id}
-          className="px-4 py-3 rounded-lg border border-gray-300 shadow flex items-center gap-4"
+          className="px-4 py-3 rounded-lg border border-gray-300 shadow flex items-center gap-4 mt-2"
         >
           <img
             src={user?.profileImage}
