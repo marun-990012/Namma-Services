@@ -226,6 +226,28 @@ userController.fetchServiceProviders = async (req, res) => {
 };
 
 
+userController.fetchWorkProviders = async (req, res) => {
+  try {
+    const users = await User.find(
+      { userType: "work-provider" }, // filter condition
+      {
+        name: 1,
+        email: 1,
+        phoneNumber: 1,
+        userType: 1,
+        profileImage: 1,
+        bio: 1,
+      }
+    );
+
+    return res.json(users);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+
 //account controller
 userController.account = async (req, res) => {
    try{
