@@ -19,6 +19,8 @@ import { fetchAccount } from "../../redux/slices/profileSlice";
 import { useSelectServiceProvider } from "../../hooks/useSelectServiceProvider";
 import { useConsiderServiceProvider } from "../../hooks/useConsiderServiceProvider";
 import { usewithdrawConsider } from "../../hooks/useWithdrawConsider";
+import AllReviews from "../review/AllReviews";
+import { fetchReviews } from "../../redux/slices/reviewRatingSlice";
 function ViewJobRequest() {
   const { userId, id } = useParams();
   const dispatch = useDispatch();
@@ -29,20 +31,23 @@ function ViewJobRequest() {
 
   const [replyMessage, setReplyMessage] = useState("");
   const [showPopup, setShowPopup] = useState(false);
-  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     dispatch(showJobPostDetail(id));
     dispatch(fetchServiceProviders());
     dispatch(fetchAccount());
     dispatch(checkIfWorking(userId));
+    dispatch(fetchReviews(userId));
   }, [dispatch]);
 
   const jobPost = useSelector((state) => state.jobs);
   const users = useSelector((state) => state.users).data;
   const userAccount = useSelector((state) => state.profile).data;
-  console.log(jobPost.isWorking);
+  const reviews = useSelector((state) => state.review)?.reviews;
+  console.log(reviews);
 
+  const averageRating = reviews.length? reviews.reduce((acc, cv) => acc + cv.rating, 0) / reviews.length: 0;
+  // console.log(averageRating);
   const requestedServiceProvider = users.find((user) => {
     return user._id == userId;
   });
@@ -52,15 +57,20 @@ function ViewJobRequest() {
   });
 
   // console.log(jobPost.job.selectedServiceProvider == userId);
-  
+
   const isConsidered = jobPost?.job?.considerations?.includes(userId);
   const isSameServiceProvider = jobPost.job.selectedServiceProvider == userId;
   // console.log(isConsidered);
 
+  const messagesContainerRef = useRef(null);
+  const messagesEndRef = useRef(null);
+
   useEffect(() => {
-    // Scroll to bottom when messages update
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [requestMessages]);
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop =
+        messagesContainerRef.current.scrollHeight;
+    }
+  }, [requestMessages?.messages?.length]);
 
   const handleSendReply = async (e) => {
     e.preventDefault();
@@ -107,7 +117,7 @@ function ViewJobRequest() {
   };
   console.log(jobPost.job.workStatus);
   return (
-    <div className="flex justify-center items-center border-3 border-white p-10 pt-4 rounded-[8px] mb-2">
+    <div className="flex flex-col justify-center items-center border-3 border-white p-10 pt-4 rounded-[8px] mb-2">
       <div className="w-full">
         <div className="flex justify-between">
           <div>
@@ -177,82 +187,81 @@ function ViewJobRequest() {
 
                     {!isSameServiceProvider ? (
                       <>
-                      {/* Tooltip */}
-                    {jobPost.isWorking && (
-                      <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-gray-800 text-gray-100 text-xs rounded-md shadow-lg py-1.5 px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap border border-gray-700">
-                        User is already working on another job
-                      </div>
-                    )}
+                        {/* Tooltip */}
+                        {jobPost.isWorking && (
+                          <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-gray-800 text-gray-100 text-xs rounded-md shadow-lg py-1.5 px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap border border-gray-700">
+                            User is already working on another job
+                          </div>
+                        )}
                       </>
-                    ):(
+                    ) : (
                       <>
-                      {/* Tooltip */}
-                    {jobPost.isWorking && (
-                      <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-gray-800 text-gray-100 text-xs rounded-md shadow-lg py-1.5 px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap border border-gray-700">
-                        This job is already assigned to this user.
-                      </div>
-                    )}
+                        {/* Tooltip */}
+                        {jobPost.isWorking && (
+                          <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-gray-800 text-gray-100 text-xs rounded-md shadow-lg py-1.5 px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap border border-gray-700">
+                            This job is already assigned to this user.
+                          </div>
+                        )}
                       </>
                     )}
-                    
                   </div>
                 )}
 
                 <div className="relative group inline-block">
-                  {!jobPost.job.selectedServiceProvider? (
+                  {!jobPost.job.selectedServiceProvider ? (
                     <>
-                    <button
-                    disabled={!!jobPost.isWorking}
-                    onClick={handleSelect}
-                    className={`flex items-center gap-2 px-5 py-2 font-medium rounded-lg shadow-sm transition duration-200 ease-in-out focus:outline-none focus:ring-2 ${
-                      jobPost.isWorking
-                        ? "bg-gray-400 text-white cursor-not-allowed focus:ring-gray-300"
-                        : "bg-green-500 hover:bg-green-600 text-white focus:ring-green-400"
-                    }`}
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                      strokeWidth={2}
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                    Select
-                  </button>
+                      <button
+                        disabled={!!jobPost.isWorking}
+                        onClick={handleSelect}
+                        className={`flex items-center gap-2 px-5 py-2 font-medium rounded-lg shadow-sm transition duration-200 ease-in-out focus:outline-none focus:ring-2 ${
+                          jobPost.isWorking
+                            ? "bg-gray-400 text-white cursor-not-allowed focus:ring-gray-300"
+                            : "bg-green-500 hover:bg-green-600 text-white focus:ring-green-400"
+                        }`}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          strokeWidth={2}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            d="M5 13l4 4L19 7"
+                          />
+                        </svg>
+                        Select
+                      </button>
 
-                  {jobPost.isWorking && (
-                    <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-gray-800 text-gray-100 text-xs rounded-md shadow-lg py-1.5 px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap border border-gray-700">
-                      User is already working on another job
-                    </div>
-                  )}
+                      {jobPost.isWorking && (
+                        <div className="absolute top-full mt-2 left-1/2 transform -translate-x-1/2 bg-gray-800 text-gray-100 text-xs rounded-md shadow-lg py-1.5 px-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 whitespace-nowrap border border-gray-700">
+                          User is already working on another job
+                        </div>
+                      )}
                     </>
-                  ) :(
+                  ) : (
                     <div className="flex items-center gap-3 px-5 py-3 bg-green-100 text-green-800 border border-green-300 rounded-xl shadow-sm">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5 text-green-700"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M5 13l4 4L19 7"
-                  />
-                </svg>
-                <p className="text-sm font-medium">
-                  Service provier selected.
-                </p>
-              </div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-5 w-5 text-green-700"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
+                      <p className="text-sm font-medium">
+                        Service provier selected.
+                      </p>
+                    </div>
                   )}
                 </div>
               </>
@@ -290,7 +299,7 @@ function ViewJobRequest() {
                   src={requestedServiceProvider?.profileImage}
                   alt="User profile"
                 />
-                <span className="absolute bottom-2 right-2 bg-[#ffac00] text-white text-xs font-semibold px-2 py-1 rounded-md shadow">
+                <span className="absolute bottom-2 right-2 bg-orange-100 text-orange-700 text-xs font-semibold px-2 py-1 rounded-md shadow">
                   Requested for work
                 </span>
               </div>
@@ -303,10 +312,40 @@ function ViewJobRequest() {
                     Electrician
                   </span>
                   <div className="flex items-center space-x-1">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} size={14} color="#facc15" />
-                    ))}
-                    <span className="text-gray-600 text-xs ml-1">4.5</span>
+                    {[0, 1, 2, 3, 4].map((_, idx) => {
+                      const isFilled = idx + 1 <= averageRating;
+                      const isHalf =
+                        !isFilled &&
+                        averageRating > idx &&
+                        averageRating < idx + 1;
+
+                      return (
+                        <div key={idx}>
+                          <Star
+                            size={18}
+                            color={isFilled || isHalf ? "#e8c008" : "#d1d5db"}
+                            fill={
+                              isFilled
+                                ? "#e8c008"
+                                : isHalf
+                                ? "url(#half)"
+                                : "none"
+                            }
+                          />
+                        </div>
+                      );
+                    })}
+                    <svg width="0" height="0">
+                      <defs>
+                        <linearGradient id="half">
+                          <stop offset="50%" stopColor="#e8c008" />
+                          <stop offset="50%" stopColor="transparent" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    <span className="text-gray-600 text-xs ml-1">
+                      {averageRating.toFixed(1)}
+                    </span>
                   </div>
                 </div>
 
@@ -345,7 +384,10 @@ function ViewJobRequest() {
             <div className="rounded-xl shadow-md bg-white p-5 w-[70%] flex flex-col justify-between gap-2 h-[70vh]">
               {/* Messages Area */}
 
-              <div className="flex flex-col overflow-y-auto flex-1">
+              <div
+                ref={messagesContainerRef}
+                className="flex flex-col overflow-y-auto flex-1"
+              >
                 {requestMessages?.messages.map((msg) => (
                   <div
                     key={msg._id}
@@ -367,6 +409,7 @@ function ViewJobRequest() {
                     </div>
                   </div>
                 ))}
+                <div ref={messagesEndRef} />
               </div>
 
               {/* Message Input Area */}
@@ -393,6 +436,12 @@ function ViewJobRequest() {
                 </div>
               </form>
             </div>
+          </div>
+        </div>
+
+        <div className="mt-6">
+          <div>
+            <AllReviews userId={userId} />
           </div>
         </div>
       </div>
