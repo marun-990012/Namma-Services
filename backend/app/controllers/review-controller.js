@@ -83,12 +83,34 @@ reviewRatingController.updateReview = async(req,res)=>{
 };
 
 reviewRatingController.list = async(req,res)=>{
+    const id = req.params.id;
     try{
-        const review = await ReviewRating.find();
+        const review = await ReviewRating.find({serviceProvider:id});
         return res.json(review);
     }catch(error){
         console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 }
+
+
+reviewRatingController.like = async(req,res)=>{
+    const id = req.params.id;
+    try{
+        const review = await ReviewRating.findById(id);
+
+        if(!review){
+            return res.status(404).json({message:"Review not found"});
+        }
+
+        review.likes = review.likes +1;
+        review.save();
+        return res.json(review);
+    }catch(error){
+        console.log(error);
+        return res.status(500).json({error:"Something went wrong"});
+    }
+}
+
+
 export default reviewRatingController;
