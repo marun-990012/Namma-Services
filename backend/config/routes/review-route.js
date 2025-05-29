@@ -13,6 +13,7 @@ reviewRoute.post('/create/',authentication,authorization(['work-provider']),chec
 reviewRoute.post('/add/:id',authentication,authorization(['work-provider']),checkSchema(moreReviewValidation),checkSchema(idValidationSchema),inputValidator,reviewRatingController.moreReview);
 reviewRoute.delete('/delete/:id/:reviewid',authentication,checkSchema(reviewIdValidation),inputValidator,reviewRatingController.removeReview);
 reviewRoute.put('/update/:id/:reviewid',authentication,authorization(['work-provider']),checkSchema(updateReviewValidation),checkSchema(idValidationSchema),inputValidator,reviewRatingController.updateReview);
-reviewRoute.get('/list',authentication,reviewRatingController.list);
+reviewRoute.get('/list/:id',authentication,reviewRatingController.list);
+reviewRoute.post('/like/:id',authentication,reviewRatingController.like);
 
 export default reviewRoute;
