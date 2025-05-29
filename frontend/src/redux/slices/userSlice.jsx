@@ -15,11 +15,26 @@ export const fetchServiceProviders = createAsyncThunk('/users/fetchServiceProvid
     }
 });
 
+export const fetchWorkProvider = createAsyncThunk('/users/fetchWorkProvider',async(_,{rejectWithValue})=>{
+    try{
+        const response = await axiosInstance.get('/auth/work-providers',{headers:{
+            Authorization:localStorage.getItem('token')
+        }});
+        console.log(response.data);
+        return response.data;
+    }catch(error){
+        console.log(error);
+        return rejectWithValue(error?.response?.data);
+
+    }
+});
+
 
 const userSlice = createSlice({
     name:"users",
     initialState:{
         data:[],
+        workProviders:[],
         loading:false,
         error:null, 
     },
@@ -39,6 +54,24 @@ const userSlice = createSlice({
         })
 
         .addCase(fetchServiceProviders.rejected,(state,action)=>{
+            state.loading = false;
+            state.error = action.payload;
+        })
+
+
+         //list work Providers 
+        .addCase(fetchWorkProvider.pending,(state,action)=>{
+            state.loading = true;
+            state.error = null;
+        })
+
+        .addCase(fetchWorkProvider.fulfilled,(state,action)=>{
+            state.workProviders = action.payload;
+            state.loading = false;
+            state.error = null;
+        })
+
+        .addCase(fetchWorkProvider.rejected,(state,action)=>{
             state.loading = false;
             state.error = action.payload;
         })
