@@ -7,6 +7,7 @@ import { fetchServiceProviders } from "../../redux/slices/userSlice";
 import JobRequests from "./JobRequests";
 import JobConsider from "./JobConsider";
 import { usePaymentHandler } from "../../hooks/usePaymentHandlers";
+import { fetchReviews } from "../../redux/slices/reviewRatingSlice";
 function JobPostDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -38,22 +39,35 @@ function JobPostDetail() {
     dispatch(fetchServiceProviders());
   }, [dispatch]);
 
+  
+
   const jobPost = useSelector((state) => state.jobs).job;
   const users = useSelector((state) => state.users).data;
+  const reviews = useSelector((state) => state.review)?.reviews;
+ 
 
   const salary = (Number(jobPost.salary) + Number(extraPay));
   const selectedServiceProvider = users.find((user) => {
     return user._id == jobPost.selectedServiceProvider;
   });
 
+   useEffect(() => {
+  if (selectedServiceProvider?._id) {
+    dispatch(fetchReviews(selectedServiceProvider._id));
+  }
+}, [dispatch, selectedServiceProvider?._id]);
+
+  // console.log(selectedServiceProvider)
+ 
   console.log(jobPost);
+  const averageRating = reviews?.length? reviews.reduce((acc, cv) => acc + cv.rating, 0) / reviews.length: 0;
 
   const handleComplet = async () => {
     setShowPopup(true);
   };
 
   const handleConfirm = async () => {
-    await payment(NaN, "salary", jobPost._id, salary);
+    await payment(NaN, "salary", jobPost._id, salary,selectedServiceProvider._id);
     // alert("hello");
   };
 
@@ -153,14 +167,14 @@ function JobPostDetail() {
             {/* Right Section */}
             {/* jobPost.selectedServiceProvider */}
             {jobPost.selectedServiceProvider ? (
-              <div className="w-full lg:max-w-[30%] bg-white rounded-xl shadow-md overflow-hidden">
+              <div className="w-full lg:max-w-[30%] h-90 bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="relative">
                   <img
                     className="w-full h-48 object-cover"
                     src={selectedServiceProvider?.profileImage}
                     alt="User profile"
                   />
-                  <span className="absolute top-2 left-2 bg-green-600 text-white text-xs font-semibold px-1 py-[2px] rounded">
+                  <span className="absolute top-2 left-2 bg-green-50 text-green-700 text-xs font-semibold px-1 py-[2px] rounded">
                     Selected for work
                   </span>
                 </div>
@@ -168,12 +182,42 @@ function JobPostDetail() {
                 <div className="p-4 pt-2">
                   <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold flex justify-between mt-2">
                     <p className="text-[12px]">Electrician</p>
-                    <p className="flex">
-                      {[...Array(5)].map((_, i) => (
-                        <Star size={16} key={i} color="#ecd909" />
-                      ))}
-                      <span className="ml-2">4.5</span>
-                    </p>
+                      <div className="flex items-center space-x-1">
+                    {[0, 1, 2, 3, 4].map((_, idx) => {
+                      const isFilled = idx + 1 <= averageRating;
+                      const isHalf =
+                        !isFilled &&
+                        averageRating > idx &&
+                        averageRating < idx + 1;
+
+                      return (
+                        <div key={idx}>
+                          <Star
+                            size={18}
+                            color={isFilled || isHalf ? "#e8c008" : "#d1d5db"}
+                            fill={
+                              isFilled
+                                ? "#e8c008"
+                                : isHalf
+                                ? "url(#half)"
+                                : "none"
+                            }
+                          />
+                        </div>
+                      );
+                    })}
+                    <svg width="0" height="0">
+                      <defs>
+                        <linearGradient id="half">
+                          <stop offset="50%" stopColor="#e8c008" />
+                          <stop offset="50%" stopColor="transparent" />
+                        </linearGradient>
+                      </defs>
+                    </svg>
+                    <span className="text-gray-600 text-xs ml-1">
+                      {averageRating.toFixed(1)}
+                    </span>
+                  </div>
                   </div>
                   <p className="mt-[1px] text-[20px] text-black flex items-center">
                     {selectedServiceProvider?.name}{" "}
@@ -252,8 +296,8 @@ function JobPostDetail() {
 
       {/* Confirmation Popup */}
       {showPopup && (
-        <div className="fixed inset-0 z-50 flex justify-center items-center bg-opacity-50 backdrop-blur-md">
-          <div className="bg-gradient-to-br from-[#5e3ae4] via-[#7556e0] to-[#a17cf7] text-white p-6 rounded-2xl shadow-2xl max-w-md mx-auto border border-purple-300 relative transition-transform duration-300 hover:scale-[1.01]">
+        <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/30 backdrop-blur-sm">
+          <div className="bg-gradient-to-br from-[#5e3ae4] via-[#7556e0] to-[#a17cf7] text-white p-6 rounded-2xl shadow-2xl max-w-md mx-auto border border-purple-300 relative transition-transform duration-300 hover:scale-[1.01] mt-4">
             {/* Payment Avatar or Icon */}
             <div className="flex justify-center absolute left-1/2 transform -translate-x-1/2 -top-10">
               <div className="bg-[#7556e0] rounded-full p-1 shadow-lg w-24 h-24 flex items-center justify-center">
