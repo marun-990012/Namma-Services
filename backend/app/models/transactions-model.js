@@ -2,36 +2,44 @@ import mongoose from 'mongoose';
 const {Schema,model} = mongoose;
 
 const transactionSchema = new Schema({
-  walletId: {
+  user: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Wallet',
+    ref: 'User',
   },
-  type: {
+  purpose: {
     type: String,
-    enum: ['buy', 'spend', 'tip', 'bonus'],
+    enum: ['wallet_topup', 'salary_payment', 'withdrawal', 'refund'],
+  },
+  status: {
+    type: String,
+    enum: ['success', 'pending', 'failed'],
+    default: 'pending',
+  },
+  paymentGatewayId: {
+    type: String,
+    default: null,
   },
   amount: {
     type: Number,
-    required: true
-  },
-  description: {
-    type: String
   },
   jobId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Job',
-    default: null
+    default: undefined
   },
-  status: {
-    type: String,
-    enum: ['pending', 'success', 'failed'],
-    default: 'success',
-  },
-  date: {
-    type: Date,
-    default: Date.now,
-  },
+  date:String
 }, { timestamps: true });
+
+
+// Pre-save hook to format and set transaction Date
+transactionSchema.pre("save", function (next) {
+  if (!this.date) {
+    const options = { day: '2-digit', month: 'short', year: 'numeric' };
+    const formattedDate = new Date().toLocaleDateString('en-GB', options); // e.g., "28 May 2025"
+    this.date = formattedDate;
+  }
+  next();
+});
 
 const Transaction = model('Transaction', transactionSchema);
 export default Transaction;
