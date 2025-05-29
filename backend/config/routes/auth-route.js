@@ -25,7 +25,8 @@ authRoute.post('/reset/paswword',checkSchema(resetPasswordValidation),inputValid
 authRoute.post('/login-otp',userController.loginOtp);
 authRoute.post('/login',checkSchema(userLoginValidation),inputValidator,userController.login);
 authRoute.get('/user',authentication,userController.list);
-authRoute.get('/service-providers',authentication,userController.fetchServiceProviders)
+authRoute.get('/service-providers',authentication,userController.fetchServiceProviders);
+authRoute.get('/work-providers',authentication,userController.fetchWorkProviders);
 authRoute.get('/account',authentication,userController.account);
 authRoute.put('/update-profile-image',authentication,checkSchema(ImageUploadValidation),inputValidator,userController.updateProfileImage);
 authRoute.post('/upload-images',authentication,userController.uploadPhotos);
