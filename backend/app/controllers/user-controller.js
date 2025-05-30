@@ -79,7 +79,9 @@ userController.forgotPassword = async(req,res)=>{
 
      // Generate a secure random token
       const resetToken = crypto.randomBytes(32).toString('hex');
-      sendResetPasswordEmail({token:resetToken,email:user.email});
+      console.log(resetToken);
+      const resetUrl = `http://localhost:5173/reset/password/${resetToken}`; 
+      sendResetPasswordEmail({resetUrl,email:user.email,resetUrl});
 
      // Hash it before storing in DB for security
       const hashedToken = crypto.createHash('sha256').update(resetToken).digest('hex');
