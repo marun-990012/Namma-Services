@@ -9,6 +9,8 @@ import userReducer from '../slices/userSlice';
 import walletReducer from '../slices/WalletSlice';
 import paymentReducer from '../slices/paymentSlice';
 import reviewRatingReducer from '../slices/reviewRatingSlice';
+import transactionReducer from '../slices/transactionSlice';
+import Transactions from '../../pages/payment/Transactions';
 
 
 const store = configureStore({
@@ -21,8 +23,9 @@ const store = configureStore({
         jobs:jobPostReducer,
         users:userReducer,
         wallet:walletReducer,
+        review:reviewRatingReducer,
         payment:paymentReducer,
-        review:reviewRatingReducer
+        transactions:transactionReducer
     }
 });
 
