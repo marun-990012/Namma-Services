@@ -12,7 +12,8 @@ export const usePaymentHandler = (from = "/") => {
   const navigate = useNavigate();
   const { triggerPayment } = useRazorpayPayment();
 
-  const payment = async (coin, paymentType, jobId, salary) => {
+  const payment = async (coin, paymentType, jobId, salary,userId) => {
+    console.log(userId)
     if (paymentType === "wallet" && coin <= 0) {
       toast.error("Enter a valid coin amount.");
       return;
@@ -38,7 +39,7 @@ export const usePaymentHandler = (from = "/") => {
         amount: salary,
         description: "Salary Payment",
         onSuccess: async (response, amount) => {
-        const res =  await dispatch(verifyPayment({ response, amount, paymentType, jobId })).unwrap();
+        const res =  await dispatch(verifyPayment({ response, amount, paymentType, jobId,userId })).unwrap();
         navigate(`/review/write/${res.jobPost.selectedServiceProvider}/${res.jobPost._id}`);
         // console.log(res)
         dispatch(showJobPostDetail(jobId))
