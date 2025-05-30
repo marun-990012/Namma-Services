@@ -46,6 +46,29 @@ export const userLogin = createAsyncThunk('/auth/userLogin',async(formData,{reje
     }
 });
 
+
+export const forgotPassword = createAsyncThunk('/auth/forgotPassword',async(formData,{rejectWithValue})=>{
+    try{
+        const response = await axiosInstance.post('/auth/forgot/paswword',formData);
+        console.log(response.data);
+        return response.data;
+    }catch(error){
+        console.log(error);
+        return rejectWithValue(error?.response?.data ||{ message : "Login failed. Please try again"});
+    }
+});
+
+export const resetPassword = createAsyncThunk('/auth/resetPassword',async(formData,{rejectWithValue})=>{
+    try{
+        const response = await axiosInstance.post('/auth/reset/paswword',formData);
+        console.log(response.data);
+        return response.data;
+    }catch(error){
+        console.log(error);
+        return rejectWithValue(error?.response?.data ||{ message : "Login failed. Please try again"});
+    }
+});
+
 const authSlice = createSlice({
     name:'auth',
     initialState:{
