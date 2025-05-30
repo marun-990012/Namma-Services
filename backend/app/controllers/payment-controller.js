@@ -48,6 +48,7 @@ paymentController.verify = async (req, res) => {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
+  console.log('userId',userId)
   try {
     const sign = `${razorpay_order_id}|${razorpay_payment_id}`;
     const expectedSignature = crypto
@@ -68,7 +69,6 @@ paymentController.verify = async (req, res) => {
       await payment.save();
 
       const transactionData = {
-        user: userId || req.userId,
         paymentGatewayId: razorpay_payment_id,
         amount,
         status: 'success',
@@ -76,6 +76,7 @@ paymentController.verify = async (req, res) => {
 
       if (paymentType === 'wallet') {
         const wallet = await addCoinsInWallet(req.userId, amount);
+       transactionData.user =  req.userId;
         transactionData.purpose = 'wallet_topup';
         const transaction = new Transaction(transactionData);
         await transaction.save();
@@ -84,6 +85,7 @@ paymentController.verify = async (req, res) => {
 
       if (paymentType === 'salary') {
         const jobComplet = await completeJob({ jobId, userId: req.userId });
+        transactionData.user = userId;
         transactionData.purpose = 'salary_payment';
         transactionData.jobId = jobId;
         const transaction = new Transaction(transactionData);
