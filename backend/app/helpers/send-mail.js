@@ -43,7 +43,7 @@ export const sendResetPasswordEmail = async(data)=>{
         to: data.email,
         subject: 'resete possword',
         text: data.token,
-        html:welcomeEmailTemplate.replace("{name}",data.token)
+        html:welcomeEmailTemplate.replace("{name}",data.resetUrl)
     };
 
     try{
