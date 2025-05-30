@@ -400,12 +400,12 @@ function ViewJobRequest() {
                     <div
                       className={`p-3 max-w-[80%] rounded-xl shadow-sm text-sm text-gray-800 ${
                         msg.sender === userAccount?._id
-                          ? "bg-[#dcf8c6] rounded-br-sm"
-                          : "bg-white border border-gray-200 rounded-tl-sm"
+                          ? "bg-[#dcf8c6] rounded-br-[1px]"
+                          : "bg-white border border-gray-200 rounded-tl-[1px]"
                       }`}
                     >
                       {msg.message}
-                      <div ref={messagesEndRef} />
+                      
                     </div>
                   </div>
                 ))}
