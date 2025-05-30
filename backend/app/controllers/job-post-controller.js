@@ -4,6 +4,7 @@ import mongoose from 'mongoose';
 import axios from "axios";
 import { sendConsiderNotification, sendSelectNotification } from "../helpers/send-mail.js";
 import { deductCoin } from "../services/walletService.js";
+import Transaction from "../models/transactions-model.js";
 
 const jobPostController={};
 
@@ -142,9 +143,17 @@ jobPostController.jobRequest = async (req, res) => {
       return res.status(409).json({ error: "You have already applied to this job." });
     }
 
-    // Deduct 1 coin BEFORE saving the job request
+    // Deduct 1 coin BEFORE saving the job requestconst 
+    const transactionData = {
+        amount:1,
+        status: 'success',
+      };
     try {
       await deductCoin(req.userId);
+      transactionData.user =  serviceProvider;
+      transactionData.purpose = 'debit_wallet';
+      const transaction = new Transaction(transactionData);
+      await transaction.save();
     } catch (walletError) {
       return res.status(400).json({ error: walletError.message });
     }
