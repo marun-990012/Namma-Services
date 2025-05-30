@@ -57,7 +57,7 @@ function JobPostDetail() {
   }
 }, [dispatch, selectedServiceProvider?._id]);
 
-  // console.log(selectedServiceProvider)
+  console.log(selectedServiceProvider?._id)
  
   console.log(jobPost);
   const averageRating = reviews?.length? reviews.reduce((acc, cv) => acc + cv.rating, 0) / reviews.length: 0;
