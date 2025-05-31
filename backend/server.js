@@ -16,43 +16,47 @@ import reviewRoute from './config/routes/review-route.js';
 import walletRoute from './config/routes/wallet-route.js';
 import findJobRoute from './config/routes/find-nearest-route.js';
 import paymentRoute from './config/routes/payment-route.js';
+import transactionRoute from './config/routes/transaction-route.js';
 
 const app = express();
 dotenv.config();
 const port= process.env.PORT || 3040;
+
 //application level middleware 
 app.use(express.json()); // Parse incoming JSON bodies
 app.use(cors());  //to avoide cors error
 
-//api for users 9
+//api for users 
 app.use('/api/auth',authRoute);
 
-//api for address 2
+//api for address 
 app.use('/api/address',addressRoute);
 
-// //api for service category 4
+// //api for service category 
 app.use('/api/category',categoryRoute);
 
-//api for job post 12
+//api for job post 
 app.use('/api/job',jobPostRoute);
 
 //api for find near job;
 app.use('/api/nearby/job',findJobRoute);
 
-//api for image upload 1
+//api for image upload 
 app.use('/api/image', imageUploadRoute);
 
-//api for rating and review 4
+//api for rating and review 
 app.use('/api/review',reviewRoute);
 
-//api for wallet 3
+//api for wallet 
 app.use('/api/wallet',walletRoute);
 
 //api for payment
 app.use('/api/payment', paymentRoute);
 
+//api for transaction 
+app.use('/api/transaction', transactionRoute);
 
- 
+
 app.listen(port,()=>{
     connectDb();
     console.log('Server is running on port',port);
