@@ -2,12 +2,14 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams, Link } from "react-router-dom";
 import { BadgeCheck, Star, UserRound } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { showJobPostDetail } from "../../redux/slices/jobPostSlice";
+import { showJobPostDetail,deleteJobPost } from "../../redux/slices/jobPostSlice";
 import { fetchServiceProviders } from "../../redux/slices/userSlice";
 import JobRequests from "./JobRequests";
 import JobConsider from "./JobConsider";
 import { usePaymentHandler } from "../../hooks/usePaymentHandlers";
 import { fetchReviews } from "../../redux/slices/reviewRatingSlice";
+import toast from "react-hot-toast";
+
 function JobPostDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -39,13 +41,10 @@ function JobPostDetail() {
     dispatch(fetchServiceProviders());
   }, [dispatch]);
 
-  
-
   const jobPost = useSelector((state) => state.jobs).job;
   const users = useSelector((state) => state.users).data;
   const reviews = useSelector((state) => state.review)?.reviews;
  
-
   const salary = (Number(jobPost.salary) + Number(extraPay));
   const selectedServiceProvider = users.find((user) => {
     return user._id == jobPost.selectedServiceProvider;
@@ -74,8 +73,18 @@ function JobPostDetail() {
   const handleCancel = () => {
     setShowPopup(false);
   };
+
+  const handleDelete = async()=>{
+    try {
+      const res = await dispatch(deleteJobPost(id)).unwrap();
+      toast.success('successfully deleted job post');
+      navigate('/job/posts')
+    } catch (error) {
+      toast.error('error while deleting post')
+    }
+  }
   return (
-    <div className="flex justify-center items-center border-3 border-white p-10 pt-4 rounded-[8px] mb-2">
+    <div className="flex flex-col justify-center items-center border-3 border-white p-6 pt-4 rounded-[8px] mb-2 bg-gray-100">
       <div className="w-full">
         <div className="ml-2">
           <button
@@ -133,7 +142,7 @@ function JobPostDetail() {
                     <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg font-medium text-base transition-all">
                       Edit Post
                     </button>
-                    <button className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-medium text-base transition-all">
+                    <button onClick={handleDelete} className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-medium text-base transition-all">
                       Delete Post
                     </button>
                   </div>
