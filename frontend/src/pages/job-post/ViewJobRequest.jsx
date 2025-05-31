@@ -117,7 +117,7 @@ function ViewJobRequest() {
   };
   console.log(jobPost.job.workStatus);
   return (
-    <div className="flex flex-col justify-center items-center border-3 border-white p-10 pt-4 rounded-[8px] mb-2">
+    <div className="flex flex-col justify-center items-center border-3 border-white p-10 pt-4 rounded-[8px] mb-2 bg-gray-100">
       <div className="w-full">
         <div className="flex justify-between">
           <div>
