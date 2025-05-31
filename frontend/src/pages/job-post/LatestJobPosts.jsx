@@ -28,7 +28,7 @@ function LatestJobPosts() {
 
     console.log(nearestJobs);
   return (
-    <div className="flex justify-center items-center border-3 border-white shodow-xl rounded-[8px] p-10 mb-4">
+    <div className="bg-gray-100 flex justify-center items-center border-3 border-white shodow-xl rounded-[8px] p-10 mb-4">
       <div className="w-full ">
         <div>
           <p>Latest Job Posts - <span className="border border-green-300 rounded bg-green-200 text-green-700 font-medium px-3">{nearestJobs.length}</span></p>
