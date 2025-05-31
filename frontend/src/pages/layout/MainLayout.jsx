@@ -1,5 +1,6 @@
 import { Outlet,Link } from "react-router-dom";
 import { useSelector } from "react-redux";
+import Sidebar from "./SideBar";
 function MainLayout(){
   const loginDetail = useSelector((state)=>{
     return state.auth;
@@ -24,12 +25,12 @@ function MainLayout(){
   )}
 
   {/* Page Content Below the Navbar */}
-  <div className="flex pt-12 ">
+  <div className="flex pt-11 ">
     {/* Sidebar */}
     {isLoggedIn &&(
-      <div className="w-[7%] h-[100vh] bg-white ml-2 rounded-[10px] shadow fixed left-0  z-40 ">
-      <div className="p-4 text-gray-800 flex flex-col gap-4">Sidebar
-        <Link to="/profile" className="hover:underline">
+      <div className=" ml-1 rounded-[10px] shadow fixed left-0  z-40 ">
+      
+        {/* <Link to="/profile" className="hover:underline">
         profile
       </Link>
 
@@ -51,15 +52,16 @@ function MainLayout(){
 
       <Link to="/dashboard" className="hover:underline">
         Dashboard
-      </Link>
+      </Link> */}
+      
+      <Sidebar/>
       
       
-      </div>
     </div>
     )}
 
     {/* Main Content Area */}
-    <div className=" px-4 w-full ml-24 ">
+    <div className=" px-2 w-full ml-23 ">
       <Outlet />
     </div>
   </div>
