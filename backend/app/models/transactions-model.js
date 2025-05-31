@@ -8,7 +8,7 @@ const transactionSchema = new Schema({
   },
   purpose: {
     type: String,
-    enum: ['wallet_topup', 'salary_payment', 'withdrawal', 'refund'],
+    enum: ['wallet_topup', 'salary_payment', 'debit_wallet', 'refund'],
   },
   status: {
     type: String,
