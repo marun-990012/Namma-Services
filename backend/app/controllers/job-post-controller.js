@@ -3,6 +3,7 @@ import User from '../models/user-model.js';
 import mongoose from 'mongoose';
 import axios from "axios";
 import { sendConsiderNotification, sendSelectNotification } from "../helpers/send-mail.js";
+import { sendNotification } from "../helpers/notify.js";
 import { deductCoin } from "../services/walletService.js";
 import Transaction from "../models/transactions-model.js";
 
@@ -162,6 +163,13 @@ jobPostController.jobRequest = async (req, res) => {
     jobPost.jobRequests.push({ serviceProvider, messages });
     await jobPost.save();
 
+// In-app notification
+  await sendNotification({
+  userId: jobPost.postedBy,
+  title: "New Job Request",
+  message: `Someone has applied to your job "${jobPost.title}". Check their profile in the job dashboard.`,
+  type: "info",
+});
     return res.json(jobPost);
   } catch (error) {
     console.error(error);
@@ -261,36 +269,59 @@ jobPostController.checkIfWorking = async(req,res)=>{
 
 
 //controller for considerations 
-jobPostController.consideration  = async(req,res)=>{
-    const id = req.params.id;
-    const {serviceProvider} = req.body
-    try{
-        const jobPost = await Job.findById(id);
-        if(!jobPost){
-            return res.status(404).json({error:"this post no longer available."})
-        }
+jobPostController.consideration = async (req, res) => {
+  const { id } = req.params;
+  const { serviceProvider } = req.body;
 
-        const request = jobPost.jobRequests.find((req) => req.serviceProvider.toString() === serviceProvider.toString());
-        if (!request) {
-          return res.status(404).json({ error: "Job request not found." });
-        }
-
-       // Prevent duplicate entries in considerations
-      if(!jobPost.considerations.includes(request.serviceProvider)) {
-        jobPost.considerations.push(request.serviceProvider);
-        await jobPost.save();
-        const user = await User.findById(serviceProvider);
-        // console.log(user)
-        sendConsiderNotification({email:user.email,title:jobPost.title});
-        return res.json(jobPost);
-      }else{
-        return res.status(400).json({ message: "This service provider is already in the consideration list."});
-      }
-    }catch(error){
-        console.log(error);
-        return res.status(500).json({error:"Something went wrong"});
+  try {
+    const jobPost = await Job.findById(id);
+    if (!jobPost) {
+      return res.status(404).json({ error: "This post is no longer available." });
     }
+
+    const request = jobPost.jobRequests.find(
+      (req) => req.serviceProvider.toString() === serviceProvider.toString()
+    );
+
+    if (!request) {
+      return res.status(404).json({ error: "Job request not found." });
+    }
+
+    const alreadyConsidered = jobPost.considerations.includes(serviceProvider.toString());
+    if (alreadyConsidered) {
+      return res.status(400).json({
+        message: "This service provider is already in the consideration list.",
+      });
+    }
+
+    // Push service provider to considerations
+    jobPost.considerations.push(serviceProvider);
+    await jobPost.save();
+
+    // Send Notifications
+    const user = await User.findById(serviceProvider);
+    if (user?.email) {
+      sendConsiderNotification({
+        email: user.email,
+        title: jobPost.title,
+      });
+    }
+
+    await sendNotification({
+      userId: serviceProvider,
+      title: "Job Consideration",
+      message: `Good news! You're being considered for the "${jobPost.title}" job.`,
+      type: "info",
+    });
+
+    return res.status(200).json({ message: "Added to consideration list.", jobPost });
+
+  } catch (error) {
+    console.error("Error in consideration controller:", error);
+    return res.status(500).json({ error: "Something went wrong." });
+  }
 };
+
 
 
 //controller for remove from considerations 
@@ -326,41 +357,64 @@ jobPostController.removeConsideration = async (req, res) => {
 
   //select service Provider
   jobPostController.selectServiceProvider = async (req, res) => {
-    const { id } = req.params;
-    const { serviceProvider } = req.body;
-  
-    try {
-      const jobPost = await Job.findById(id);
-      if (!jobPost) {
-        return res.status(404).json({ error: "This post is no longer available." });
-      }
-     
-      const request = jobPost.jobRequests.find(req => req.serviceProvider.toString() === serviceProvider);
-      
-      if (!request) {
-        return res.status(404).json({ message: "Job request not found." });
-      }
+  const { id } = req.params;
+  const { serviceProvider } = req.body;
 
-      if(jobPost.selectedServiceProvider == serviceProvider){
-         return res.status(400).json({ message: "This service provider is already selected."});
-      }
-
-      jobPost.considerations =  jobPost.considerations.filter((user)=>{
-        return user !=serviceProvider;
-      })
-      jobPost.selectedServiceProvider = serviceProvider;
-      jobPost.workStatus = 'started';
-  
-      await jobPost.save();
-      const user = await User.findById(serviceProvider);
-      sendSelectNotification({email:user.email,title:jobPost.title})
-  
-      return res.status(200).json(jobPost);
-    } catch (error) {
-      console.error("selectServiceProvider error:", error);
-      return res.status(500).json({ error: "Something went wrong." });
+  try {
+    const jobPost = await Job.findById(id);
+    if (!jobPost) {
+      return res.status(404).json({ error: "This job post is no longer available." });
     }
-  };
+
+    const request = jobPost.jobRequests.find(
+      (req) => req.serviceProvider.toString() === serviceProvider
+    );
+
+    if (!request) {
+      return res.status(404).json({ message: "Job request not found." });
+    }
+
+    if (jobPost.selectedServiceProvider?.toString() === serviceProvider) {
+      return res.status(400).json({ message: "This service provider is already selected." });
+    }
+
+    // Remove from considerations if present
+    jobPost.considerations = jobPost.considerations.filter(
+      (userId) => userId.toString() !== serviceProvider
+    );
+
+    jobPost.selectedServiceProvider = serviceProvider;
+    jobPost.workStatus = "started";
+
+    await jobPost.save();
+
+    // Fetch selected user
+    const user = await User.findById(serviceProvider);
+
+    // Email notification
+    if (user?.email) {
+      sendSelectNotification({
+        email: user.email,
+        title: jobPost.title,
+      });
+    }
+
+    // In-app notification
+    await sendNotification({
+      userId: serviceProvider,
+      title: "You’ve been selected!",
+      message: `You've been selected to work on "${jobPost.title}". Please check your dashboard for more details.`,
+      type: "success",
+    });
+
+    return res.status(200).json({ message: "Service provider selected successfully.", jobPost });
+
+  } catch (error) {
+    console.error("selectServiceProvider error:", error);
+    return res.status(500).json({ error: "Something went wrong." });
+  }
+};
+
   
 
 
