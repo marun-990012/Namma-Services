@@ -1,15 +1,21 @@
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { fetchAccount } from "../redux/slices/profileSlice";
 
 export default function ProtectedRoute({ roles, children }) {
-  const  data  = useSelector((state) => state.profile);
+  const dispatch = useDispatch();
+  useEffect(()=>{
+    dispatch(fetchAccount());
+  },[dispatch])
+  const userAccount = useSelector((state) => state.profile)?.data;
+  console.log(userAccount?.userType)
   const navigate = useNavigate();
 
-  console.log(data)
+  // console.log(data)
 
-  const isLoading = !data || Object.keys(data).length === 0;
-  const isAuthorized = roles.includes(data?.role);
+  const isLoading = !userAccount || Object.keys(userAccount).length === 0;
+  const isAuthorized = roles.includes(userAccount?.userType);
 
   useEffect(() => {
     if (!isLoading && !isAuthorized) {
