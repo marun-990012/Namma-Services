@@ -54,7 +54,7 @@ function ViewMessages() {
     
   };
   return (
-    <div className="flex flex-col gap-4 justify-center items-center border-3 border-white p-5 rounded-[8px] w-full mb-4 max-h-[90vh]">
+    <div className="bg-gray-100 flex flex-col gap-4 justify-center items-center border-3 border-white p-5 rounded-[8px] w-full mb-4 max-h-[90vh]">
       <div className="flex flex-col lg:flex-row w-full max-w-6xl justify-between gap-3">
         {/* <div className="w-full lg:max-w-[30%] bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100"> */}
 
