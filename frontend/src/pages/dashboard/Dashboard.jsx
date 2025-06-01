@@ -22,7 +22,7 @@ function DashBoard() {
 
   const jobList = useSelector((state) => state.jobs)?.data;
   const userAccount = useSelector((state) => state.profile)?.data;
-  // console.log(userAccount)
+  console.log(userAccount.userType)
 
   const completedJobs = jobList.filter(
     (job) =>
@@ -37,7 +37,7 @@ function DashBoard() {
 
   //  console.log(totalEarnings)
   return (
-    <div className="flex flex-col gap-3 justify-center items-center border-3 border-white p-10 pt-5 rounded-[8px] w-full mb-4">
+    <div className="bg-gray-100 flex flex-col gap-3 justify-center items-center border-3 border-white p-10 pt-5 rounded-[8px] w-full mb-4">
       <div className="flex flex-col lg:flex-row  items-center gap-4 w-full">
         {/* Total Earnings Card */}
         <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-md border border-gray-200">
