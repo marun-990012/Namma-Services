@@ -89,7 +89,7 @@ function JobPostForm() {
           <p className="text-[20px]">Create job post</p>
           <button
             onClick={() => {
-              navigate("/profile");
+              navigate("/job/posts");
             }}
             className="border border-gray-400 hover:bg-gray-300 text-gray-500 cursor-pointer px-3 rounded outline-none "
           >
