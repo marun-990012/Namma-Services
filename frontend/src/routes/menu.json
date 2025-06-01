@@ -1,0 +1,78 @@
+[
+
+  {
+    "name": "Add service", 
+    "path": "/category/new",
+    "icon": "PencilSquareIcon",
+    "iconFilled": "PencilSquareIcon",
+    "hoverColor": "group-hover:text-green-500 text-green-500",
+    "permission": ["admin"]
+  },
+
+  {
+    "name": "Service list", 
+    "path": "/service-category",
+    "icon": "IconClipboardList",
+    "iconFilled": "IconClipboardListFilled",
+    "hoverColor": "group-hover:text-green-500 text-green-500",
+    "permission": ["admin"]
+  },
+  {
+    "name": "Profile",
+    "path": "/profile",
+    "icon": "IconUser",
+    "iconFilled": "IconUserFilled",
+    "hoverColor": "group-hover:text-[#ff00f9] text-[#ff00f9]"
+  },
+  {
+    "name": "Dashboard",
+    "path": "/dashboard",
+    "icon": "IconLayoutDashboard",
+    "iconFilled": "IconLayoutDashboardFilled",
+    "hoverColor": "group-hover:text-green-500 text-green-500",
+    "permission": ["service-provider"]
+  },
+  {
+    "name": "Payments",
+    "path": "/payment",
+    "icon": "IconBuildingBank",
+    "iconFilled": "IconBuildingBank",
+    "hoverColor": "group-hover:text-[#00afff] text-[#00afff]",
+    "permission": ["service-provider"]
+  },
+  {
+    "name": "My Jobs",
+    "path": "/job/posts",
+    "icon": "IconBriefcase",
+    "iconFilled": "IconBriefcaseFilled",
+    "hoverColor": "group-hover:text-orange-500 text-orange-500",
+    "permission": ["work-provider"]
+  },
+
+  {
+    "name": "Create Jobs",
+    "path": "/job/post/new",
+    "icon": "PencilSquareIcon",
+    "iconFilled": "PencilSquareIcon",
+    "hoverColor": "group-hover:text-[#00afff] text-[#00afff]",
+    "permission": ["work-provider"]
+  },
+
+  {
+    "name": "Alert",
+    "path": "/notifiactions",
+    "icon": "IconBellRinging",
+    "iconFilled": "IconBellRingingFilled",
+    "hoverColor": "group-hover:text-blue-600 text-blue-600",
+    "permission": ["work-provider"]
+  },
+  
+  {
+    "name": "Latest Job",
+    "path": "/jobs/recent",
+    "icon": "IconBriefcase",
+    "iconFilled": "IconBriefcaseFilled",
+    "hoverColor": "group-hover:text-orange-500 text-orange-500",
+    "permission": ["service-provider"]
+  }
+]
