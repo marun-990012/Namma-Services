@@ -22,7 +22,7 @@
     "path": "/profile",
     "icon": "IconUser",
     "iconFilled": "IconUserFilled",
-    "hoverColor": "group-hover:text-[#ff00f9] text-[#ff00f9]"
+    "hoverColor": "group-hover:text-[#b100e4] text-[#b100e4]"
   },
   {
     "name": "Dashboard",
@@ -60,7 +60,7 @@
 
   {
     "name": "Alert",
-    "path": "/notifiactions",
+    "path": "/notifications",
     "icon": "IconBellRinging",
     "iconFilled": "IconBellRingingFilled",
     "hoverColor": "group-hover:text-blue-600 text-blue-600",
