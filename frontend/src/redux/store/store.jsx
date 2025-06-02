@@ -10,7 +10,7 @@ import walletReducer from '../slices/WalletSlice';
 import paymentReducer from '../slices/paymentSlice';
 import reviewRatingReducer from '../slices/reviewRatingSlice';
 import transactionReducer from '../slices/transactionSlice';
-import Transactions from '../../pages/payment/Transactions';
+import notificationReducer from '../slices/notificationSlice';
 
 
 const store = configureStore({
@@ -25,7 +25,8 @@ const store = configureStore({
         wallet:walletReducer,
         review:reviewRatingReducer,
         payment:paymentReducer,
-        transactions:transactionReducer
+        transactions:transactionReducer,
+        notifications:notificationReducer
     }
 });
 
