@@ -1,35 +1,9 @@
-import {IconBellFilled, IconInfoCircle, IconCheck, IconX, IconBan } from '@tabler/icons-react';
+import {IconBellFilled, IconInfoCircle, IconCheck, IconX, IconBan,IconAlertTriangle } from '@tabler/icons-react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useEffect } from 'react';
+import { fetchNotifications,fetchUnreadCount,markNotificationsAsRead } from '../../redux/slices/notificationSlice';
+import { useLocation } from 'react-router-dom';
 
-const mockNotifications = [
-  {
-    id: 1,
-    title: 'Job Request Submitted',
-    message: 'You have successfully requested to join the job "Plumbing Work".',
-    type: 'info',
-    createdAt: '2025-06-01T14:00:00Z',
-  },
-  {
-    id: 2,
-    title: 'Selected for Job',
-    message: 'You’ve been selected to work on "Garden Cleaning".',
-    type: 'success',
-    createdAt: '2025-06-01T12:30:00Z',
-  },
-  {
-    id: 3,
-    title: 'Request Declined',
-    message: 'Unfortunately, your request for "Electric Repair" was declined.',
-    type: 'error',
-    createdAt: '2025-06-01T10:15:00Z',
-  },
-  {
-  id: 4,
-  title: 'Request Rejected',
-  message: 'Unfortunately, your request for "Electric Repair" was rejected.',
-  type: 'rejected',
-  createdAt: '2025-06-01T10:15:00Z',
-}
-];
 
 const getIcon = (type) => {
   switch (type) {
@@ -39,6 +13,8 @@ const getIcon = (type) => {
     return <IconCheck className="text-green-500" size={20} />;
   case 'error':
     return <IconX className="text-red-500" size={20} />;
+  case 'warning':
+    return <IconAlertTriangle className="text-yellow-500" size={20} />;
   case 'rejected':
     return <IconX className="text-pink-500" size={20} />; // or use a different color/icon
   default:
@@ -48,6 +24,21 @@ const getIcon = (type) => {
 };
 
 function Notification() {
+  const dispatch = useDispatch();
+  const location = useLocation();
+  const notificationData = useSelector((state) => state.notifications);
+
+  useEffect(() => {
+    // Always fetch unread count for bell icon etc.
+    dispatch(fetchUnreadCount());
+
+    // Check if user is on the notification page
+    if (location.pathname === "/notifications") {
+      dispatch(fetchNotifications()).then(() => {
+        dispatch(markNotificationsAsRead());
+      });
+    }
+  }, [location, dispatch]);
   return (
     <div className="flex flex-col items-center p-6 pt-4 bg-gray-100 border-3 border-white shadow-sm rounded-xl w-full mb-3">
       <div className="w-full mb-4">
@@ -58,21 +49,23 @@ function Notification() {
       </div>
 
       <div className="w-full space-y-3 px-7">
-  {mockNotifications.map(({ id, title, message, createdAt, type }) => (
+  {notificationData?.notifications?.map(({ id, title, message, createdAt, type }) => (
     <div
       key={id}
       className="bg-white p-4 rounded-md shadow hover:shadow-md transition border-l-4"
       style={{
         borderColor:
           type === 'success'
-            ? '#22c55e'
+            ? '#22c55e' // green-500
             : type === 'error'
-            ? '#ef4444'
+            ? '#ef4444' // red-500
             : type === 'info'
-            ? '#3b82f6'
+            ? '#3b82f6' // blue-500
+            : type === 'warning'
+            ? '#facc15' // yellow-400
             : type === 'rejected'
-            ? '#ec4899' // pink-500 for rejected
-            : '#d1d5db',
+            ? '#ec4899' // pink-500
+            : '#d1d5db', // gray-300 default
       }}
     >
       <div className="flex items-start gap-3">
