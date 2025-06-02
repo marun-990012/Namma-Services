@@ -107,7 +107,7 @@ useEffect(() => {
 };
 
   return (
-    <div className="border-2 border-white shadow rounded-[12px] flex justify-center items-center p-11 mb-2">
+    <div className="bg-gray-100 border-2 border-white shadow rounded-[12px] flex justify-center items-center p-11 mb-2">
       <div className="border border-gray-300 shadow rounded-[12px] py-5 px-7 w-90 bg-white">
         {id ? (<p className="text-center text-[22px]">Edit service category</p>):(<p className="text-center text-[22px]">Add new service category</p>)}
         <form onSubmit={handleSubmit}>
