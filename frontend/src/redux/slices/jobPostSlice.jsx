@@ -12,6 +12,17 @@ export const createJobPost = createAsyncThunk('/jobs/createJobPost',async(formDa
     }
 });
 
+export const deleteJobPost = createAsyncThunk('/jobs/deleteJobPost',async(id,{rejectWithValue})=>{
+    try{
+        const response = await axiosInstance.delete(`/job/delete/${id}`,{headers:{Authorization:localStorage.getItem('token')}});
+        console.log(response.data);
+        return response.data;
+    }catch(error){
+        console.log(error);
+        return rejectWithValue(error?.response?.data);
+    }
+});
+
 export const listJobPosts = createAsyncThunk('/jobs/listJobPosts',async(_,{rejectWithValue})=>{
     try{
         const response = await axiosInstance.get('/job/my-posts',{headers:{
@@ -201,6 +212,27 @@ const jobPostSlice = createSlice({
         })
 
         .addCase(createJobPost.rejected,(state,action)=>{
+            state.loading = false;
+            state.error = action.payload;
+        })
+
+
+        //delete job post
+        .addCase(deleteJobPost.pending,(state,action)=>{
+            state.loading = true;
+            state.error = null;
+        })
+
+        .addCase(deleteJobPost.fulfilled,(state,action)=>{
+            state.data = state.data.filter((post)=>{
+                return post._id !== action.payload._id;
+            });
+            
+            state.loading = false;
+            state.error = null;
+        })
+
+        .addCase(deleteJobPost.rejected,(state,action)=>{
             state.loading = false;
             state.error = action.payload;
         })
