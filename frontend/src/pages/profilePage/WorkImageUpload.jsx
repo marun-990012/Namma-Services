@@ -72,7 +72,7 @@ function WorkImageUpload() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50 backdrop-blur-md">
+    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black/30 backdrop-blur-sm">
       <div className="bg-white rounded-md shadow-lg p-4 max-w-md w-full">
         <div className="flex justify-between items-center mb-10">
           <h2 className="text-lg font-semibold">Upload Work Images</h2>
