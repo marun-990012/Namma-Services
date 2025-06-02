@@ -77,7 +77,6 @@ const authSlice = createSlice({
         error:null,
         isLoggedIn:false
     },
-    reducers:{},
     extraReducers:(builder)=>{
         builder
 
@@ -149,7 +148,16 @@ const authSlice = createSlice({
             state.loading = false;
             state.isLoggedIn = false;
         });
-    }
+    },
+
+    reducers: {
+            logout: (state,action) => {
+              state.data = [];
+              state.isLoggedIn = false
+              localStorage.removeItem("token");
+            },
+        },
 });
 
+export const {logout} = authSlice.actions;
 export default authSlice.reducer;
