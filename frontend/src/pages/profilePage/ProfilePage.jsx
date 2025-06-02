@@ -10,6 +10,7 @@ import {
   Facebook,
   Twitter,
 } from "lucide-react";
+import { IconCloudUpload,IconPhotoUp  } from '@tabler/icons-react';
 import toast from "react-hot-toast";
 import { FastAverageColor } from "fast-average-color";
 import { useEffect, useState, useRef } from "react";
@@ -101,7 +102,7 @@ function ProfilePage() {
   };
   return (
     <div>
-      <div className="flex justify-center border-5 border-white rounded-[10px] shadow-[8px] mb-4">
+      <div className="bg-gray-100 flex justify-center border-5 border-white rounded-[10px] shadow-[8px] mb-4">
         <div className="w-full rounded-tl-[10px] rounded-tr-[10px]">
           <div
             className={`h-43 bg-gray-300 flex flex-col justify-center items-center `}
@@ -113,9 +114,9 @@ function ProfilePage() {
             />
           </div>
 
-          <div className="flex justify-between px-5 pt-5">
-            <div className="flex justify-evenly w-[55%] ml-10">
-              <div className="bg-[#e3e7ef] p-2 rounded-full mt-[-75px]">
+          <div className=" flex justify-between px-5 pt-5">
+            <div className=" flex justify-evenly w-[55%] ml-10">
+              <div className="bg-gray-100 p-2 rounded-full mt-[-75px]">
                 <div
                   className="h-40 w-40 bg-[#e3e7ef] border border-white rounded-full bg-cover bg-center relative"
                   style={
@@ -290,9 +291,9 @@ function ProfilePage() {
               onClick={() => {
                 showImageUpload();
               }}
-              className="ml-7 bg-gray-400 hover:bg-gray-500 text-white rounded-[5px] cursor-pointer px-3 py-[3px]"
+              className="flex items-center ml-7 bg-gray-400 hover:bg-gray-500 text-white rounded-[5px] cursor-pointer px-3 py-[3px]"
             >
-              Add images
+            <IconCloudUpload size={18} className="mr-1"/>  Add images
             </button>
           </div>
 
@@ -345,8 +346,8 @@ function ProfilePage() {
                   )}
 
                   {/* Action Text */}
-                  <span className="mt-4 text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full">
-                    Add or Change
+                  <span className="flex items-center mt-4 text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full">
+                  <IconPhotoUp size={18} className="mr-1"/>  Add or Change
                   </span>
                 </label>
               </div>
