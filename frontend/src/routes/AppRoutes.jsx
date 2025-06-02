@@ -1,5 +1,7 @@
-import { Routes, Route, Link, Navigate } from "react-router-dom";
+import { Routes, Route, Link, Navigate, useLocation } from "react-router-dom";
 // import Login from "./pages/user-auth/Login";
+import { useDispatch } from "react-redux";
+import { useEffect } from "react";
 import MainLayout from "../pages/layout/MainLayout";
 import AuthPage from "../pages/user-auth/AuthPage";
 import EmailVerification from "../pages/user-auth/EmailVerification";
@@ -25,7 +27,18 @@ import PrivateRoute from "./PrivateRoutes";
 import ProtectedRoute from "./ProtectedRoutes";
 import Notification from "../pages/notification/Notification";
 
+import { fetchUnreadCount } from "../redux/slices/notificationSlice";
+
 function AppRoutes() {
+
+  const dispatch = useDispatch();
+const location = useLocation();
+
+useEffect(() => {
+  if (localStorage.getItem("token")) {
+    dispatch(fetchUnreadCount());
+  }
+}, [location.pathname, dispatch]);
   return (
     <>
       <div>
@@ -386,7 +399,7 @@ function AppRoutes() {
             {/* <Route path="/job/request/message/:id" element={<ViewMessages />} /> */}
 
             <Route
-              path="/notifiactions"
+              path="/notifications"
               element={
                 <PrivateRoute>
                   <Notification />
