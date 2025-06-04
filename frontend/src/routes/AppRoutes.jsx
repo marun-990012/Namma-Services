@@ -342,7 +342,7 @@ useEffect(() => {
               path="/total/reviews/:id"
               element={
                 <PrivateRoute>
-                  <ProtectedRoute roles={["work-provider"]}>
+                  <ProtectedRoute roles={["work-provider","service-provider"]}>
                     <AllReviews />
                   </ProtectedRoute>
                 </PrivateRoute>
