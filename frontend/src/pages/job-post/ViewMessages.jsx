@@ -55,8 +55,19 @@ function ViewMessages() {
   };
   return (
     <div className="bg-gray-100 flex flex-col gap-4 justify-center items-center border-3 border-white p-5 rounded-[8px] w-full mb-4 max-h-[90vh]">
+      <div className="w-full">
+          <button
+            onClick={() => {
+              navigate('/dashboard');
+            }}
+            className="cursor-pointer bg-gray-300 hover:bg-gray-400 px-5 rounded-[4px]"
+          >
+            Back
+          </button>
+        </div>
       <div className="flex flex-col lg:flex-row w-full max-w-6xl justify-between gap-3">
         {/* <div className="w-full lg:max-w-[30%] bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100"> */}
+        
 
         {/* Details */}
         <div className="backdrop-blur-md bg-white border border-gray-200 rounded-2xl p-6 shadow-lg space-y-6 max-w-[35%] mx-auto">
@@ -66,7 +77,7 @@ function ViewMessages() {
               Job Posting
             </span>
 
-            <h2 className="text-xl font-bold text-indigo-700 tracking-wide w-[78%]">
+            <h2 className="text-xl font-bold text-gray-700 tracking-wide w-[78%]">
               {jobPost.title}
             </h2>
            
@@ -77,7 +88,7 @@ function ViewMessages() {
             {/* Description */}
             <div className="flex flex-col">
               <span className="text-sm text-gray-400">Description</span>
-              <p className="text-[15px] text-gray-700 font-medium leading-relaxed">
+              <p className="text-[15px] text-gray-500 font-medium leading-relaxed">
                 {jobPost?.description}
               </p>
             </div>
@@ -93,7 +104,7 @@ function ViewMessages() {
             {/* Location */}
             <div className="flex gap-2 flex-col">
               <span className="text-sm text-gray-400">Location</span>
-              <p className="text-[15px] text-gray-700 font-medium ">
+              <p className="text-[15px] text-gray-500 font-medium ">
                 {jobPost?.address}
               </p>
             </div>
