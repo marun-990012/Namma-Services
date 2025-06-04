@@ -83,7 +83,7 @@ function Login() {
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-5 mt-[17px]">
           <div className="flex flex-col">
-            <label htmlFor="" className="mb-1">Eamil</label>
+            <label htmlFor="" className="mb-1">Email</label>
             <div className="flex justify-between">
               <input
                 type="email"
