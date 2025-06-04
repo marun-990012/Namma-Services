@@ -1,7 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import {  BadgeCheck,} from 'lucide-react'
+import { BadgeCheck } from "lucide-react";
 import * as TablerIcons from "@tabler/icons-react";
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
 import { fetchAccount } from "../../redux/slices/profileSlice";
@@ -21,9 +21,9 @@ export default function Sidebar() {
   const services = useSelector((state) => state.services)?.data;
 
   const myServiceType = services.find((service) => {
-      return service._id == userAccount?.serviceType;
-    });
-    console.log(myServiceType);
+    return service._id == userAccount?.serviceType;
+  });
+  console.log(myServiceType);
 
   console.log(userAccount);
 
@@ -100,22 +100,32 @@ export default function Sidebar() {
         })}
 
         {/* User Avatar */}
-        <div className="relative group flex flex-col items-center">
+        <div className="relative flex flex-col items-center">
           <p className="text-[25px] text-gray-600">...</p>
 
-          <img
-            className="w-12 h-12 rounded-full border-3 border-yellow-100"
-            src={userAccount?.profileImage}
-            alt="User"
-          />
+          <div className="relative group">
+            <img
+              className="w-12 h-12 rounded-full border-3 border-yellow-100"
+              src={userAccount?.profileImage}
+              alt="User"
+            />
 
-          {/* Tooltip */}
-          <div className="absolute top-1/2 left-full ml-3 -translate-y-1/2 px-3 py-2 bg-gray-500 text-black text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 transition duration-200 z-10 whitespace-nowrap">
-            <p className="text-white flex items-center">{userAccount?.name} <span><BadgeCheck size={18} color="yellow" className="ml-1"/></span></p>
-            <p className="text-white capital">{userAccount?.userType} <span className="text-yellow-300">{myServiceType?.name}</span></p>
-            {/* <p>Electrician</p> */}
-            {/* Arrow */}
-            <div className="absolute top-1/2 left-0 -ml-1 -translate-y-1/2 w-2 h-2 bg-gray-500 rotate-45 origin-center"></div>
+            {/* Tooltip */}
+            <div className="absolute top-1/2 left-full ml-3 -translate-y-1/2 px-3 py-2 bg-gray-500 text-black text-sm rounded shadow-lg opacity-0 group-hover:opacity-100 transition duration-200 z-10 whitespace-nowrap pointer-events-none">
+              <p className="text-white flex items-center">
+                {userAccount?.name}
+                <span>
+                  <BadgeCheck size={18} color="yellow" className="ml-1" />
+                </span>
+              </p>
+              <p className="text-white capitalize">
+                {userAccount?.userType}{" "}
+                <span className="text-yellow-300">{myServiceType?.name}</span>
+              </p>
+
+              {/* Arrow */}
+              <div className="absolute top-1/2 left-0 -ml-1 -translate-y-1/2 w-2 h-2 bg-gray-500 rotate-45 origin-center"></div>
+            </div>
           </div>
         </div>
       </nav>
