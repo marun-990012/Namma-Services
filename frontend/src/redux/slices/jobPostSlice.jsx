@@ -37,19 +37,31 @@ export const listJobPosts = createAsyncThunk('/jobs/listJobPosts',async(_,{rejec
     }
 });
 
-export const findNearestJobs = createAsyncThunk('/jobs/findNearestJobs',async({lat,lng},{rejectWithValue})=>{
-    try{
-        const response = await axiosInstance.get(`/nearby/job/find?lat=${lat}&lng=${lng}`,{headers:{
-            Authorization:localStorage.getItem('token')
-        }});
-        console.log(response.data);
-        return response.data;
-    }catch(error){
-        console.log(error);
-        return rejectWithValue(error?.response?.data);
+export const findNearestJobs = createAsyncThunk(
+  '/jobs/findNearestJobs',
+  async ({ lat, lng, serviceType }, { rejectWithValue }) => {
+    console.log(serviceType,lat,lng)
+    try {
+      const response = await axiosInstance.get('/nearby/job/find', {
+        params: {
+          lat,
+          lng,
+          serviceCategory: serviceType, // assuming this is the category ID
+        },
+        headers: {
+          Authorization: localStorage.getItem('token'),
+        },
+      });
 
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return rejectWithValue(error?.response?.data);
     }
-});
+  }
+);
+
 
 export const showJobPostDetail = createAsyncThunk('/jobs/showJobPostDetail',async(id,{rejectWithValue})=>{
     try{
