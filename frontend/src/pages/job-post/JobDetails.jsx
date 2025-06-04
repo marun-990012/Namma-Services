@@ -39,7 +39,7 @@ function JobDetails() {
 };
 
   return (
-    <div className="flex flex-col justify-center items-center border-3 border-white rounded-[8px] p-3 mb-4">
+    <div className="bg-gray-100 flex flex-col justify-center items-center border-3 border-white rounded-[8px] p-3 pb-10 mb-4">
       <div className="w-[95%] mb-3">
         <div>
           <button
@@ -60,8 +60,8 @@ function JobDetails() {
 
           <div className="mb-2">
             <p className="text-gray-700 text-[16px] font-medium">
-              Salary: Rs.{" "}
-              <span className="text-gray-500 text-[18px] mt-1">{jobPost.salary}</span>
+              Salary: {" "}
+              <span className="text-green-500 text-[18px] mt-1">₹ {jobPost.salary}</span>
             </p>
           </div>
 
