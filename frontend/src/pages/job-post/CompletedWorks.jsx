@@ -51,7 +51,7 @@ function CompletedWorks() {
 
             <p className="text-sm text-gray-700 font-semibold">
               Salary: ₹
-              <span className="text-gray-600 font-normal">{job.salary}</span>
+              <span className="text-green-600 font-semibold">{job.salary}</span>
             </p>
           </div>
 
