@@ -26,6 +26,7 @@ import { fetchAddress } from "../../redux/slices/profileAddressSlice";
 import { listCategories } from "../../redux/slices/serviceCategorySlice";
 import WorkImageUpload from "./WorkImageUpload";
 import ViewImage from "./ViewImage";
+import { fetchReviews } from "../../redux/slices/reviewRatingSlice";
 
 function ProfilePage() {
   const dispatch = useDispatch();
@@ -51,12 +52,21 @@ function ProfilePage() {
   }, [dispatch]);
 
   const userAccount = useSelector((state) => state.profile);
-  const userAddress = useSelector((state) => state.address)?.currentAddress;
+  const userAddress = useSelector((state) => state.address)?.data;
   const services = useSelector((state) => state.services)?.data;
   const myServiceType = services.find((service) => {
     return service._id == userAccount.data?.serviceType;
   });
-  console.log(myServiceType);
+  console.log(userAddress);
+
+  useEffect(()=>{
+    dispatch(fetchReviews(userAccount?.data?._id));
+  },[userAccount?.data,dispatch]);
+
+  const reviews = useSelector((state) => state.review)?.reviews;
+  const averageRating = reviews.length? reviews.reduce((acc, cv) => acc + cv.rating, 0) / reviews.length: 0;
+  console.log(averageRating);
+
   useEffect(() => {
     if (!file) return;
     const upload = async () => {
@@ -145,6 +155,33 @@ function ProfilePage() {
                   {userAccount.data?.name}
                   <BadgeCheck color="#06f" className="ml-2" />
                 </p>
+                <p className="flex items-center">
+                  {[0, 1, 2, 3, 4].map((_, idx) => {
+                      const isFilled = idx + 1 <= averageRating;
+                      const isHalf =
+                        !isFilled &&
+                        averageRating > idx &&
+                        averageRating < idx + 1;
+
+                      return (
+                        <div key={idx}>
+                          <Star
+                            size={17}
+                            color={isFilled || isHalf ? "#e8c008" : "#d1d5db"}
+                            fill={
+                              isFilled
+                                ? "#e8c008"
+                                : isHalf
+                                ? "url(#half)"
+                                : "none"
+                            }
+                          />
+                        </div>
+                      );
+                    })}
+
+                    <span className="ml-1">{averageRating?.toFixed(1)}</span>
+                </p>
                 <p className="text-gray-600 ">
                   {userAccount.data?.userType}{" "}
                   {myServiceType?.name ? ` - ${myServiceType?.name}` : ""}
@@ -217,28 +254,48 @@ function ProfilePage() {
             )}
           </div>
 
-          <div className="flex justify-center px-4">
+          {/* <div className="flex justify-center px-4">
             <div className="flex justify-between h-50 w-[98%]">
               <div className="bg-white w-[49%] p-4 rounded-[8px] border border-gray-200 shadow-md">
                 <p className="text-[17px] font-medium">Review and Ratings</p>
                 <div className="mt-2 flex justify-between mr-7">
                   <div>
                     <p className="flex items-center font-medium text-[35px]">
-                      {[...Array(5)].map((_, i) => (
-                        <Star key={i} color="#ecd909" />
-                      ))}
-                      <span className="ml-2">4.5</span>
+                      {[0, 1, 2, 3, 4].map((_, idx) => {
+                      const isFilled = idx + 1 <= averageRating;
+                      const isHalf =
+                        !isFilled &&
+                        averageRating > idx &&
+                        averageRating < idx + 1;
+
+                      return (
+                        <div key={idx}>
+                          <Star
+                            size={25}
+                            color={isFilled || isHalf ? "#e8c008" : "#d1d5db"}
+                            fill={
+                              isFilled
+                                ? "#e8c008"
+                                : isHalf
+                                ? "url(#half)"
+                                : "none"
+                            }
+                          />
+                        </div>
+                      );
+                    })}
+                      <span className="ml-2">{averageRating}</span>
                     </p>
                   </div>
                   <div>
                     <p>
                       <span className="text-[17px]">All reviews</span> -{" "}
-                      <span className="text-[35px] font-medium">123</span>
+                      <span className="text-[35px] font-medium">{reviews?.length}</span>
                     </p>
                   </div>
                 </div>
                 <div className="text-center mt-9">
-                  <button className="bg-[#640D6B] hover:bg-orange-600 cursor-pointer w-75 py-2 rounded text-[17px] text-white">
+                  <button onClick={()=>{navigate(`/total/reviews/${userAccount?.data?._id}`)}} className=" hover:bg-gray-100 border border-gray-200 shadow cursor-pointer w-75 py-2 rounded text-[17px] text-gray-700">
                     View all reviews
                   </button>
                 </div>
@@ -255,13 +312,13 @@ function ProfilePage() {
                   </div>
                 </div>
                 <div className="text-center mt-9">
-                  <button className="bg-[#640D6B] hover:bg-orange-600 cursor-pointer w-75 py-2 rounded text-[17px] text-white">
+                  <button className=" hover:bg-gray-100 border border-gray-200 shadow cursor-pointer w-75 py-2 rounded text-[17px] text-gray-700">
                     View completed works
                   </button>
                 </div>
               </div>
             </div>
-          </div>
+          </div> */}
 
           {/* images div */}
 
@@ -273,7 +330,7 @@ function ProfilePage() {
                   {userAccount.data?.images?.map((image, i) => (
                     <img
                       key={i}
-                      className="w-37 h-37 rounded border border-gray-300 shadow-[8px] cursor-pointer"
+                      className="w-36 h-36 rounded border border-gray-300 shadow-[8px] cursor-pointer"
                       src={image}
                       alt=""
                       onClick={() => {
