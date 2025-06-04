@@ -36,7 +36,7 @@ function Transactions() {
       </h2>
 
       <div className="mt-1">
-        <ul className="space-y-3 max-h-90 overflow-y-auto">
+        <ul className="space-y-3 max-h-95 overflow-y-auto">
           {transactionHistory.map((tx, index) => (
             <li
               key={index}
