@@ -3,42 +3,32 @@ import { useSelector, useDispatch } from "react-redux";
 import Sidebar from "./SideBar";
 import { logout } from "../../redux/slices/authSlice";
 import { fetchAccount } from "../../redux/slices/profileSlice";
+import Navbar from "./Navbar";
 
 function MainLayout() {
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const loginDetail = useSelector((state) => {
-    return state.auth;
-  });
+  // const dispatch = useDispatch();
+  // const navigate = useNavigate();
+  // const loginDetail = useSelector((state) => {
+  //   return state.auth;
+  // });
 
   // console.log(loginDetail);
   const isLoggedIn = localStorage.getItem("token")
 
-  console.log(isLoggedIn);
+  // console.log(isLoggedIn);
 
-  const handleLogout = () => {
-    dispatch(logout());
-    // dispatch(fetchAccount());
-    navigate("/login");
-  };
+  // const handleLogout = async() => {
+  // await dispatch(logout());
+  //   // dispatch(fetchAccount());
+  //   navigate("/login");
+  // };
 
   return (
     <div className="min-h-screen bg-[#e3e7ef]">
       {/* Top Navigation Bar */}
       {isLoggedIn && (
-        <div className="bg-white text-black fixed top-0 left-0 w-full h-10 flex items-center justify-between px-4 shadow z-50">
-          <div>
-            <Link to="/login" className="mr-4 hover:underline">
-              Login
-            </Link>
-            <Link to="/register" className="hover:underline">
-              Register
-            </Link>
-          </div>
-
-          <div>
-            <button onClick={handleLogout}>logout</button>
-          </div>
+        <div className="bg-white shadow rounded-b-sm text-black fixed top-0 left-0 w-full h-10 flex items-center justify-between px-4 shadow z-50">
+          <Navbar/>
         </div>
       )}
 
