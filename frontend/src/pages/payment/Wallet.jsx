@@ -24,7 +24,7 @@ function Wallet() {
   };
   return (
     
-    <div className="w-[31%] h-70 mx-auto p-6 bg-white rounded-2xl shadow-md border border-gray-200 space-y-4">
+    <div className="w-full h-65 mx-auto p-4 bg-white rounded-2xl shadow-md border border-gray-200 space-y-3">
   <div className="flex items-center justify-between">
     <h2 className="text-xl font-semibold text-gray-800">💼 Wallet</h2>
     <span className="text-sm bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
@@ -40,11 +40,11 @@ function Wallet() {
 
   <div className="text-center">
     {userWallet?.coins >= 1 ? (
-      <p className="text-green-600 text-sm mt-2 font-medium">
+      <p className="text-green-600 text-sm mt-1 font-medium">
         You have enough coins to send a job request.
       </p>
     ) : (
-      <p className="text-red-500 text-sm mt-2 font-medium">
+      <p className="text-red-500 text-sm mt-1 font-medium">
        Not enough coins to send a job request.
       </p>
     )}
