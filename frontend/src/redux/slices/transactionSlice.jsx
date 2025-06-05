@@ -11,12 +11,25 @@ export const fetchTransactionHistory = createAsyncThunk('transactions/fetchTrans
         console.log(error)
         return rejectWithValue(error.response?.data || "error while fetching transaction history");
     }
+});
+
+export const fetchRevenue = createAsyncThunk('transactions/fetchRevenue',async(_,{rejectWithValue})=>{
+    try {
+        const response = await axiosInstance.get('/transaction/revenue',{headers:{Authorization:localStorage.getItem('token')}});
+
+        console.log(response.data);
+        return response.data;
+    } catch (error) {
+        console.log(error)
+        return rejectWithValue(error.response?.data || "error while fetching transaction history");
+    }
 })
 
 const transactionSlice = createSlice({
     name:"transactions",
     initialState:{
         histories:[],
+        revenue:0
     },
     extraReducers: (builder)=>{
         builder
@@ -31,6 +44,19 @@ const transactionSlice = createSlice({
         })
 
         .addCase(fetchTransactionHistory.rejected,(state,action)=>{
+            
+        })
+
+
+        .addCase(fetchRevenue.pending,(state,action)=>{
+
+        })
+
+        .addCase(fetchRevenue.fulfilled,(state,action)=>{
+            state.revenue = action.payload;
+        })
+
+        .addCase(fetchRevenue.rejected,(state,action)=>{
             
         })
     }
