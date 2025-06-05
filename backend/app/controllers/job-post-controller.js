@@ -24,6 +24,14 @@ jobPostController.create = async(req,res)=>{
       // return { lat: location.lat, lng: location.lon };
 
         const jobPost = await Job.create({title,description,serviceCategory,address:location.formatted,postalCode:location.postcode,location: {type: 'Point',coordinates: [location.lon, location.lat]},salary,images,postedBy:req.userId});
+
+    await sendNotification({
+     userId: req.userId,
+     title: "New Job Post Created Successfully",
+     message: `The job post "${jobPost.title}" has been created successfully.`,
+     type: "success",
+    });
+
         return res.status(201).json(jobPost);
         // return res.json(location)
     }catch(error){
@@ -144,14 +152,15 @@ jobPostController.jobRequest = async (req, res) => {
       return res.status(409).json({ error: "You have already applied to this job." });
     }
 
-    // Deduct 1 coin BEFORE saving the job requestconst 
+    // Deduct 1 coin BEFORE saving the job request
     const transactionData = {
-        amount:1,
-        status: 'success',
-      };
+      amount: 1,
+      status: 'success',
+    };
+
     try {
       await deductCoin(req.userId);
-      transactionData.user =  serviceProvider;
+      transactionData.user = serviceProvider;
       transactionData.purpose = 'debit_wallet';
       const transaction = new Transaction(transactionData);
       await transaction.save();
@@ -163,13 +172,21 @@ jobPostController.jobRequest = async (req, res) => {
     jobPost.jobRequests.push({ serviceProvider, messages });
     await jobPost.save();
 
-// In-app notification
-  await sendNotification({
-  userId: jobPost.postedBy,
-  title: "New Job Request",
-  message: `Someone has applied to your job "${jobPost.title}". Check their profile in the job dashboard.`,
-  type: "info",
-});
+    // In-app notifications
+    await sendNotification({
+      userId: jobPost.postedBy,
+      title: "New Job Request",
+      message: `A service provider has applied to your job post "${jobPost.title}". You can review their request from your job dashboard.`,
+      type: "info",
+    });
+
+    await sendNotification({
+      userId: serviceProvider,
+      title: "Job Request Submitted",
+      message: `Your request for the job "${jobPost.title}" has been submitted successfully. You can track its status from your dashboard.`,
+      type: "success",
+    });
+
     return res.json(jobPost);
   } catch (error) {
     console.error(error);
@@ -347,6 +364,15 @@ jobPostController.removeConsideration = async (req, res) => {
       }
   
       await jobPost.save();
+
+       await sendNotification({
+       userId: serviceProvider,
+       title: "Job Update",
+       message: `You've been removed from consideration for the "${jobPost.title}" job.`,
+       type: "warning",
+      });
+
+
       return res.json(jobPost);
     } catch (error) {
       console.error(error);
