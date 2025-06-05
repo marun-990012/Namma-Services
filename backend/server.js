@@ -17,6 +17,7 @@ import walletRoute from './config/routes/wallet-route.js';
 import findJobRoute from './config/routes/find-nearest-route.js';
 import paymentRoute from './config/routes/payment-route.js';
 import transactionRoute from './config/routes/transaction-route.js';
+import notificationRoute from './config/routes/notification-route.js';
 
 const app = express();
 dotenv.config();
@@ -55,6 +56,9 @@ app.use('/api/payment', paymentRoute);
 
 //api for transaction 
 app.use('/api/transaction', transactionRoute);
+
+//api for notification
+app.use('/api/notification', notificationRoute);
 
 
 app.listen(port,()=>{
