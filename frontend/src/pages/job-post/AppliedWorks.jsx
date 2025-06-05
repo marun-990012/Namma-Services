@@ -52,7 +52,7 @@ function AppliedWorks() {
             </p>
 
             <p className="text-sm text-gray-700 font-semibold">
-              Salary: ₹<span className="text-gray-600 font-normal">{job.salary}</span>
+              Salary: ₹<span className="text-green-600 font-semibold">{job.salary}</span>
             </p>
           </div>
 
@@ -75,7 +75,7 @@ function AppliedWorks() {
                 }}
                 className="bg-emerald-100 hover:bg-emerald-200 text-emerald-600 hover:text-emerald-800 px-3 py-2 rounded-md font-medium shadow-sm transition-all duration-200 text-sm"
               >
-                View Message
+                View response
               </button>
             </div>
           </div>
