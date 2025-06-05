@@ -76,7 +76,7 @@ paymentController.verify = async (req, res) => {
 
       if (paymentType === 'wallet') {
         const wallet = await addCoinsInWallet(req.userId, amount);
-       transactionData.user =  req.userId;
+        transactionData.user =  req.userId;
         transactionData.purpose = 'wallet_topup';
         const transaction = new Transaction(transactionData);
         await transaction.save();
