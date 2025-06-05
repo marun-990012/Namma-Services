@@ -1,4 +1,15 @@
+import { useSelector,useDispatch } from "react-redux";
+import { useEffect } from "react";
+import { fetchRevenue } from "../../redux/slices/transactionSlice";
 function Revenue() {
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    dispatch(fetchRevenue());
+  },[dispatch]);
+
+  const revenue = useSelector((state)=> state.transactions?.revenue?.totalRevenue);
+  console.log(revenue);
   return (
     <div>
       <div className="bg-white p-4 pb-5 pt-3 rounded-2xl shadow-md w-full max-w-md border border-gray-200">
@@ -8,7 +19,7 @@ function Revenue() {
             <span className="text-base">Earnings to date</span>
             <br />
             <span className="text-4xl font-bold text-yellow-500">
-              ₹{1200}
+              ₹{revenue}
             </span>
           </p>
         </div>
