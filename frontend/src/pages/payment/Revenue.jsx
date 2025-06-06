@@ -1,8 +1,10 @@
 import { useSelector,useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { fetchRevenue } from "../../redux/slices/transactionSlice";
 function Revenue() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   useEffect(()=>{
     dispatch(fetchRevenue());
@@ -25,7 +27,7 @@ function Revenue() {
         </div>
         <div className="text-center mt-6">
           <button
-            // onClick={scrollToDetail}
+            onClick={()=>{navigate('/payment', { state: { type: 'Salary', ts: Date.now() } })}}
             className="cursor-pointer bg-yellow-400 hover:bg-yellow-500 transition duration-300 w-full py-2 rounded-xl text-white text-base font-semibold shadow hover:shadow-lg"
           >
             View Earning History
