@@ -2,13 +2,13 @@ import { useState, useEffect } from "react";
 import { useNavigate, useLocation, useParams, Link } from "react-router-dom";
 import { BadgeCheck, Star, UserRound } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { showJobPostDetail,deleteJobPost } from "../../redux/slices/jobPostSlice";
+import toast from "react-hot-toast";
+import { showJobPostDetail, deleteJobPost, } from "../../redux/slices/jobPostSlice";
 import { fetchServiceProviders } from "../../redux/slices/userSlice";
 import JobRequests from "./JobRequests";
 import JobConsider from "./JobConsider";
 import { usePaymentHandler } from "../../hooks/usePaymentHandlers";
 import { fetchReviews } from "../../redux/slices/reviewRatingSlice";
-import toast from "react-hot-toast";
 
 function JobPostDetail() {
   const { id } = useParams();
@@ -44,7 +44,7 @@ function JobPostDetail() {
   const jobPost = useSelector((state) => state.jobs).job;
   const users = useSelector((state) => state.users).data;
   const reviews = useSelector((state) => state.review)?.reviews;
- 
+  const capitalized = jobPost?.title?.charAt(0).toUpperCase() + jobPost?.title?.slice(1);
   const salary = (Number(jobPost.salary) + Number(extraPay));
   const selectedServiceProvider = users.find((user) => {
     return user._id == jobPost.selectedServiceProvider;
@@ -56,9 +56,6 @@ function JobPostDetail() {
   }
 }, [dispatch, selectedServiceProvider?._id]);
 
-  console.log(selectedServiceProvider?._id)
- 
-  console.log(jobPost);
   const averageRating = reviews?.length? reviews.reduce((acc, cv) => acc + cv.rating, 0) / reviews.length: 0;
 
   const handleComplet = async () => {
@@ -66,7 +63,7 @@ function JobPostDetail() {
   };
 
   const handleConfirm = async () => {
-    await payment(NaN, "salary", jobPost._id, salary,selectedServiceProvider._id);
+    await payment(NaN, "salary", jobPost?._id, salary,selectedServiceProvider?._id);
     // alert("hello");
   };
 
@@ -82,6 +79,12 @@ function JobPostDetail() {
     } catch (error) {
       toast.error('error while deleting post')
     }
+  }
+
+
+  const handleEdit = ()=>{
+    // alert('hi')
+    navigate(`/job/post/edit/${jobPost?._id}`)
   }
   return (
     <div className="flex flex-col justify-center items-center border-3 border-white p-6 pt-4 rounded-[8px] mb-2 bg-gray-100">
@@ -106,13 +109,13 @@ function JobPostDetail() {
                 <p className="text-lg font-semibold text-gray-800">
                   Title:{" "}
                   <span className="text-base font-normal text-gray-500">
-                    {jobPost.title}
+                    {capitalized}
                   </span>
                 </p>
                 <p className="text-lg font-semibold text-gray-800">
                   Description:{" "}
                   <span className="text-base font-normal text-gray-500">
-                    {jobPost.description}
+                    {jobPost?.description?.charAt(0).toUpperCase() + jobPost?.description?.slice(1)}
                   </span>
                 </p>
                 <p className="text-lg font-semibold text-gray-800 break-words">
@@ -137,39 +140,47 @@ function JobPostDetail() {
 
               {/* Action Buttons / Completion Section */}
               <div className="pt-4 border-t border-gray-200">
-                {!selectedServiceProvider ? (
-                  <div className="flex gap-4 flex-wrap">
-                    <button className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg font-medium text-base transition-all">
-                      Edit Post
-                    </button>
-                    <button onClick={handleDelete} className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-medium text-base transition-all">
-                      Delete Post
-                    </button>
-                  </div>
-                ) : jobPost.workStatus === "completed" ? (
-                  <div className="bg-green-50 border border-green-400 p-5 rounded-lg shadow-sm">
-                    <h3 className="text-green-700 font-semibold text-lg mb-2 flex items-center gap-2">
-                      ✅ Work Completed
-                    </h3>
-                    <p className="text-gray-700 text-sm">
-                      This job has been marked as completed. You can view the
-                      payment history or contact the service provider if needed.
-                    </p>
-                  </div>
-                ) : (
-                  <div className="bg-white p-5 space-y-3">
-                    <p className="text-gray-700 text-base">
-                      ✅ If the work has been completed, you can proceed with
-                      the payment.
-                    </p>
-                    <button
-                      onClick={handleComplet}
-                      className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-all"
-                    >
-                      Mark as Completed
-                    </button>
-                  </div>
-                )}
+                {/* {jobPost?.jobRequests?.length == 0} */}
+                {selectedServiceProvider ? (
+  jobPost.workStatus === "completed" ? (
+    <div className="bg-green-50 border border-green-400 p-5 rounded-lg shadow-sm">
+      <h3 className="text-green-700 font-semibold text-lg mb-2 flex items-center gap-2">
+        ✅ Work Completed
+      </h3>
+      <p className="text-gray-700 text-sm">
+        This job has been marked as completed. You can view the payment history or contact the service provider if needed.
+      </p>
+    </div>
+  ) : (
+    <div className="bg-white p-5 space-y-3">
+      <p className="text-gray-700 text-base">
+        ✅ If the work has been completed, you can proceed with the payment.
+      </p>
+      <button
+        onClick={handleComplet}
+        className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-all"
+      >
+        Mark as Completed
+      </button>
+    </div>
+  )
+) : jobPost?.jobRequests?.length === 0 && (
+  <div className="flex gap-4 flex-wrap">
+    <button
+      onClick={handleEdit}
+      className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg font-medium text-base transition-all"
+    >
+      Edit Post
+    </button>
+    <button
+      onClick={handleDelete}
+      className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-medium text-base transition-all"
+    >
+      Delete Post
+    </button>
+  </div>
+)}
+
               </div>
             </div>
 
