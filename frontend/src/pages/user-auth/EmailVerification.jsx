@@ -54,7 +54,7 @@ function EmailVerification() {
     }
   }
   return (
-    <div className="mt-">
+    <div className="mr-25">
       <div className="flex justify-center">
         <div className="border border-gray-300 shadow rounded-[12px] w-100 px-3 py-6 bg-white">
              <div className="flex justify-center">
