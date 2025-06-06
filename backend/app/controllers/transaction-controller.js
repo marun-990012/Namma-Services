@@ -5,7 +5,7 @@ const transactionController = {};
 transactionController.history = async (req,res)=>{
     console.log('transactions')
     try {
-        const transaction = await Transaction.find({user:req.userId});
+        const transaction = await Transaction.find({user:req.userId}).sort({ createdAt: -1 });
         // console.log(transaction)
         return res.status(200).json(transaction);
     } catch (error) {
