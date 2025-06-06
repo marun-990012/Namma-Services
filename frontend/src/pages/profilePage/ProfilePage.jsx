@@ -57,10 +57,12 @@ function ProfilePage() {
   const myServiceType = services.find((service) => {
     return service._id == userAccount.data?.serviceType;
   });
-  console.log(userAddress);
+  
 
   useEffect(()=>{
-    dispatch(fetchReviews(userAccount?.data?._id));
+    if(userAccount.userType=='service-provider'){
+      dispatch(fetchReviews(userAccount?.data?._id));
+    }
   },[userAccount?.data,dispatch]);
 
   const reviews = useSelector((state) => state.review)?.reviews;
@@ -155,7 +157,7 @@ function ProfilePage() {
                   {userAccount.data?.name}
                   <BadgeCheck color="#06f" className="ml-2" />
                 </p>
-                <p className="flex items-center">
+                {userAccount?.data?.userType =='service-provider' && (<p className="flex items-center">
                   {[0, 1, 2, 3, 4].map((_, idx) => {
                       const isFilled = idx + 1 <= averageRating;
                       const isHalf =
@@ -181,7 +183,8 @@ function ProfilePage() {
                     })}
 
                     <span className="ml-1">{averageRating?.toFixed(1)}</span>
-                </p>
+                </p>)}
+                
                 <p className="text-gray-600 ">
                   {userAccount.data?.userType}{" "}
                   {myServiceType?.name ? ` - ${myServiceType?.name}` : ""}
