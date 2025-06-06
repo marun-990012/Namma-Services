@@ -22,7 +22,7 @@ function LatestJobPosts() {
   );
   const userAccount = useSelector((state) => state.profile?.data);
   const categories = useSelector((state) => state.services?.data);
-  const nearestJobs = useSelector((state) => state.jobs?.data) || [];
+  const nearestJobs = useSelector((state) => state.jobs?.latest) || [];
 
   const filteredNearestJobs = nearestJobs.filter(
     (job) =>
