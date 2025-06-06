@@ -2,6 +2,7 @@
 import { useState } from "react";
 import {useDispatch,useSelector} from 'react-redux';
 import toast from 'react-hot-toast';
+import { Eye, EyeOff } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { userRegister } from "../../redux/slices/authSlice";
 
@@ -9,6 +10,7 @@ function Register() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [userType, setUserType] = useState("");
   const [code, setCode] = useState("");
 
@@ -118,12 +120,9 @@ const handleRegister = async (e) => {
                         setEmail(e.target.value);
                       }}
                     />
-                    {/* <div className="flex">
-                      <span className="text-[12px] text-white">Error</span>
-                    </div> */}
                   </div>
 
-                  <div className="flex flex-col">
+                  {/* <div className="flex flex-col">
                     <label htmlFor="password" className="mb-">
                       Password
                     </label>
@@ -137,15 +136,29 @@ const handleRegister = async (e) => {
                         setPassword(e.target.value);
                       }}
                     />
-                    {/* <div className="flex">
-                      <span className="text-[12px] text-white">.</span>
-                    </div> */}
-                  </div>
+                  </div> */}
+
+                  <div className="relative flex flex-col">
+                              <label htmlFor="" className="mb-1">
+                                Password
+                              </label>
+                              <input
+                                type={showPassword ? "text" : "password"}
+                                placeholder="Ex : Password@123"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
+                              />
+                  
+                              <span
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-[38px] cursor-pointer text-gray-500"
+                              >
+                                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                              </span>
+                            </div>
 
                   <div>
-                    {/* <label htmlFor="" className="mb-">
-                      UserType
-                    </label> */}
                     <div className="flex">
                       <div>
                         <input
