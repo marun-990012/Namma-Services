@@ -1,6 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
 import { loginOtp, userLogin } from "../../redux/slices/authSlice";
 
@@ -8,10 +9,11 @@ function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [otpStatus, setOtpStatus] = useState(false);
-  const [otp, setOtp] = useState('');
+  const [otp, setOtp] = useState("");
 
   const otpValidation = () => {
     if (!email.trim() || !/\S+@\S+\.\S+/.test(email)) {
@@ -42,7 +44,7 @@ function Login() {
       toast.success("OTP sent successfully. Check your email.", {
         duration: 5000,
       });
-       setOtpStatus(true);
+      setOtpStatus(true);
     } catch (err) {
       const errorMessage =
         Array.isArray(err?.error) && err.error[0]?.msg
@@ -57,15 +59,15 @@ function Login() {
     if (!loginValidation()) return;
 
     try {
-      const res = await dispatch(userLogin({ email, password,otp })).unwrap();
+      const res = await dispatch(userLogin({ email, password, otp })).unwrap();
       console.log("Login response:", res);
-      if(res.message){
+      if (res.message) {
         toast.error(res.message);
-      }else{
-        toast.success("Login successful",{
-        duration: 5000 // in milliseconds (e.g., 5 seconds)
-      });
-        navigate('/profile');
+      } else {
+        toast.success("Login successful", {
+          duration: 5000, // in milliseconds (e.g., 5 seconds)
+        });
+        navigate("/profile");
       }
     } catch (error) {
       const errorMessage = error?.message || "Login failed";
@@ -83,7 +85,9 @@ function Login() {
       <form onSubmit={handleSubmit}>
         <div className="flex flex-col gap-5 mt-[17px]">
           <div className="flex flex-col">
-            <label htmlFor="" className="mb-1">Email</label>
+            <label htmlFor="" className="mb-1">
+              Email
+            </label>
             <div className="flex justify-between">
               <input
                 type="email"
@@ -94,16 +98,22 @@ function Login() {
               />
               <button
                 type="button"
-                className={otpStatus ? 'bg-green-500 px-1 rounded text-white outline-none':'bg-orange-500 px-1 rounded text-white outline-none'}
+                className={
+                  otpStatus
+                    ? "bg-green-500 px-1 rounded text-white outline-none"
+                    : "bg-orange-500 px-1 rounded text-white outline-none"
+                }
                 onClick={handleSendOtp}
               >
-                {otpStatus ? 'Sent OTP':'Send OTP'}
+                {otpStatus ? "Sent OTP" : "Send OTP"}
               </button>
             </div>
           </div>
 
           <div className="flex flex-col">
-            <label htmlFor="" className="mb-1">Enter OTP</label>
+            <label htmlFor="" className="mb-1">
+              Enter OTP
+            </label>
             <input
               type="text"
               placeholder="Ex : 1234"
@@ -113,15 +123,24 @@ function Login() {
             />
           </div>
 
-          <div className="flex flex-col">
-            <label htmlFor="" className="mb-1">Password</label>
+          <div className="relative flex flex-col">
+            <label htmlFor="" className="mb-1">
+              Password
+            </label>
             <input
-              type="text"
+              type={showPassword ? "text" : "password"}
               placeholder="Ex : Password@123"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
             />
+
+            <span
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-[38px] cursor-pointer text-gray-500"
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </span>
           </div>
 
           <div className="text-center mt-4 bg-orange-500 text-white p-2 rounded">
@@ -129,7 +148,10 @@ function Login() {
           </div>
 
           <div className="mt-[-4px] ml-2">
-            <Link to='/forgot/password' className="text-blue-700 hover:underline">
+            <Link
+              to="/forgot/password"
+              className="text-blue-700 hover:underline"
+            >
               Forgot Password
             </Link>
           </div>
