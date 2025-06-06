@@ -1,13 +1,17 @@
 import { Star } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import AppliedWorks from "../job-post/AppliedWorks";
 import CompletedWorks from "../job-post/CompletedWorks";
 import { fetchJobList } from "../../redux/slices/jobPostSlice";
 import { fetchAccount } from "../../redux/slices/profileSlice";
 import { fetchRevenue } from "../../redux/slices/transactionSlice";
+import { fetchReviews } from "../../redux/slices/reviewRatingSlice";
+
 function DashBoard() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const detailRef = useRef(null);
   const [workList, setWorkList] = useState("applied");
 
@@ -28,7 +32,15 @@ function DashBoard() {
   console.log(revenue);
   const jobList = useSelector((state) => state.jobs)?.data;
   const userAccount = useSelector((state) => state.profile)?.data;
-  console.log(userAccount.userType)
+  const reviews = useSelector((state) => state.review)?.reviews;
+  
+
+  const averageRating = reviews.length? reviews.reduce((acc, cv) => acc + cv.rating, 0) / reviews.length: 0;
+  console.log(averageRating);
+  
+useEffect(()=>{
+  dispatch(fetchReviews(userAccount._id));
+},[dispatch])
 
   const completedJobs = jobList.filter(
     (job) =>
@@ -44,56 +56,7 @@ function DashBoard() {
   //  console.log(totalEarnings)
   return (
     <div className="bg-gray-100 flex flex-col gap-3 justify-center items-center border-3 border-white p-10 pt-3 rounded-[8px] w-full mb-4">
-      {/* <div className="flex flex-col lg:flex-row  items-center gap-4 w-full"> */}
-        {/* Total Earnings Card */}
-        {/* <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-md border border-gray-200">
-          <p className="text-lg font-semibold text-gray-800">Total Earnings</p>
-          <div className="mt-4 flex justify-center">
-            <p className="text-center text-gray-600">
-              <span className="text-base">Earnings to date</span>
-              <br />
-              <span className="text-4xl font-bold text-yellow-500">
-                ₹{totalEarnings}
-              </span>
-            </p>
-          </div>
-          <div className="text-center mt-6">
-            <button
-              onClick={scrollToDetail}
-              className="cursor-pointer bg-yellow-400 hover:bg-yellow-500 transition duration-300 w-full py-2 rounded-xl text-white text-base font-semibold shadow hover:shadow-lg"
-            >
-              View Earning History
-            </button>
-          </div>
-        </div> */}
-
-        {/* Reviews and Ratings Card */}
-        {/* <div className="bg-white p-6 rounded-2xl shadow-md w-full max-w-md border border-gray-200">
-          <p className="text-lg font-semibold text-gray-800">
-            Reviews & Ratings
-          </p>
-          <div className="mt-4 flex flex-col gap-4 md:flex-row md:justify-between">
-            <div className="flex items-center">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} color="#FACC15" /> // amber-400
-              ))}
-              <span className="ml-2 text-2xl font-medium text-gray-700">
-                4.5
-              </span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-base text-gray-500">Total Reviews</span>
-              <span className="text-4xl font-bold text-yellow-500">123</span>
-            </div>
-          </div>
-          <div className="text-center mt-6">
-            <button className="cursor-pointer bg-yellow-400 hover:bg-yellow-500 transition duration-300 w-full py-2 rounded-xl text-white text-base font-semibold shadow hover:shadow-lg">
-              View All Reviews
-            </button>
-          </div>
-        </div> */}
-      {/* </div> */}
-
+      
       <div ref={detailRef} className="w-full scroll-mt-11 mt-4">
         <div className="flex items-center justify-between">
           <div className=" bg-white w-108 flex justify-between p-2 rounded border shadow-md border-gray-100">
@@ -141,7 +104,7 @@ function DashBoard() {
               <p className="text-gray-500 text-[13px]">Total Revenue</p>
               <p className="font-bold text-yellow-500">₹{revenue}</p>
              </div>
-            <button className="cursor-pointer bg-green-400 hover:bg-yellow-500 transition duration-300 text-white py-[2px] px-3 rounded shadow">View transactions </button>
+            <button onClick={()=>{navigate('/payment', { state: { type: 'Salary', ts: Date.now() } })}} className="cursor-pointer bg-green-400 hover:bg-yellow-500 transition duration-300 text-white py-[2px] px-3 rounded shadow">View transactions </button>
           </div>
           
           <div className="bg-white shadow-md border-gray-100 rounded h-full py-2 flex px-3 gap-3 flex items-center justify-center">
@@ -179,13 +142,13 @@ function DashBoard() {
                       </defs>
                     </svg>
                     <span className="text-gray-600 text-xs ">
-                      {/* {averageRating.toFixed(1)} */}
-                      {4}
+                      {averageRating.toFixed(1)}
+                    
                     </span>
                   </div>
-              <p className="text-gray-500">reviews <span className="font-bold text-green-500">120</span></p>
+              <p className="text-gray-500">reviews <span className="font-bold text-green-500">{reviews?.length}</span></p>
              </div>
-            <button className="cursor-pointer bg-green-400 hover:bg-yellow-500 transition duration-300 text-white py-[2px] px-4 rounded shadow">All reviews</button>
+            <button onClick={()=>{navigate(`/total/reviews/${userAccount?._id}`)}} className="cursor-pointer bg-green-400 hover:bg-yellow-500 transition duration-300 text-white py-[2px] px-4 rounded shadow">All reviews</button>
           </div>
         </div>
 
