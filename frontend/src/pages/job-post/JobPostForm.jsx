@@ -1,12 +1,16 @@
 import { useEffect, useState } from "react";
 import { useDispatch,useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { listCategories } from "../../redux/slices/serviceCategorySlice";
-import { createJobPost } from "../../redux/slices/jobPostSlice";
+import { createJobPost, updateJobPost, showJobPostDetail } from "../../redux/slices/jobPostSlice";
+
 function JobPostForm() {
     const navigate = useNavigate();
     const dispatch = useDispatch();
+    const {id} = useParams();
+
+    // console.log(id)
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -18,14 +22,27 @@ function JobPostForm() {
 
     useEffect(()=>{
            dispatch(listCategories());
+           if(id){
+            dispatch(showJobPostDetail(id));
+           }
       },[dispatch]);
       
-          const listCategory = useSelector((state)=>{
-            return state.services;
-          }).data
-          console.log(listCategory)
-         
+  const listCategory = useSelector((state)=>state.services).data
+  const jobPost = useSelector((state) =>  state.jobs)?.job;
+  console.log(jobPost)
 
+  useEffect(()=>{
+    if(id){
+      {title,description,serviceCategory,address,postalCode,salary,images}
+      setTitle(jobPost?.title);
+      setDescription(jobPost?.description);
+      setServiceCategory(jobPost?.serviceCategory);
+      setAddress(jobPost?.address);
+      setPostalCode(jobPost?.postalCode);
+      setSalary(jobPost?.salary);
+    }
+  },[id,jobPost])
+         
   const validations = () => {
 
     if (!title.trim()) {
@@ -73,12 +90,23 @@ function JobPostForm() {
 
     if (!validations()) return;
 
-    try {
-      const res = await  dispatch(createJobPost({title,description,serviceCategory,address,postalCode,salary,images,})).unwrap();
+    const formData = {title,description,serviceCategory,address,postalCode,salary,images}
+    if(id){
+      try {
+      const res = await  dispatch(updateJobPost({id,formData})).unwrap();
+      toast.success("Job post updated successfully");
+      navigate(-1);
+    } catch (error) {
+      toast.error(error?.message || "failed");
+    }
+    }else{
+      try {
+      const res = await  dispatch(createJobPost(formData)).unwrap();
       toast.success("Job post created successfully");
       navigate("/job/posts");
     } catch (error) {
       toast.error(error?.message || "failed");
+    }
     }
   };
 
@@ -86,7 +114,7 @@ function JobPostForm() {
     <div className="fixed inset-0 z-50 flex justify-center items-center bg-opacity-50 backdrop-blur-md ">
       <div className="bg-white px-7 py-5 rounded-[8px] border border-gray-300 shadow-[10px] w-100">
         <div className="flex justify-between">
-          <p className="text-[20px]">Create job post</p>
+          <p className="text-[20px]">{id ? "Edit job post":"Create job post"}</p>
           <button
             onClick={() => {
               navigate("/job/posts");
@@ -155,23 +183,6 @@ function JobPostForm() {
               </select>
             </div>
 
-            {/* <div className="flex flex-col">
-              <label htmlFor="" className="text-gray-600">
-                Bio
-              </label>
-              <input
-                type="text"
-                placeholder="Ex : My bio"
-                value={address}
-                onChange={(e) => {
-                  setAddress(e.target.value);
-                }}
-                className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
-              />
-            </div> */}
-
-            
-
             <div className="flex flex-col">
               <label htmlFor="" className="text-gray-600">
                 Address
@@ -224,7 +235,7 @@ function JobPostForm() {
 
             <div className="mt-5 text-center">
               <button className="bg-green-500 hover:bg-green-700 text-white text-[17px] w-full py-2 rounded-[5px] cursor-pointer">
-                Save Changes
+                {id?"Save Changes":"Create post"}
               </button>
             </div>
 
