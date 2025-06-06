@@ -18,6 +18,7 @@ function ProfileUpdate(){
     const [postalCode,setPostalCode] = useState('');
     const [state,setState] = useState('');
     const [country,setCountry] = useState('');
+    const [loading, setLoading] = useState(false);
 
      useEffect(()=>{
          dispatch(fetchAccount());
@@ -33,6 +34,7 @@ function ProfileUpdate(){
         return state.profile;
     }).data;
 
+    console.log(userAccount?.userType)
     const listCategory = useSelector((state)=>{
       return state.services;
     }).data
@@ -44,14 +46,14 @@ function ProfileUpdate(){
     
       setName(userAccount?.name || '');
       setBio(userAccount?.bio || '');
+      setService(userAccount?.serviceType || '')
       setPhoneNumber(userAccount?.phoneNumber || '');
       setStreet(userAddress.street);
       setCity(userAddress.city);
       setPostalCode(userAddress.postalCode);
       setState(userAddress.state);
       setCountry(userAddress.country);
-      
-    
+       
   }
 }, [userAccount, userAddress]);
 
@@ -61,10 +63,10 @@ const validations = ()=>{
         return false;
     }
 
-    if(service.trim().length<2){
-        toast.error('Select Service Type');
-        return false;
-    }
+    if (userAccount?.userType !== "work-provider" && service.trim().length < 2) {
+    toast.error("Select Service Type");
+    return false;
+  }
 
     if(phoneNumber.trim().length<10){
         toast.error('Number required');
@@ -98,26 +100,40 @@ const validations = ()=>{
 
     return true;
 }
-const handleSubmit = async (e)=>{
-    e.preventDefault();
 
-    if(!validations()) return;
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    try {
-  const [profileRes, addressRes] = await Promise.all([
-    dispatch(updateProfile({ name, bio, phoneNumber,serviceType:service })).unwrap(),
-    dispatch(updateAddress({ street, city, state, postalCode, country })).unwrap()
-  ]);
+  if (!validations()) return;
 
-  toast.success("Profile updated successfully");
-  navigate('/profile');
+  const payload = {
+    name,
+    bio,
+    phoneNumber,
+  };
 
-} catch (error) {
-  toast.error(error?.message || "Profile update failed");
-}
+  if (userAccount?.userType !== "work-provider") {
+    payload.serviceType = service;
+  }
+
+  try {
+    setLoading(true); // start loading
+    await Promise.all([
+      dispatch(updateProfile(payload)).unwrap(),
+      dispatch(updateAddress({ street, city, state, postalCode, country })).unwrap(),
+    ]);
+
+    toast.success("Profile updated successfully");
+    navigate('/profile');
+  } catch (error) {
+    toast.error(error?.message || "Profile update failed");
+  } finally {
+    setLoading(false); // stop loading
+  }
+};
 
     
-}
+
     return(
         <div className="fixed inset-0 z-50 flex justify-center items-center bg-opacity-50 backdrop-blur-md ">
             <div className="bg-white px-7 py-5 rounded-[8px] border border-gray-300 shadow-[10px]">
@@ -132,7 +148,8 @@ const handleSubmit = async (e)=>{
                     <input type="text" placeholder="Ex : Mr xyz" value={name} onChange={(e)=>{setName(e.target.value)}} className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"/>
                   </div>
 
-                  <div className="flex flex-col mt-2">
+                  {userAccount?.userType=='service-provider' && (
+                    <div className="flex flex-col mt-2">
                     {/* <label htmlFor="" className="text-gray-600">Select service type</label> */}
                     <select name="" className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]" value={service} onChange={(e)=>{setService(e.target.value)}} id="">
                       <option value="" className="text-gray-500">Select service type</option>
@@ -143,6 +160,8 @@ const handleSubmit = async (e)=>{
                       })}
                     </select>
                   </div>
+                  )}
+                  
 
                   <div className="flex flex-col">
                     <label htmlFor="" className="text-gray-600">Bio</label>
@@ -182,7 +201,7 @@ const handleSubmit = async (e)=>{
                   </div>
 
                   <div className="mt-5 text-center">
-                    <button className="bg-green-500 hover:bg-green-700 text-white text-[17px] w-full py-2 rounded-[5px] cursor-pointer">Save Changes</button>
+                    <button className="bg-green-500 hover:bg-green-700 text-white text-[17px] w-full py-2 rounded-[5px] cursor-pointer">{loading ? "Updating..." : "Save Changes"}</button>
                   </div>
                 </form>
               </div>
