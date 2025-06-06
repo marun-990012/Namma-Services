@@ -39,10 +39,10 @@ function CategoryList(){
 
 
     return (
-       <div className="bg py-6 pb-7 px-4 rounded-[8px] border-2 border-white mb-4">
-  <h2 className="text-2xl font-bold text-center mb-6 border-b border-white pb-2 ">Trending  service categories</h2>
+       <div className="bg-gray-150 pb-7 rounded-[8px] border-2 border-white mb-4 shadow">
+  <h2 className="bg-white p-4 text-2xl font-bold text-center mb-6 border-b border-white pb-2 ">Trending  service categories</h2>
 
-  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 mt-5">
+  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 mt-5 px-4">
     {serviceData.data.map((cat, index) => (
       <div key={index} className="flex flex-col items-center text-center bg-white py-2 rounded-[5px]">
         <img
@@ -64,7 +64,7 @@ function CategoryList(){
 
 
   </div>
-  <div className="mt-5">
+  <div className="mt-5 px-5">
     <button onClick={()=>{navigate('/category/new')}} className="mt-2 bg-green-500 hover:bg-green-600 text-white text-[13px] px-5 py-1 rounded cursor-pointer flex items-center gap-[4px]"> <CopyPlus size={17}/> Add Category</button>
   </div>
 </div>
