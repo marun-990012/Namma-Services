@@ -12,6 +12,17 @@ export const createJobPost = createAsyncThunk('/jobs/createJobPost',async(formDa
     }
 });
 
+export const updateJobPost = createAsyncThunk('/jobs/updateJobPost',async({id,formData},{rejectWithValue})=>{
+    try{
+        const response = await axiosInstance.put(`/job/update/${id}`,formData,{headers:{Authorization:localStorage.getItem('token')}});
+        console.log(response.data);
+        return response.data;
+    }catch(error){
+        console.log(error);
+        return rejectWithValue(error?.response?.data);
+    }
+});
+
 export const deleteJobPost = createAsyncThunk('/jobs/deleteJobPost',async(id,{rejectWithValue})=>{
     try{
         const response = await axiosInstance.delete(`/job/delete/${id}`,{headers:{Authorization:localStorage.getItem('token')}});
@@ -37,17 +48,10 @@ export const listJobPosts = createAsyncThunk('/jobs/listJobPosts',async(_,{rejec
     }
 });
 
-export const findNearestJobs = createAsyncThunk(
-  '/jobs/findNearestJobs',
-  async ({ lat, lng, serviceType }, { rejectWithValue }) => {
-    console.log(serviceType,lat,lng)
+export const findNearestJobs = createAsyncThunk('/jobs/findNearestJobs',async ({ lat, lng, serviceType }, { rejectWithValue }) => {
     try {
       const response = await axiosInstance.get('/nearby/job/find', {
-        params: {
-          lat,
-          lng,
-          serviceCategory: serviceType, // assuming this is the category ID
-        },
+        params: {lat, lng, serviceCategory: serviceType},
         headers: {
           Authorization: localStorage.getItem('token'),
         },
@@ -204,6 +208,7 @@ const jobPostSlice = createSlice({
     name:"jobs",
     initialState:{
         data:[],
+        latest:[],
         job:{},
         loading:false,
         error:null, 
@@ -228,6 +233,27 @@ const jobPostSlice = createSlice({
             state.error = action.payload;
         })
 
+
+        // update job post
+        .addCase(updateJobPost.pending,(state,action)=>{
+            state.loading = true;
+            state.error = null;
+        })
+
+        .addCase(updateJobPost.fulfilled,(state,action)=>{
+            const index = state.data.findIndex((job)=>{
+                return job._id == action.payload._id;
+            });
+            state.data[index] = action.payload;
+            state.job = action.payload;
+            state.loading = false;
+            state.error = null;
+        })
+
+        .addCase(updateJobPost.rejected,(state,action)=>{
+            state.loading = false;
+            state.error = action.payload;
+        })
 
         //delete job post
         .addCase(deleteJobPost.pending,(state,action)=>{
@@ -273,7 +299,7 @@ const jobPostSlice = createSlice({
         })
 
         .addCase(findNearestJobs.fulfilled,(state,action)=>{
-            state.data = action.payload;
+            state.latest = action.payload;
             state.loading = false;
             state.error = null;
         })
