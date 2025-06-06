@@ -1,4 +1,19 @@
 [
+  {
+    "name": "Profile",
+    "path": "/profile",
+    "icon": "IconUser",
+    "iconFilled": "IconUserFilled",
+    "hoverColor": "group-hover:text-[#b100e4] text-[#b100e4]"
+  },
+  {
+    "name": "Service list", 
+    "path": "/service-category",
+    "icon": "IconClipboardList",
+    "iconFilled": "IconClipboardListFilled",
+    "hoverColor": "group-hover:text-orange-500 text-orange-500",
+    "permission": ["admin"]
+  },
 
   {
     "name": "Add service", 
@@ -9,21 +24,6 @@
     "permission": ["admin"]
   },
 
-  {
-    "name": "Service list", 
-    "path": "/service-category",
-    "icon": "IconClipboardList",
-    "iconFilled": "IconClipboardListFilled",
-    "hoverColor": "group-hover:text-green-500 text-green-500",
-    "permission": ["admin"]
-  },
-  {
-    "name": "Profile",
-    "path": "/profile",
-    "icon": "IconUser",
-    "iconFilled": "IconUserFilled",
-    "hoverColor": "group-hover:text-[#b100e4] text-[#b100e4]"
-  },
   {
     "name": "Dashboard",
     "path": "/dashboard",
@@ -64,7 +64,7 @@
     "icon": "IconBellRinging",
     "iconFilled": "IconBellRingingFilled",
     "hoverColor": "group-hover:text-blue-600 text-blue-600",
-    "permission": ["work-provider"]
+    "permission": ["work-provider","admin"]
   },
   
   {
