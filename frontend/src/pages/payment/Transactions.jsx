@@ -1,43 +1,97 @@
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import {useLocation} from 'react-router-dom';
 // import { Plus, Minus, RotateCcw, Wallet } from "lucide-react";
 import { CirclePlus, CircleMinus, RotateCcw, HandCoins } from "lucide-react";
 import { fetchTransactionHistory } from "../../redux/slices/transactionSlice";
 
 function Transactions() {
-  const dispatch = useDispatch();
+ const dispatch = useDispatch();
+const location = useLocation();
+const { type, ts } = location.state || {};
 
-  useEffect(() => {
+const [transactionType, setTransactionType] = useState(type || "All");
+
+useEffect(() => {
+  dispatch(fetchTransactionHistory());
+}, [dispatch]);
+
+useEffect(() => {
+  if (type) {
+    setTransactionType(type);
+    window.scrollTo(0, 0);
     dispatch(fetchTransactionHistory());
-  }, [dispatch]);
+  }
+}, [ts]);
 
-  const transactionHistory = useSelector(
-    (state) => state.transactions
-  )?.histories;
+const transactionHistory = useSelector(
+  (state) => state.transactions?.histories || []
+);
 
+const filteredTransactions = () => {
+  switch (transactionType) {
+    case 'Wallet':
+      return transactionHistory.filter(
+        (ele) => ele.purpose === 'wallet_topup' || ele.purpose === 'debit_wallet'
+      );
+
+    case 'Salary':
+      return transactionHistory.filter(
+        (ele) => ele.purpose === 'salary_payment'
+      );
+
+    case 'All':
+    default:
+      return transactionHistory;
+  }
+};
+
+
+
+  
+
+  console.log(filteredTransactions())
+
+  const transactionPurpose = ["All","Salary","Wallet"];
   return (
     <div className='bg-white w-[67%] p-6 bg-white rounded-2xl shadow-md border border-gray-200 space-y-4"'>
-      <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          className="w-6 h-6 text-green-500"
-          fill="none"
-          viewBox="0 0 24 24"
-          stroke="currentColor"
-          strokeWidth={2}
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-          />
-        </svg>{" "}
-        Transactions
-      </h2>
+      <div className="flex items-center">
+        <h2 className="text-xl font-semibold text-gray-800 flex items-center gap-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="w-6 h-6 text-green-500"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>{" "}
+          Transactions
+        </h2>
+
+        <div className="ml-8 border border-gray-300 px-1 rounded shadow">
+          <select
+            value={transactionType}
+            onChange={(e) => setTransactionType(e.target.value)}
+            className="border-none outline-none bg-transparent text-gray-700 px-2 py-1"
+          >
+            {transactionPurpose.map((ele, index) => (
+              <option key={index}  className="text-gray-700">
+                {ele}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       <div className="mt-1">
         <ul className="space-y-3 max-h-95 overflow-y-auto">
-          {transactionHistory.map((tx, index) => (
+          {filteredTransactions().map((tx, index) => (
             <li
               key={index}
               className="flex items-center justify-between bg-gray-50 p-3 rounded-lg shadow-sm"
