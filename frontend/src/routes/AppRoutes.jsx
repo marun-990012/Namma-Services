@@ -192,6 +192,18 @@ useEffect(() => {
                 </PrivateRoute>
               }
             />
+
+
+            <Route
+              path="/job/post/edit/:id"
+              element={
+                <PrivateRoute>
+                  <ProtectedRoute roles={["work-provider"]}>
+                    <JobPostForm />
+                  </ProtectedRoute>
+                </PrivateRoute>
+              }
+            />
             {/* <Route path="/job/post/new" element={<JobPostForm />} /> */}
 
             <Route
