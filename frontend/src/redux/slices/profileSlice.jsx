@@ -4,10 +4,8 @@ import axiosInstance from "../../utils/axiosInstancs";
 export const fetchAccount = createAsyncThunk('/profile/fetchAccount',async()=>{
     try {
         const response = await axiosInstance.get('/auth/account',{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data ||{ message : "error while fetching account"})
     }
 });
@@ -15,10 +13,8 @@ export const fetchAccount = createAsyncThunk('/profile/fetchAccount',async()=>{
 export const updateProfileImage = createAsyncThunk('/profile/updateProfileImage',async(imageUrl,{rejectWithValue})=>{
     try {
         const response = await axiosInstance.put('/auth/update-profile-image',imageUrl,{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data ||{ message : "error while updating profile image"})
     }
 });
@@ -26,10 +22,8 @@ export const updateProfileImage = createAsyncThunk('/profile/updateProfileImage'
 export const updateProfile = createAsyncThunk('/profile/updateProfile',async(formData,{rejectWithValue})=>{
     try {
         const response = await axiosInstance.put('/auth/update-profile',formData,{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data ||{ message : "error while updating profile"})
     }
 });
@@ -38,10 +32,8 @@ export const updateProfile = createAsyncThunk('/profile/updateProfile',async(for
 export const uploadWorkImages = createAsyncThunk('/profile/uploadWorkImages',async(formData,{rejectWithValue})=>{
     try {
         const response = await axiosInstance.post('/auth/upload-images',formData,{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data ||{ message : "error while updating profile"})
     }
 });

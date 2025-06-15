@@ -9,9 +9,6 @@ const mediaController = {};
 */
 
 mediaController.uploadImage = async(req,res)=>{
-  console.log(process.env.CLOUD_NAME)
-  console.log(process.env.API_KEY)
-  console.log(process.env.API_SECRET)
     try {
           const file = req.file.path;
       

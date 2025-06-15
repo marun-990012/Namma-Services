@@ -4,10 +4,8 @@ import axiosInstance from "../../utils/axiosInstancs";
 export const createServiceCategory = createAsyncThunk('/services/createServiceCategory',async(formData,{rejectWithValue})=>{
     try{
         const response = await axiosInstance.post('/category/create',formData,{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
     }
 });
@@ -17,10 +15,8 @@ export const listCategories = createAsyncThunk('/services/listCategories',async(
         const response = await axiosInstance.get('/category/list',{headers:{
             Authorization:localStorage.getItem('token')
         }});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
 
     }
@@ -31,10 +27,8 @@ export const deleteCategory = createAsyncThunk('/services/deleteCategory',async(
         const response = await axiosInstance.delete(`/category/delete/${id}`,{headers:{
             Authorization:localStorage.getItem('token')
         }});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
 
     }
@@ -44,10 +38,8 @@ export const deleteCategory = createAsyncThunk('/services/deleteCategory',async(
 export const updateCategory = createAsyncThunk('/services/updateCategory',async({id,formData},{rejectWithValue})=>{
     try{
         const response = await axiosInstance.put(`/category/update/${id}`,formData,{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
     }
 })

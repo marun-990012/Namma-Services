@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams, useNavigate,useLocation } from "react-router-dom";
 import JobRequests from "./JobRequests";
 import JobConsider from "./JobConsider";
+import { fetchWallet } from "../../redux/slices/WalletSlice";
 import { showJobPostDetail } from "../../redux/slices/jobPostSlice";
 import InsufficientCoins from "../../components/popups/InsufficientCoins";
-import { fetchWallet } from "../../redux/slices/WalletSlice";
 
 function JobDetails() {
   const dispatch = useDispatch();
@@ -16,7 +16,7 @@ function JobDetails() {
 
   const segments = location.pathname.split("/");
   const lastSegment = segments[segments.length - 1];
-  const showPopup = lastSegment === "warning"; // or "warning"
+  const showPopup = lastSegment === "warning";
   
 
   useEffect(() => {
@@ -28,7 +28,6 @@ function JobDetails() {
 
   const jobPost = useSelector((state) =>  state.jobs)?.job;
   const userWallet = useSelector((state) => state.wallet)?.wallet;
-  // console.log(jobPost);
 
   const handleSendRequest = () => {
   if (userWallet.coins > 0) {

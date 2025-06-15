@@ -85,19 +85,6 @@ export const userRegisterValidation = {
         }
     },
 
-    //validation for phoneNumber filed
-    // phoneNumber:{
-    //     in:['body'],
-    //     exists:{
-    //         errorMessage:'phoneNumber field is required'
-    //     },
-    //     notEmpty:{
-    //         errorMessage:'phoneNumber field should not be empty'
-    //     },
-    //     isMobilePhone:{
-    //         errorMessage:'mobile number is not valid'
-    //     }
-    // }
 };
 
 

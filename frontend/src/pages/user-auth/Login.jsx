@@ -1,8 +1,8 @@
-import { useNavigate, Link } from "react-router-dom";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Eye, EyeOff } from "lucide-react";
 import { useDispatch } from "react-redux";
+import { Eye, EyeOff } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";    
 import { loginOtp, userLogin } from "../../redux/slices/authSlice";
 
 function Login() {
@@ -60,7 +60,6 @@ function Login() {
 
     try {
       const res = await dispatch(userLogin({ email, password, otp })).unwrap();
-      console.log("Login response:", res);
       if (res.message) {
         toast.error(res.message);
       } else {

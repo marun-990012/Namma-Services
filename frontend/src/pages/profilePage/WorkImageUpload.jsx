@@ -1,7 +1,7 @@
+import toast from "react-hot-toast";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
 import { ImagePlus ,Save } from "lucide-react";
 
 import { imageUpload } from "../../redux/slices/imageUploadSlice";
@@ -37,8 +37,6 @@ function WorkImageUpload() {
       newImages[index] = res;
       setImages(newImages);
     } catch (err) {
-      console.error("Upload failed:", err);
-      alert("Image upload failed");
     } finally {
       setUploading((prev) => prev.filter((i) => i !== index));
     }
@@ -60,13 +58,10 @@ function WorkImageUpload() {
         toast.error("Please select at least one image before uploading.");
         return;
       }
-
       const res = await dispatch(uploadWorkImages({ image: images })).unwrap();
-
       toast.success("Images uploaded successfully");
       navigate("/profile");
     } catch (error) {
-      console.error("Upload error:", error);
       toast.error(error?.message || "Image upload failed");
     }
   };

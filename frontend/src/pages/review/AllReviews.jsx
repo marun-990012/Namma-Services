@@ -1,14 +1,17 @@
 import { Link } from "react-router-dom";
+import { useEffect } from "react";
+import { useParams } from "react-router-dom";
 import { Star, ThumbsUp } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-import { useParams } from "react-router-dom";
-import { useEffect } from "react";
-import { fetchReviews,likeReview } from "../../redux/slices/reviewRatingSlice";
-import { fetchWorkProvider, fetchServiceProviders} from "../../redux/slices/userSlice";
+import { fetchReviews, likeReview } from "../../redux/slices/reviewRatingSlice";
+import {
+  fetchWorkProvider,
+  fetchServiceProviders,
+} from "../../redux/slices/userSlice";
 
 function AllReviews({ userId }) {
   const dispatch = useDispatch();
-  const {id} = useParams();
+  const { id } = useParams();
 
   useEffect(() => {
     dispatch(fetchReviews(userId));
@@ -18,13 +21,10 @@ function AllReviews({ userId }) {
   const reviews = useSelector((state) => state.review)?.reviews;
   const workProvidersList = useSelector((state) => state.users)?.workProviders;
   const users = useSelector((state) => state.users)?.data;
-   
-  const serviceProvider = users.find((user) => {
-      return user._id == userId || id ;
-    });
 
-  // console.log(userId)
-  console.log(reviews)
+  const serviceProvider = users.find((user) => {
+    return user._id == userId || id;
+  });
 
   const reviewRating = reviews?.map((ele) => {
     const jobProvider = workProvidersList?.find((elel) => {
@@ -34,17 +34,15 @@ function AllReviews({ userId }) {
     return { ...ele, workProvider: jobProvider };
   });
 
-  console.log(reviewRating);
-
-  const handleLike = (id)=>{
+  const handleLike = (id) => {
     dispatch(likeReview(id));
-  }
+  };
+
   return (
     <div>
-
       <div className="text-gray-600 text-[18px] ml-2">
-            Review and Rating {">"}{" "}
-            <span className="text-black">{serviceProvider?.name}</span>
+        Review and Rating {">"}{" "}
+        <span className="text-black">{serviceProvider?.name}</span>
       </div>
       {reviewRating?.map((review, i) => {
         return (
@@ -64,14 +62,22 @@ function AllReviews({ userId }) {
                     <p className="text-[14px] font-medium text-gray-800">
                       {review?.workProvider?.name}
                     </p>
-                    <p className="text-[13px] text-gray-400">{review?.reviewDate}</p>
+                    <p className="text-[13px] text-gray-400">
+                      {review?.reviewDate}
+                    </p>
                   </div>
                 </div>
 
                 {/* rating */}
                 <div className="flex gap-1 items-center">
                   <div className="flex mr-5 items-center">
-                    <ThumbsUp size={19} color="#00ff40" onClick={()=>{handleLike(review?._id)}}/>{" "}
+                    <ThumbsUp
+                      size={19}
+                      color="#00ff40"
+                      onClick={() => {
+                        handleLike(review?._id);
+                      }}
+                    />{" "}
                     <span className="ml-2 bg-green-100 text-green-700 px-2 rounded-full">
                       {review?.likes}
                     </span>

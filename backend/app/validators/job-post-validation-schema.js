@@ -92,18 +92,6 @@ export const jobRequestValidation = {
 
 
   export const sendMessageValidation = {
-    // requestId: {
-    //     in: ['body'],
-    //     exists: {
-    //         errorMessage: 'requestId field is required',
-    //     },
-    //     notEmpty: {
-    //         errorMessage: 'requestId field should not be empty',
-    //     },
-    //     isMongoId: {
-    //         errorMessage: 'Invalid requestId format',
-    //     }
-    // },
     message: {
         in: ['body'],
         exists: {

@@ -2,6 +2,8 @@
 import { useCallback } from "react";
 import toast from "react-hot-toast";
 
+const razorpya_key=import.meta.env.VITE_RAZORPAY_KEY_ID;
+
 export const useRazorpayPayment = () => {
   const loadRazorpayScript = useCallback(() => {
     return new Promise((resolve) => {
@@ -30,7 +32,7 @@ export const useRazorpayPayment = () => {
     if (!isLoaded || !orderData) return;
 
     const options = {
-      key: "rzp_test_d8jU7S0YhIAw1x", // Replace with your live key in production
+      key: razorpya_key, // Replace with your live key in production
       amount: orderData.amount,
       currency: orderData.currency || "INR",
       name,

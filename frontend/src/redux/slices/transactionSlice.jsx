@@ -4,11 +4,8 @@ import axiosInstance from "../../utils/axiosInstancs";
 export const fetchTransactionHistory = createAsyncThunk('transactions/fetchTransactionHistory',async(_,{rejectWithValue})=>{
     try {
         const response = await axiosInstance.get('/transaction/history',{headers:{Authorization:localStorage.getItem('token')}});
-
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error)
         return rejectWithValue(error.response?.data || "error while fetching transaction history");
     }
 });
@@ -16,11 +13,8 @@ export const fetchTransactionHistory = createAsyncThunk('transactions/fetchTrans
 export const fetchRevenue = createAsyncThunk('transactions/fetchRevenue',async(_,{rejectWithValue})=>{
     try {
         const response = await axiosInstance.get('/transaction/revenue',{headers:{Authorization:localStorage.getItem('token')}});
-
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error)
         return rejectWithValue(error.response?.data || "error while fetching transaction history");
     }
 })

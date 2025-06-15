@@ -7,7 +7,6 @@ function Wallet() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const location = useLocation();
-//   const [showPopup,setShowPopup] = useState(false);
   const showPopup = location.pathname.startsWith('/payment/wallet/add/coins');
 
   useEffect(() => {
@@ -16,10 +15,7 @@ function Wallet() {
 
   const userWallet = useSelector((state) => state.wallet)?.wallet;
 
-  console.log(userWallet)
-
   const handleAddCoins = () => {
-    // setShowPopup(true);
     navigate('/payment/wallet/add/coins',{ state: { from: location.pathname } });
   };
   return (

@@ -10,7 +10,6 @@ export const fetchNotifications = createAsyncThunk('notifications/fetchNotificat
           Authorization: localStorage.getItem("token"),
         },
       });
-      console.log(response.data)
       return response.data.notifications;
     } catch (error) {
       return rejectWithValue(error.response?.data || "error while fetch notifications");
@@ -27,7 +26,6 @@ export const fetchUnreadCount = createAsyncThunk('notifications/fetchUnreadCount
           Authorization: localStorage.getItem("token"),
         },
       });
-      console.log(response.data.unreadCount)
       return response.data.unreadCount;
     } catch (error) {
       return rejectWithValue(error.response?.data || "error while fetch count");
@@ -44,7 +42,6 @@ export const markNotificationsAsRead = createAsyncThunk('notifications/markNotif
           Authorization: localStorage.getItem("token"),
         },
       });
-      console.log(response.data)
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || "error while mark as read");

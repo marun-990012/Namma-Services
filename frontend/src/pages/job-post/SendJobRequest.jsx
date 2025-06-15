@@ -1,11 +1,11 @@
+import toast from "react-hot-toast";
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { MessageSquareShare } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
+import { fetchWallet } from "../../redux/slices/WalletSlice";
 import { fetchAccount } from "../../redux/slices/profileSlice";
 import { sendJobRequest } from "../../redux/slices/jobPostSlice";
-import { fetchWallet } from "../../redux/slices/WalletSlice";
-import toast from "react-hot-toast";
 
 function SendJobRequest() {
   const { id } = useParams();
@@ -22,7 +22,6 @@ function SendJobRequest() {
 
   const userAccount = useSelector((state) => state.profile)?.data;
   const userWallet = useSelector((state) => state.wallet)?.wallet;
-  console.log(userAccount);
 
   const handleSendRequest = (e) => {
     e.preventDefault();

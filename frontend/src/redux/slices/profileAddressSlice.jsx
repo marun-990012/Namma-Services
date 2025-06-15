@@ -4,10 +4,8 @@ import axiosInstance from "../../utils/axiosInstancs";
 export const fetchAddress = createAsyncThunk('/address/fetchAddress',async()=>{
     try {
         const response = await axiosInstance.get('/address/find',{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data || { message : "error while fetching address"})
     }
 });
@@ -15,10 +13,8 @@ export const fetchAddress = createAsyncThunk('/address/fetchAddress',async()=>{
 export const updateAddress = createAsyncThunk('/address/updateAddress',async(formData)=>{
     try {
         const response = await axiosInstance.put('/address/update',formData,{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data || { message : "error while updating address"})
     }
 });
@@ -26,10 +22,8 @@ export const updateAddress = createAsyncThunk('/address/updateAddress',async(for
 export const listAddress = createAsyncThunk('/address/listAddress',async(_,{rejectWithValue})=>{
     try {
         const response = await axiosInstance.get('/address/list',{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data || { message : "error while updating address"})
     }
 });
@@ -37,8 +31,8 @@ export const listAddress = createAsyncThunk('/address/listAddress',async(_,{reje
 const addressSlice = createSlice({
     name:'address',
     initialState: {
-    currentAddress: null,    // renamed for clarity
-    addressList: [],         // renamed for clarity
+    currentAddress: null,   
+    addressList: [],        
     loading: false,
     error: null
 },
@@ -82,18 +76,18 @@ const addressSlice = createSlice({
 
         //list address
         .addCase(listAddress.pending, (state) => {
-    state.loading = true;
-    state.error = null;
-})
-.addCase(listAddress.fulfilled, (state, action) => {
-    state.addressList = action.payload;
-    state.loading = false;
-    state.error = null;
-})
-.addCase(listAddress.rejected, (state, action) => {
-    state.loading = false;
-    state.error = action.payload;
-})
+            state.loading = true;
+            state.error = null;
+        })
+        .addCase(listAddress.fulfilled, (state, action) => {
+            state.addressList = action.payload;
+            state.loading = false;
+            state.error = null;
+        })
+        .addCase(listAddress.rejected, (state, action) => {
+            state.loading = false;
+            state.error = action.payload;
+        })
 
     }
 });

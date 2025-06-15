@@ -10,8 +10,7 @@ import inputValidator from '../../app/helpers/input-validation-helper.js';
 
 const addressRoute = express.Router();
 
-//api for address 3
-// addressRoute.post('/create',authentication,authorization(["work-provider","service-provider"]),checkSchema(addressValidation),inputValidator,addressController.createAddress);
+//api for address 
 addressRoute.put('/update',authentication,authorization(["work-provider","service-provider"]),checkSchema(addressValidation),inputValidator,addressController.updateAddress);
 addressRoute.get('/find',authentication,addressController.find);
 addressRoute.get('/list',authentication,addressController.listAddress);

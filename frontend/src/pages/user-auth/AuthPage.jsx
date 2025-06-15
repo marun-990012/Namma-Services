@@ -1,9 +1,8 @@
-import { useLocation, Link } from "react-router-dom";
 import { useState } from "react";
-import logo from "../../images/app-logo.png";
-import Register from "./Register";
-// import Login from './Login'
+import { useLocation, Link } from "react-router-dom";
 import Login from "./login";
+import Register from "./Register";
+import logo from "../../images/app-logo.png";
 function AuthPage() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");

@@ -6,10 +6,8 @@ export const fetchServiceProviders = createAsyncThunk('/users/fetchServiceProvid
         const response = await axiosInstance.get('/auth/service-providers',{headers:{
             Authorization:localStorage.getItem('token')
         }});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
 
     }
@@ -20,10 +18,8 @@ export const fetchWorkProvider = createAsyncThunk('/users/fetchWorkProvider',asy
         const response = await axiosInstance.get('/auth/work-providers',{headers:{
             Authorization:localStorage.getItem('token')
         }});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
 
     }

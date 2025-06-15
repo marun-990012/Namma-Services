@@ -8,7 +8,6 @@ export const useSelectServiceProvider = () => {
   const navigate = useNavigate();
 
   const select = async (formData) => {
-    console.log(formData)
     try {
       const res = await dispatch(
         selectServiceProvider(formData)

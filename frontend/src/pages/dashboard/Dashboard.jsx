@@ -1,7 +1,7 @@
 import { Star } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import AppliedWorks from "../job-post/AppliedWorks";
 import CompletedWorks from "../job-post/CompletedWorks";
 import { fetchJobList } from "../../redux/slices/jobPostSlice";
@@ -29,14 +29,12 @@ function DashBoard() {
  
   
   const revenue = useSelector((state)=> state.transactions?.revenue?.totalRevenue);
-  console.log(revenue);
   const jobList = useSelector((state) => state.jobs)?.data;
   const userAccount = useSelector((state) => state.profile)?.data;
   const reviews = useSelector((state) => state.review)?.reviews;
   
 
   const averageRating = reviews.length? reviews.reduce((acc, cv) => acc + cv.rating, 0) / reviews.length: 0;
-  console.log(averageRating);
   
 useEffect(()=>{
   dispatch(fetchReviews(userAccount._id));
@@ -48,12 +46,11 @@ useEffect(()=>{
       job.selectedServiceProvider == userAccount?._id &&
       job.jobRequests?.some((req) => req.serviceProvider === userAccount?._id)
   );
-  //  console.log(completedJobs)
+ 
   const totalEarnings = completedJobs.reduce((acc, cv) => {
     return acc + cv.salary;
   }, 0);
 
-  //  console.log(totalEarnings)
   return (
     <div className="bg-gray-100 flex flex-col gap-3 justify-center items-center border-3 border-white p-10 pt-3 rounded-[8px] w-full mb-4">
       

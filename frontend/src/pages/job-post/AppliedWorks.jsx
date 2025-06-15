@@ -1,7 +1,7 @@
-import { Link } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { fetchJobList } from "../../redux/slices/jobPostSlice";
 import { fetchAccount } from "../../redux/slices/profileSlice";
 function AppliedWorks() {
@@ -15,14 +15,12 @@ function AppliedWorks() {
 
   const jobList = useSelector((state) => state.jobs)?.data;
   const userAccount = useSelector((state) => state.profile)?.data;
-  // console.log(userAccount)
 
   const appliedJob = jobList.filter(
     (job) =>
       job.workStatus !== "completed" &&
       job.jobRequests?.some((req) => req.serviceProvider === userAccount?._id)
   );
-  console.log(appliedJob);
   return (
     <div>
   <p className="text-lg font-semibold text-gray-800 ml-2">

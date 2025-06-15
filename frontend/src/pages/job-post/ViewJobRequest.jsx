@@ -14,13 +14,13 @@ import {
   replyToServiceProvider,
   checkIfWorking,
 } from "../../redux/slices/jobPostSlice";
-import { fetchServiceProviders } from "../../redux/slices/userSlice";
+import AllReviews from "../review/AllReviews";
 import { fetchAccount } from "../../redux/slices/profileSlice";
+import { fetchReviews } from "../../redux/slices/reviewRatingSlice";
+import { fetchServiceProviders } from "../../redux/slices/userSlice";
+import { usewithdrawConsider } from "../../hooks/useWithdrawConsider";
 import { useSelectServiceProvider } from "../../hooks/useSelectServiceProvider";
 import { useConsiderServiceProvider } from "../../hooks/useConsiderServiceProvider";
-import { usewithdrawConsider } from "../../hooks/useWithdrawConsider";
-import AllReviews from "../review/AllReviews";
-import { fetchReviews } from "../../redux/slices/reviewRatingSlice";
 function ViewJobRequest() {
   const { userId, id } = useParams();
   const dispatch = useDispatch();
@@ -44,7 +44,6 @@ function ViewJobRequest() {
   const users = useSelector((state) => state.users).data;
   const userAccount = useSelector((state) => state.profile).data;
   const reviews = useSelector((state) => state.review)?.reviews;
-  console.log(reviews);
 
   const averageRating = reviews.length? reviews.reduce((acc, cv) => acc + cv.rating, 0) / reviews.length: 0;
   // console.log(averageRating);
@@ -56,11 +55,8 @@ function ViewJobRequest() {
     return message.serviceProvider == userId;
   });
 
-  // console.log(jobPost.job.selectedServiceProvider == userId);
-
   const isConsidered = jobPost?.job?.considerations?.includes(userId);
   const isSameServiceProvider = jobPost.job.selectedServiceProvider == userId;
-  // console.log(isConsidered);
 
   const messagesContainerRef = useRef(null);
   const messagesEndRef = useRef(null);
@@ -98,11 +94,9 @@ function ViewJobRequest() {
   const handleWithdrawConsider = async () => {
     const formData = { id, serviceProviderId: userId };
     withdraw(formData);
-    // alert('hi')
   };
 
   const handleSelect = (serviceProviderId) => {
-    // setSelectedServiceProviderId(serviceProviderId); // store ID
     setShowPopup(true); // show confirmation popup
   };
 
@@ -115,7 +109,7 @@ function ViewJobRequest() {
   const handleCancel = () => {
     setShowPopup(false);
   };
-  console.log(jobPost.job.workStatus);
+  
   return (
     <div className="flex flex-col justify-center items-center border-3 border-white p-10 pt-4 rounded-[8px] mb-2 bg-gray-100">
       <div className="w-full">

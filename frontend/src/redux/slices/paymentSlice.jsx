@@ -10,7 +10,6 @@ export const createOrder = createAsyncThunk("wallet/createOrder",async (amount, 
           Authorization: localStorage.getItem("token"),
         },
       });
-      console.log(response.data.data)
       return response.data.data; // Return Razorpay order data
     } catch (error) {
       return rejectWithValue(error.response?.data || "Order creation failed");
@@ -35,11 +34,8 @@ export const verifyPayment = createAsyncThunk("wallet/verifyPayment",async ({ re
         },
       });
 
-      console.log(verify.data);
-
       return verify.data;
     } catch (error) {
-        console.log(error)
       return rejectWithValue(error.response?.data || "Verification failed");
     }
   }

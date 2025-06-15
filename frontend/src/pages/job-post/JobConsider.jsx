@@ -27,12 +27,10 @@ function JobConsider() {
   const addresses = useSelector((state) => state.address).addressList;
 
   const serviceProviderIds = jobPost?.considerations;
-  // console.log(jobPost)
 
   const serviceProviders = users.filter((user) =>
     serviceProviderIds?.includes(user._id.toString())
   );
-  // console.log(serviceProviders);
 
   const requestedUsers = serviceProviders.map((user) => {
     const address = addresses.find((addr) => addr.userId === user._id);

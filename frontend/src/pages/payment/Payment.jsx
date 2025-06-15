@@ -1,8 +1,9 @@
 import { Coins } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import Wallet from "./Wallet";
-import Transactions from "./Transactions";
 import Revenue from "./Revenue";
+import Transactions from "./Transactions";
+
 function Payment() {
     
   return (

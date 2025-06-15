@@ -3,7 +3,10 @@ import { useNavigate, useLocation, useParams, Link } from "react-router-dom";
 import { BadgeCheck, Star, UserRound } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
-import { showJobPostDetail, deleteJobPost, } from "../../redux/slices/jobPostSlice";
+import {
+  showJobPostDetail,
+  deleteJobPost,
+} from "../../redux/slices/jobPostSlice";
 import { fetchServiceProviders } from "../../redux/slices/userSlice";
 import JobRequests from "./JobRequests";
 import JobConsider from "./JobConsider";
@@ -19,7 +22,7 @@ function JobPostDetail() {
 
   const [showPopup, setShowPopup] = useState(false);
   const [agree, setAgree] = useState(false);
-  const [extraPay, setExtraPay] = useState('');
+  const [extraPay, setExtraPay] = useState("");
   console.log(agree);
 
   const { payment } = usePaymentHandler(from);
@@ -44,26 +47,35 @@ function JobPostDetail() {
   const jobPost = useSelector((state) => state.jobs).job;
   const users = useSelector((state) => state.users).data;
   const reviews = useSelector((state) => state.review)?.reviews;
-  const capitalized = jobPost?.title?.charAt(0).toUpperCase() + jobPost?.title?.slice(1);
-  const salary = (Number(jobPost.salary) + Number(extraPay));
+  const capitalized =
+    jobPost?.title?.charAt(0).toUpperCase() + jobPost?.title?.slice(1);
+  const salary = Number(jobPost.salary) + Number(extraPay);
   const selectedServiceProvider = users.find((user) => {
     return user._id == jobPost.selectedServiceProvider;
   });
 
-   useEffect(() => {
-  if (selectedServiceProvider?._id) {
-    dispatch(fetchReviews(selectedServiceProvider._id));
-  }
-}, [dispatch, selectedServiceProvider?._id]);
+  useEffect(() => {
+    if (selectedServiceProvider?._id) {
+      dispatch(fetchReviews(selectedServiceProvider._id));
+    }
+  }, [dispatch, selectedServiceProvider?._id]);
 
-  const averageRating = reviews?.length? reviews.reduce((acc, cv) => acc + cv.rating, 0) / reviews.length: 0;
+  const averageRating = reviews?.length
+    ? reviews.reduce((acc, cv) => acc + cv.rating, 0) / reviews.length
+    : 0;
 
   const handleComplet = async () => {
     setShowPopup(true);
   };
 
   const handleConfirm = async () => {
-    await payment(NaN, "salary", jobPost?._id, salary,selectedServiceProvider?._id);
+    await payment(
+      NaN,
+      "salary",
+      jobPost?._id,
+      salary,
+      selectedServiceProvider?._id
+    );
     // alert("hello");
   };
 
@@ -71,21 +83,20 @@ function JobPostDetail() {
     setShowPopup(false);
   };
 
-  const handleDelete = async()=>{
+  const handleDelete = async () => {
     try {
       const res = await dispatch(deleteJobPost(id)).unwrap();
-      toast.success('successfully deleted job post');
-      navigate('/job/posts')
+      toast.success("successfully deleted job post");
+      navigate("/job/posts");
     } catch (error) {
-      toast.error('error while deleting post')
+      toast.error("error while deleting post");
     }
-  }
+  };
 
-
-  const handleEdit = ()=>{
+  const handleEdit = () => {
     // alert('hi')
-    navigate(`/job/post/edit/${jobPost?._id}`)
-  }
+    navigate(`/job/post/edit/${jobPost?._id}`);
+  };
   return (
     <div className="flex flex-col justify-center items-center border-3 border-white p-6 pt-4 rounded-[8px] mb-2 bg-gray-100">
       <div className="w-full">
@@ -115,7 +126,8 @@ function JobPostDetail() {
                 <p className="text-lg font-semibold text-gray-800">
                   Description:{" "}
                   <span className="text-base font-normal text-gray-500">
-                    {jobPost?.description?.charAt(0).toUpperCase() + jobPost?.description?.slice(1)}
+                    {jobPost?.description?.charAt(0).toUpperCase() +
+                      jobPost?.description?.slice(1)}
                   </span>
                 </p>
                 <p className="text-lg font-semibold text-gray-800 break-words">
@@ -142,50 +154,53 @@ function JobPostDetail() {
               <div className="pt-4 border-t border-gray-200">
                 {/* {jobPost?.jobRequests?.length == 0} */}
                 {selectedServiceProvider ? (
-  jobPost.workStatus === "completed" ? (
-    <div className="bg-green-50 border border-green-400 p-5 rounded-lg shadow-sm">
-      <h3 className="text-green-700 font-semibold text-lg mb-2 flex items-center gap-2">
-        ✅ Work Completed
-      </h3>
-      <p className="text-gray-700 text-sm">
-        This job has been marked as completed. You can view the payment history or contact the service provider if needed.
-      </p>
-    </div>
-  ) : (
-    <div className="bg-white p-5 space-y-3">
-      <p className="text-gray-700 text-base">
-        ✅ If the work has been completed, you can proceed with the payment.
-      </p>
-      <button
-        onClick={handleComplet}
-        className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-all"
-      >
-        Mark as Completed
-      </button>
-    </div>
-  )
-) : jobPost?.jobRequests?.length === 0 && (
-  <div className="flex gap-4 flex-wrap">
-    <button
-      onClick={handleEdit}
-      className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg font-medium text-base transition-all"
-    >
-      Edit Post
-    </button>
-    <button
-      onClick={handleDelete}
-      className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-medium text-base transition-all"
-    >
-      Delete Post
-    </button>
-  </div>
-)}
-
+                  jobPost.workStatus === "completed" ? (
+                    <div className="bg-green-50 border border-green-400 p-5 rounded-lg shadow-sm">
+                      <h3 className="text-green-700 font-semibold text-lg mb-2 flex items-center gap-2">
+                         Work Completed
+                      </h3>
+                      <p className="text-gray-700 text-sm">
+                        This job has been marked as completed. You can view the
+                        payment history or contact the service provider if
+                        needed.
+                      </p>
+                    </div>
+                  ) : (
+                    <div className="bg-white p-5 space-y-3">
+                      <p className="text-gray-700 text-base">
+                         If the work has been completed, you can proceed with
+                        the payment.
+                      </p>
+                      <button
+                        onClick={handleComplet}
+                        className="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-lg font-semibold transition-all"
+                      >
+                        Mark as Completed
+                      </button>
+                    </div>
+                  )
+                ) : (
+                  jobPost?.jobRequests?.length === 0 && (
+                    <div className="flex gap-4 flex-wrap">
+                      <button
+                        onClick={handleEdit}
+                        className="bg-yellow-500 hover:bg-yellow-600 text-white px-5 py-2 rounded-lg font-medium text-base transition-all"
+                      >
+                        Edit Post
+                      </button>
+                      <button
+                        onClick={handleDelete}
+                        className="bg-red-500 hover:bg-red-600 text-white px-5 py-2 rounded-lg font-medium text-base transition-all"
+                      >
+                        Delete Post
+                      </button>
+                    </div>
+                  )
+                )}
               </div>
             </div>
 
             {/* Right Section */}
-            {/* jobPost.selectedServiceProvider */}
             {jobPost.selectedServiceProvider ? (
               <div className="w-full lg:max-w-[30%] h-90 bg-white rounded-xl shadow-md overflow-hidden">
                 <div className="relative">
@@ -202,42 +217,42 @@ function JobPostDetail() {
                 <div className="p-4 pt-2">
                   <div className="uppercase tracking-wide text-sm text-indigo-500 font-semibold flex justify-between mt-2">
                     <p className="text-[12px]">Electrician</p>
-                      <div className="flex items-center space-x-1">
-                    {[0, 1, 2, 3, 4].map((_, idx) => {
-                      const isFilled = idx + 1 <= averageRating;
-                      const isHalf =
-                        !isFilled &&
-                        averageRating > idx &&
-                        averageRating < idx + 1;
+                    <div className="flex items-center space-x-1">
+                      {[0, 1, 2, 3, 4].map((_, idx) => {
+                        const isFilled = idx + 1 <= averageRating;
+                        const isHalf =
+                          !isFilled &&
+                          averageRating > idx &&
+                          averageRating < idx + 1;
 
-                      return (
-                        <div key={idx}>
-                          <Star
-                            size={18}
-                            color={isFilled || isHalf ? "#e8c008" : "#d1d5db"}
-                            fill={
-                              isFilled
-                                ? "#e8c008"
-                                : isHalf
-                                ? "url(#half)"
-                                : "none"
-                            }
-                          />
-                        </div>
-                      );
-                    })}
-                    <svg width="0" height="0">
-                      <defs>
-                        <linearGradient id="half">
-                          <stop offset="50%" stopColor="#e8c008" />
-                          <stop offset="50%" stopColor="transparent" />
-                        </linearGradient>
-                      </defs>
-                    </svg>
-                    <span className="text-gray-600 text-xs ml-1">
-                      {averageRating.toFixed(1)}
-                    </span>
-                  </div>
+                        return (
+                          <div key={idx}>
+                            <Star
+                              size={18}
+                              color={isFilled || isHalf ? "#e8c008" : "#d1d5db"}
+                              fill={
+                                isFilled
+                                  ? "#e8c008"
+                                  : isHalf
+                                  ? "url(#half)"
+                                  : "none"
+                              }
+                            />
+                          </div>
+                        );
+                      })}
+                      <svg width="0" height="0">
+                        <defs>
+                          <linearGradient id="half">
+                            <stop offset="50%" stopColor="#e8c008" />
+                            <stop offset="50%" stopColor="transparent" />
+                          </linearGradient>
+                        </defs>
+                      </svg>
+                      <span className="text-gray-600 text-xs ml-1">
+                        {averageRating.toFixed(1)}
+                      </span>
+                    </div>
                   </div>
                   <p className="mt-[1px] text-[20px] text-black flex items-center">
                     {selectedServiceProvider?.name}{" "}
@@ -257,7 +272,7 @@ function JobPostDetail() {
                       View details
                     </Link>
                   </div>
-                  {/* <button className="text-center text-green-700 px-3 py-1 mt-2 rounded-[6px]">View details</button> */}
+                 
                 </div>
               </div>
             ) : (
@@ -339,7 +354,8 @@ function JobPostDetail() {
                   <p className="text-sm text-white/90">
                     Base: ₹{jobPost.salary}
                     <span className="mx-2 text-white/50">+</span>
-                    Extra: ₹{extraPay !=0 && (<span>{extraPay}</span>)} {extraPay==0 &&(<span>0</span>)}
+                    Extra: ₹{extraPay != 0 && <span>{extraPay}</span>}{" "}
+                    {extraPay == 0 && <span>0</span>}
                     <span className="mx-2 text-white/50">=</span>
                     <strong className="text-yellow-300">₹{salary}</strong>
                   </p>
@@ -355,13 +371,13 @@ function JobPostDetail() {
                     id="agree"
                     className="peer hidden"
                     checked={agree}
-                   onChange={(e) => {
-  const isChecked = e.target.checked;
-  setAgree(isChecked);
-  if (!isChecked) {
-    setExtraPay(0);
-  }
-}}
+                    onChange={(e) => {
+                      const isChecked = e.target.checked;
+                      setAgree(isChecked);
+                      if (!isChecked) {
+                        setExtraPay(0);
+                      }
+                    }}
                   />
                   <div className="w-5 h-5 flex items-center justify-center border-2 border-yellow-400 rounded bg-white peer-checked:bg-green-300 transition-colors duration-200">
                     <svg
@@ -390,7 +406,9 @@ function JobPostDetail() {
                     <input
                       type="number"
                       value={extraPay}
-                      onChange={(e)=>{setExtraPay(e.target.value)}}
+                      onChange={(e) => {
+                        setExtraPay(e.target.value);
+                      }}
                       placeholder="₹ 0.00"
                       className="w-full px-4 py-2 bg-white text-[#4f2bdf] placeholder:text-gray-400 rounded-lg border border-purple-200 focus:outline-none focus:ring-2 focus:ring-yellow-300 transition-all duration-200"
                     />

@@ -1,4 +1,5 @@
 import Address from "../models/address-model.js";
+
 export const createBlankAddressForUser = async (userId) => {
   return await Address.create({
     userId,

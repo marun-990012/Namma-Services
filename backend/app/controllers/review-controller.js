@@ -14,28 +14,6 @@ reviewRatingController.create = async(req,res)=>{
 };
 
 
-//add more review to current post
-reviewRatingController.moreReview = async(req,res)=>{
-    const jobId = req.params.id;
-    // console.log(jobId)
-    const {name,message,profileImage} = req.body;
-    try{
-        const review = await ReviewRating.findOne({jobId:jobId,jobProvider:req.userId});
-        if(!review){
-            return res.status(404).json({message:"your previous review is deleted or unauthorixed access"});
-        }
-      const newReview = {name,message,profileImage};
-      review.review.push(newReview);
-      await review.save();
-
-      return res.status(201).json(review);
-    }catch(error){
-        console.log(error);
-        return res.status(500).json({error:"Something went wrong"});
-    }
-};
-
-
 //remove or delete review
 reviewRatingController.removeReview = async(req,res)=>{
     //main id and review id
@@ -45,11 +23,9 @@ reviewRatingController.removeReview = async(req,res)=>{
         if(!review){
             return res.status(404).json({message:"your previous review is deleted"});
         }
-      
+    
     //   await review.save();
-
       return res.json(review);
-    // return res.json('hello');
     }catch(error){
         console.log(error);
         return res.status(500).json({error:"Something went wrong"});
@@ -74,8 +50,8 @@ reviewRatingController.updateReview = async(req,res)=>{
         reviewToUpdate.message = message;
        await review.save();
     
-      return res.json(review);
-    // return res.json('hello');
+       return res.json(review);
+    
     }catch(error){
         console.log(error);
         return res.status(500).json({error:"Something went wrong"});

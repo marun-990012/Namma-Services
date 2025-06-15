@@ -1,6 +1,6 @@
-import { useNavigate,useParams } from "react-router-dom";
-import { useSelector,useDispatch } from "react-redux";
 import { useEffect } from "react";
+import { useSelector,useDispatch } from "react-redux";
+import { useNavigate,useParams } from "react-router-dom";
 import { fetchAccount } from "../../redux/slices/profileSlice";
 
 function ViewImage() {
@@ -27,7 +27,6 @@ function ViewImage() {
         <button
         onClick={()=>{navigate(-1)}}
           className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-sm shadow cursor-pointer"
-        //   onClick={handleRemove} // Replace with your actual remove function
         >
           ✕
         </button>

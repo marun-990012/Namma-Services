@@ -1,17 +1,17 @@
-import { razorpayInstance } from "../../config/razorpayConfig.js";
 import crypto from 'crypto';
-import Payment from "../models/paymentSchema.js";
 import Wallet from "../models/wallet-model.js";
-import { addCoinsInWallet } from "../services/walletService.js";
+import Payment from "../models/paymentSchema.js";
 import { completeJob } from "../helpers/completJob.js";
 import Transaction from "../models/transactions-model.js";
+import { addCoinsInWallet } from "../services/walletService.js";
+import { razorpayInstance } from "../../config/razorpayConfig.js";
 
 
 const paymentController = {};
 
 paymentController.order = (req, res) => {
   const { amount } = req.body; // Amount is in INR, but we need it in paisa (multiply by 100)
-  console.log('order')
+ 
   try {
     const options = {
       amount: amount * 100, // Convert amount to paisa (1 INR = 100 paisa)
@@ -48,11 +48,10 @@ paymentController.verify = async (req, res) => {
     return res.status(400).json({ error: "Missing required fields" });
   }
 
-  console.log('userId',userId)
   try {
     const sign = `${razorpay_order_id}|${razorpay_payment_id}`;
     const expectedSignature = crypto
-      .createHmac('sha256', '5DrtcuKEVGGvv0L57aPiAi8A')  // Use env var
+      .createHmac('sha256', process.env.RAZORPAY_SECRET)  // Use env var
       .update(sign)
       .digest('hex');
 

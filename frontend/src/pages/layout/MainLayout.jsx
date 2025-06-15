@@ -1,27 +1,13 @@
-import { Outlet, Link , useNavigate} from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
+import { Outlet, Link , useNavigate} from "react-router-dom";
+import Navbar from "./Navbar";
 import Sidebar from "./SideBar";
 import { logout } from "../../redux/slices/authSlice";
 import { fetchAccount } from "../../redux/slices/profileSlice";
-import Navbar from "./Navbar";
 
 function MainLayout() {
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
-  // const loginDetail = useSelector((state) => {
-  //   return state.auth;
-  // });
 
-  // console.log(loginDetail);
   const isLoggedIn = localStorage.getItem("token")
-
-  // console.log(isLoggedIn);
-
-  // const handleLogout = async() => {
-  // await dispatch(logout());
-  //   // dispatch(fetchAccount());
-  //   navigate("/login");
-  // };
 
   return (
     <div className="min-h-screen bg-[#e3e7ef]">

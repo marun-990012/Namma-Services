@@ -9,10 +9,7 @@ export default function ProtectedRoute({ roles, children }) {
     dispatch(fetchAccount());
   },[dispatch])
   const userAccount = useSelector((state) => state.profile)?.data;
-  console.log(userAccount?.userType)
   const navigate = useNavigate();
-
-  // console.log(data)
 
   const isLoading = !userAccount || Object.keys(userAccount).length === 0;
   const isAuthorized = roles.includes(userAccount?.userType);

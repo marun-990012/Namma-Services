@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import Transaction from "../models/transactions-model.js";
 
 const transactionController = {};
@@ -15,10 +16,9 @@ transactionController.history = async (req,res)=>{
 }
 
 
-import mongoose from 'mongoose';
-const ObjectId = mongoose.Types.ObjectId;
 
 transactionController.totalRevenue = async (req, res) => {
+  const ObjectId = mongoose.Types.ObjectId;
   try {
     const result = await Transaction.aggregate([
       {

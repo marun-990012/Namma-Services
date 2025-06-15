@@ -13,13 +13,12 @@ function CompletedWorks() {
 
     const jobList = useSelector((state)=>state.jobs)?.data;
     const userAccount = useSelector((state)=>state.profile)?.data;
-    console.log(userAccount)
 
-   const completedJobs = jobList.filter(job =>
-  job.workStatus == "completed" && job.selectedServiceProvider == userAccount?._id  &&
-  job.jobRequests?.some(req => req.serviceProvider === userAccount?._id)
-);
-    // console.log(appliedJob)
+    const completedJobs = jobList.filter(job =>
+    job.workStatus == "completed" && job.selectedServiceProvider == userAccount?._id  &&
+    job.jobRequests?.some(req => req.serviceProvider === userAccount?._id)
+   );
+   
   return (
     <div>
   <p className="text-lg font-semibold text-gray-800 ml-2">

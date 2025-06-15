@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
-import { useDispatch,useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import toast from "react-hot-toast";
 import { listCategories } from "../../redux/slices/serviceCategorySlice";
-import { createJobPost, updateJobPost, showJobPostDetail } from "../../redux/slices/jobPostSlice";
+import {
+  createJobPost,
+  updateJobPost,
+  showJobPostDetail,
+} from "../../redux/slices/jobPostSlice";
 
 function JobPostForm() {
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    const {id} = useParams();
-
-    // console.log(id)
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { id } = useParams();
 
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
@@ -20,20 +22,28 @@ function JobPostForm() {
   const [salary, setSalary] = useState("");
   const [images, setImages] = useState("");
 
-    useEffect(()=>{
-           dispatch(listCategories());
-           if(id){
-            dispatch(showJobPostDetail(id));
-           }
-      },[dispatch]);
-      
-  const listCategory = useSelector((state)=>state.services).data
-  const jobPost = useSelector((state) =>  state.jobs)?.job;
-  console.log(jobPost)
+  useEffect(() => {
+    dispatch(listCategories());
+    if (id) {
+      dispatch(showJobPostDetail(id));
+    }
+  }, [dispatch]);
 
-  useEffect(()=>{
-    if(id){
-      {title,description,serviceCategory,address,postalCode,salary,images}
+  const listCategory = useSelector((state) => state.services).data;
+  const jobPost = useSelector((state) => state.jobs)?.job;
+  console.log(jobPost);
+
+  useEffect(() => {
+    if (id) {
+      {
+        title,
+          description,
+          serviceCategory,
+          address,
+          postalCode,
+          salary,
+          images;
+      }
       setTitle(jobPost?.title);
       setDescription(jobPost?.description);
       setServiceCategory(jobPost?.serviceCategory);
@@ -41,10 +51,9 @@ function JobPostForm() {
       setPostalCode(jobPost?.postalCode);
       setSalary(jobPost?.salary);
     }
-  },[id,jobPost])
-         
-  const validations = () => {
+  }, [id, jobPost]);
 
+  const validations = () => {
     if (!title.trim()) {
       toast.error("title field required");
       return false;
@@ -90,23 +99,31 @@ function JobPostForm() {
 
     if (!validations()) return;
 
-    const formData = {title,description,serviceCategory,address,postalCode,salary,images}
-    if(id){
+    const formData = {
+      title,
+      description,
+      serviceCategory,
+      address,
+      postalCode,
+      salary,
+      images,
+    };
+    if (id) {
       try {
-      const res = await  dispatch(updateJobPost({id,formData})).unwrap();
-      toast.success("Job post updated successfully");
-      navigate(-1);
-    } catch (error) {
-      toast.error(error?.message || "failed");
-    }
-    }else{
+        const res = await dispatch(updateJobPost({ id, formData })).unwrap();
+        toast.success("Job post updated successfully");
+        navigate(-1);
+      } catch (error) {
+        toast.error(error?.message || "failed");
+      }
+    } else {
       try {
-      const res = await  dispatch(createJobPost(formData)).unwrap();
-      toast.success("Job post created successfully");
-      navigate("/job/posts");
-    } catch (error) {
-      toast.error(error?.message || "failed");
-    }
+        const res = await dispatch(createJobPost(formData)).unwrap();
+        toast.success("Job post created successfully");
+        navigate("/job/posts");
+      } catch (error) {
+        toast.error(error?.message || "failed");
+      }
     }
   };
 
@@ -114,7 +131,9 @@ function JobPostForm() {
     <div className="fixed inset-0 z-50 flex justify-center items-center bg-opacity-50 backdrop-blur-md ">
       <div className="bg-white px-7 py-5 rounded-[8px] border border-gray-300 shadow-[10px] w-100">
         <div className="flex justify-between">
-          <p className="text-[20px]">{id ? "Edit job post":"Create job post"}</p>
+          <p className="text-[20px]">
+            {id ? "Edit job post" : "Create job post"}
+          </p>
           <button
             onClick={() => {
               navigate("/job/posts");
@@ -126,120 +145,114 @@ function JobPostForm() {
         </div>
         <div>
           <form onSubmit={handleSubmit}>
-           <div className="flex flex-col gap-1">
-
-             <div className="flex flex-col">
-              <label htmlFor="" className="text-gray-600">
-                Title
-              </label>
-              <input
-                type="text"
-                placeholder="Ex : Title"
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                }}
-                className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label htmlFor="" className="text-gray-600">
-                Description
-              </label>
-              <input
-                type="text"
-                placeholder="Ex : Description"
-                value={description}
-                onChange={(e) => {
-                  setDescription(e.target.value);
-                }}
-                className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
-              />
-            </div>
-
-
-            <div className="flex flex-col mt-2">
-              {/* <label htmlFor="" className="text-gray-600">Select service type</label> */}
-              <select
-                name=""
-                className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
-                value={serviceCategory}
-                onChange={(e) => {
-                  setServiceCategory(e.target.value);
-                }}
-                id=""
-              >
-                <option value="" className="text-gray-500">
-                  Select service type
-                </option>
-                {listCategory.map((service) => {
-                  return (
-                    <option key={service._id} value={service._id}>
-                      {service.name}
-                    </option>
-                  );
-                })}
-              </select>
-            </div>
-
-            <div className="flex flex-col">
-              <label htmlFor="" className="text-gray-600">
-                Address
-              </label>
-              <input
-                type="text"
-                placeholder="Ex : my address city postal address"
-                value={address}
-                onChange={(e) => {
-                  setAddress(e.target.value);
-                }}
-                className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
-              />
-            </div>
-
-            <div className="flex gap-2">
+            <div className="flex flex-col gap-1">
               <div className="flex flex-col">
                 <label htmlFor="" className="text-gray-600">
-                  PostalCode
+                  Title
                 </label>
                 <input
                   type="text"
-                  placeholder="Ex : 123456"
-                  value={postalCode}
+                  placeholder="Ex : Title"
+                  value={title}
                   onChange={(e) => {
-                    setPostalCode(e.target.value);
+                    setTitle(e.target.value);
                   }}
-                  className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px] w-26"
+                  className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
                 />
               </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="" className="text-gray-600">
+                  Description
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex : Description"
+                  value={description}
+                  onChange={(e) => {
+                    setDescription(e.target.value);
+                  }}
+                  className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
+                />
+              </div>
+
+              <div className="flex flex-col mt-2">
+                {/* <label htmlFor="" className="text-gray-600">Select service type</label> */}
+                <select
+                  name=""
+                  className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
+                  value={serviceCategory}
+                  onChange={(e) => {
+                    setServiceCategory(e.target.value);
+                  }}
+                  id=""
+                >
+                  <option value="" className="text-gray-500">
+                    Select service type
+                  </option>
+                  {listCategory.map((service) => {
+                    return (
+                      <option key={service._id} value={service._id}>
+                        {service.name}
+                      </option>
+                    );
+                  })}
+                </select>
+              </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="" className="text-gray-600">
+                  Address
+                </label>
+                <input
+                  type="text"
+                  placeholder="Ex : my address city postal address"
+                  value={address}
+                  onChange={(e) => {
+                    setAddress(e.target.value);
+                  }}
+                  className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
+                />
+              </div>
+
+              <div className="flex gap-2">
+                <div className="flex flex-col">
+                  <label htmlFor="" className="text-gray-600">
+                    PostalCode
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Ex : 123456"
+                    value={postalCode}
+                    onChange={(e) => {
+                      setPostalCode(e.target.value);
+                    }}
+                    className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px] w-26"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col">
+                <label htmlFor="" className="text-gray-600">
+                  Salary
+                </label>
+                <input
+                  type="number"
+                  placeholder="Ex : Rs.123"
+                  value={salary}
+                  onChange={(e) => {
+                    setSalary(e.target.value);
+                  }}
+                  className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
+                />
+              </div>
+
+              <div className="mt-5 text-center">
+                <button className="bg-green-500 hover:bg-green-700 text-white text-[17px] w-full py-2 rounded-[5px] cursor-pointer">
+                  {id ? "Save Changes" : "Create post"}
+                </button>
+              </div>
             </div>
-
-
-            <div className="flex flex-col">
-              <label htmlFor="" className="text-gray-600">
-                Salary
-              </label>
-              <input
-                type="number"
-                placeholder="Ex : Rs.123"
-                value={salary}
-                onChange={(e) => {
-                  setSalary(e.target.value);
-                }}
-                className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
-              />
-            </div>
-
-            
-
-            <div className="mt-5 text-center">
-              <button className="bg-green-500 hover:bg-green-700 text-white text-[17px] w-full py-2 rounded-[5px] cursor-pointer">
-                {id?"Save Changes":"Create post"}
-              </button>
-            </div>
-
-           </div>
           </form>
         </div>
       </div>

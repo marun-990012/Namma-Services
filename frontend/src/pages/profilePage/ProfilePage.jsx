@@ -1,3 +1,7 @@
+import toast from "react-hot-toast";
+import { FastAverageColor } from "fast-average-color";
+import { useEffect, useState, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   Star,
   BadgeCheck,
@@ -11,22 +15,18 @@ import {
   Twitter,
 } from "lucide-react";
 import { IconCloudUpload,IconPhotoUp  } from '@tabler/icons-react';
-import toast from "react-hot-toast";
-import { FastAverageColor } from "fast-average-color";
-import { useEffect, useState, useRef } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { useNavigate, useParams, useLocation } from "react-router-dom";
-import { imageUpload } from "../../redux/slices/imageUploadSlice";
+import ViewImage from "./ViewImage";
 import ProfileUpdate from "./ProfileUpdate";
+import WorkImageUpload from "./WorkImageUpload";
 import {
   fetchAccount,
   updateProfileImage,
 } from "../../redux/slices/profileSlice";
+import { imageUpload } from "../../redux/slices/imageUploadSlice";
+import { fetchReviews } from "../../redux/slices/reviewRatingSlice";
 import { fetchAddress } from "../../redux/slices/profileAddressSlice";
 import { listCategories } from "../../redux/slices/serviceCategorySlice";
-import WorkImageUpload from "./WorkImageUpload";
-import ViewImage from "./ViewImage";
-import { fetchReviews } from "../../redux/slices/reviewRatingSlice";
 
 function ProfilePage() {
   const dispatch = useDispatch();
@@ -67,7 +67,6 @@ function ProfilePage() {
 
   const reviews = useSelector((state) => state.review)?.reviews;
   const averageRating = reviews.length? reviews.reduce((acc, cv) => acc + cv.rating, 0) / reviews.length: 0;
-  console.log(averageRating);
 
   useEffect(() => {
     if (!file) return;
@@ -112,6 +111,8 @@ function ProfilePage() {
   const showImageUpload = () => {
     navigate("/profile/image/upload");
   };
+
+  
   return (
     <div>
       <div className="bg-gray-100 flex justify-center border-5 border-white rounded-[10px] shadow-[8px] mb-4">

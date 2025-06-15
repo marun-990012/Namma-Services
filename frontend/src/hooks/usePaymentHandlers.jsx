@@ -13,7 +13,6 @@ export const usePaymentHandler = (from = "/") => {
   const { triggerPayment } = useRazorpayPayment();
 
   const payment = async (coin, paymentType, jobId, salary,userId) => {
-    console.log(userId)
     if (paymentType === "wallet" && coin <= 0) {
       toast.error("Enter a valid coin amount.");
       return;
@@ -64,7 +63,6 @@ export const usePaymentHandler = (from = "/") => {
         onFailure: () => toast.error("Payment verification failed."),
       });
     } catch (error) {
-      console.error("Order creation failed:", error); // Optional logging
       toast.error("Order creation failed.");
     }
   };

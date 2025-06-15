@@ -1,11 +1,13 @@
 import nodemailer from 'nodemailer';
 import { transporter } from '../../config/nodemailer.js';
 import { verificationEmailTemplate,welcomeEmailTemplate } from './email-template.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 export const sendVerificationEamil=(user)=>{
   
     const mailOptions = {
-        from: 'arunlamani89@gmail.com',
+        from: process.env.USER_EMAIL,
         to: user.email,
         subject: user.message,
         text: user.message,
@@ -22,7 +24,7 @@ export const sendVerificationEamil=(user)=>{
 
 export const senWelcomeEmail=async(user)=>{
     const mailOptions = {
-        from: 'arunlamani89@gmail.com',
+        from: process.env.USER_EMAIL,
         to: user.email,
         subject: user.message,
         text: user.message,
@@ -39,7 +41,7 @@ export const senWelcomeEmail=async(user)=>{
 
 export const sendResetPasswordEmail = async(data)=>{
     const mailOptions = {
-        from: 'arunlamani89@gmail.com',
+        from: process.env.USER_EMAIL,
         to: data.email,
         subject: 'resete possword',
         text: data.token,
@@ -56,9 +58,8 @@ export const sendResetPasswordEmail = async(data)=>{
 
 
 export const sendConsiderNotification = async(data)=>{
-    // console.log('invoked',data)
     const mailOptions = {
-        from: 'arunlamani89@gmail.com',
+        from: process.env.USER_EMAIL,
         to: data.email,
         subject: 'Consider for Work',
         text: `Good news! You're in consideration for the ${data.title} job.` ,
@@ -76,7 +77,7 @@ export const sendConsiderNotification = async(data)=>{
 export const sendSelectNotification = async(data)=>{
     // console.log('invoked',data)
     const mailOptions = {
-        from: 'arunlamani89@gmail.com',
+        from: process.env.USER_EMAIL,
         to: data.email,
         subject: 'Selected for Work',
         text: `Good news! You're Selected for the ${data.title} job.` ,

@@ -1,7 +1,8 @@
-import { useSelector,useDispatch } from "react-redux";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useSelector,useDispatch } from "react-redux";
 import { fetchRevenue } from "../../redux/slices/transactionSlice";
+
 function Revenue() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -11,7 +12,6 @@ function Revenue() {
   },[dispatch]);
 
   const revenue = useSelector((state)=> state.transactions?.revenue?.totalRevenue);
-  console.log(revenue);
   return (
     <div>
       <div className="bg-white p-4 pb-5 pt-3 rounded-2xl shadow-md w-full max-w-md border border-gray-200">

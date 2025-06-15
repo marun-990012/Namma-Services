@@ -1,36 +1,41 @@
+import toast from "react-hot-toast";
+import { CopyPlus } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { CopyPlus } from "lucide-react";
-import toast from "react-hot-toast";
-import { createServiceCategory,listCategories, updateCategory } from "../../redux/slices/serviceCategorySlice";
 import { imageUpload } from "../../redux/slices/imageUploadSlice";
+import {
+  createServiceCategory,
+  listCategories,
+  updateCategory,
+} from "../../redux/slices/serviceCategorySlice";
+
 function CategoryForm() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {id} = useParams();
+  const { id } = useParams();
 
   const [name, setname] = useState("");
   const [description, setDescription] = useState("");
   const [imageUrl, setImageUrl] = useState("");
   const [file, setFile] = useState("");
 
- const { data } = useSelector((state) => state.services);
+  const { data } = useSelector((state) => state.services);
 
-useEffect(() => {
-  dispatch(listCategories());
-}, [dispatch]); // only dispatch once
+  useEffect(() => {
+    dispatch(listCategories());
+  }, [dispatch]); // only dispatch once
 
-useEffect(() => {
-  if (id && data?.length) {
-    const cat = data.find((cat) => cat._id === id);
-    if (cat) {
-      setname(cat.name);
-      setDescription(cat.description);
-      setImageUrl(cat.imageUrl);
+  useEffect(() => {
+    if (id && data?.length) {
+      const cat = data.find((cat) => cat._id === id);
+      if (cat) {
+        setname(cat.name);
+        setDescription(cat.description);
+        setImageUrl(cat.imageUrl);
+      }
     }
-  }
-}, [id, data]);
+  }, [id, data]);
 
   useEffect(() => {
     if (!file) return;
@@ -61,55 +66,59 @@ useEffect(() => {
       return false;
     }
 
-    if(!imageUrl.trim()){
-        toast.error('Image is required. Please select an image.');
-        return false;
+    if (!imageUrl.trim()) {
+      toast.error("Image is required. Please select an image.");
+      return false;
     }
     return true;
   };
 
-  //handle submit 
+  //handle submit
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  if (!validations()) return;
+    e.preventDefault();
+    if (!validations()) return;
 
-  const formData = { name, description, imageUrl };
+    const formData = { name, description, imageUrl };
 
-  if (id) {
-    try {
-      const res = await dispatch(updateCategory({ id, formData })).unwrap();
-      console.log("response:", res);
-      if (res.message) {
-        toast.error(res.message);
-      } else {
-        toast.success("Category updated successfully", { duration: 5000 });
-        navigate('/service-category');
+    if (id) {
+      try {
+        const res = await dispatch(updateCategory({ id, formData })).unwrap();
+        if (res.message) {
+          toast.error(res.message);
+        } else {
+          toast.success("Category updated successfully", { duration: 5000 });
+          navigate("/service-category");
+        }
+      } catch (error) {
+        const errorMessage =
+          error?.message || "Error while updating category. Please try again.";
+        toast.error(errorMessage);
       }
-    } catch (error) {
-      const errorMessage = error?.message || "Error while updating category. Please try again.";
-      toast.error(errorMessage);
-    }
-  } else {
-    try {
-      const res = await dispatch(createServiceCategory(formData)).unwrap();
-      console.log("response:", res);
-      if (res.message) {
-        toast.error(res.message);
-      } else {
-        toast.success("Category created successfully", { duration: 5000 });
-        navigate('/profile');
+    } else {
+      try {
+        const res = await dispatch(createServiceCategory(formData)).unwrap();
+        if (res.message) {
+          toast.error(res.message);
+        } else {
+          toast.success("Category created successfully", { duration: 5000 });
+          navigate("/profile");
+        }
+      } catch (error) {
+        const errorMessage =
+          error?.message || "Error while creating category. Please try again.";
+        toast.error(errorMessage);
       }
-    } catch (error) {
-      const errorMessage = error?.message || "Error while creating category. Please try again.";
-      toast.error(errorMessage);
     }
-  }
-};
+  };
 
   return (
     <div className="bg-gray-100 border-2 border-white shadow rounded-[12px] flex justify-center items-center p-11 mb-2">
       <div className="border border-gray-300 shadow rounded-[12px] py-5 px-7 w-90 bg-white">
-        {id ? (<p className="text-center text-[22px]">Edit service category</p>):(<p className="text-center text-[22px]">Add new service category</p>)}
+        {id ? (
+          <p className="text-center text-[22px]">Edit service category</p>
+        ) : (
+          <p className="text-center text-[22px]">Add new service category</p>
+        )}
         <form onSubmit={handleSubmit}>
           <div className="flex flex-col gap-1 mt-4">
             <label htmlFor="" className="text-sm font-medium text-gray-600">
@@ -118,8 +127,8 @@ useEffect(() => {
             <input
               type="text"
               placeholder="Ex : new category"
-                value={name}
-                onChange={(e) => setname(e.target.value)}
+              value={name}
+              onChange={(e) => setname(e.target.value)}
               className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
             />
           </div>
@@ -131,8 +140,8 @@ useEffect(() => {
             <input
               type="text"
               placeholder="Ex : write description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
               className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
             />
           </div>
@@ -180,7 +189,7 @@ useEffect(() => {
                 className="w-full py-2 bg-green-500 hover:bg-green-600 text-white text-[16px] rounded-[7px] flex items-center justify-center gap-2 cursor-pointer"
               >
                 <CopyPlus size={19} />
-                {id? "Save Category":"Add Category"}
+                {id ? "Save Category" : "Add Category"}
               </button>
             </div>
           </div>

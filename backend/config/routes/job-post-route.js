@@ -1,14 +1,15 @@
 import express from 'express';
 import { checkSchema } from 'express-validator';
-import authentication from '../../app/middlewares/user-authentication.js';
-import jobPostController from '../../app/controllers/job-post-controller.js';
-import { jobPostValidation, jobRequestValidation,sendMessageValidation, sendMessageReplyValidation,considerationValidation,selectServiceProviderValidation } from '../../app/validators/job-post-validation-schema.js';
-import { idValidationSchema } from '../../app/validators/id-validation-schema.js';
-import inputValidator from '../../app/helpers/input-validation-helper.js';
 import authorization from '../../app/middlewares/user-authorization.js';
+import authentication from '../../app/middlewares/user-authentication.js';
+import inputValidator from '../../app/helpers/input-validation-helper.js';
+import jobPostController from '../../app/controllers/job-post-controller.js';
+import { idValidationSchema } from '../../app/validators/id-validation-schema.js';
+import { jobPostValidation, jobRequestValidation,sendMessageValidation, sendMessageReplyValidation,considerationValidation,selectServiceProviderValidation } from '../../app/validators/job-post-validation-schema.js';
 
 const jobPostRoute = express.Router();
 
+//api's for job post
 jobPostRoute.post('/create',authentication,authorization(['work-provider']),checkSchema(jobPostValidation),inputValidator,jobPostController.create);
 jobPostRoute.get('/list',authentication,jobPostController.list);
 jobPostRoute.get('/show/:id',authentication,checkSchema(idValidationSchema),jobPostController.show);

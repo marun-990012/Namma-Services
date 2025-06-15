@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const connectDb = async ()=>{
-    const url='mongodb://127.0.0.1:27017/namma-services'
+    const url = process.env.DB_URL;
     try{
         mongoose.connect(url);
         console.log('server connected to db');

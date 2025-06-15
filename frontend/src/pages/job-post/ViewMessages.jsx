@@ -1,13 +1,14 @@
-import { fetchAccount } from "../../redux/slices/profileSlice";
-import { showJobPostDetail,sendMessage } from "../../redux/slices/jobPostSlice";
-import { useParams, useNavigate, useLocation } from "react-router-dom";
+import toast from "react-hot-toast";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
+import { fetchAccount } from "../../redux/slices/profileSlice";
+import { showJobPostDetail,sendMessage } from "../../redux/slices/jobPostSlice";
 import {
   MessageSquareShare,
   SendHorizontal,
 } from "lucide-react";
-import toast from "react-hot-toast";
+
 function ViewMessages() {
   const { id } = useParams();
   const dispatch = useDispatch();
@@ -53,6 +54,7 @@ function ViewMessages() {
       setMessage('');
     
   };
+
   return (
     <div className="bg-gray-100 flex flex-col gap-4 justify-center items-center border-3 border-white p-5 rounded-[8px] w-full mb-4 max-h-[90vh]">
       <div className="w-full">
@@ -66,9 +68,7 @@ function ViewMessages() {
           </button>
         </div>
       <div className="flex flex-col lg:flex-row w-full max-w-6xl justify-between gap-3">
-        {/* <div className="w-full lg:max-w-[30%] bg-white rounded-2xl shadow-lg overflow-hidden border border-gray-100"> */}
-        
-
+    
         {/* Details */}
         <div className="backdrop-blur-md bg-white border border-gray-200 rounded-2xl p-6 shadow-lg space-y-6 max-w-[35%] mx-auto">
           {/* Title */}
@@ -112,13 +112,7 @@ function ViewMessages() {
             {/* Request Status */}
             <div className="flex items-center gap-2">
               <span className="text-sm text-gray-400">Request Status</span>
-              <span
-                // className={`text-sm font-semibold px-4 py-1 rounded-full shadow-sm ${
-                //   true
-                //     ? "bg-green-100 text-green-700"
-                //     : "bg-red-100 text-red-700"
-                // }`}
-              >
+              <span>
                 {jobPost?.selectedServiceProvider === userAccount?._id ? (
                   <span className="bg-green-100 text-green-700 px-4 py-1 rounded-full shadow-sm">Selected</span>
                 ) : jobPost?.considerations?.includes(userAccount?._id) ? (

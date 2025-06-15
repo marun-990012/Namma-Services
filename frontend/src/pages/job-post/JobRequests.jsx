@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import toast from "react-hot-toast";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams, useNavigate } from "react-router-dom";
 import {
   showJobPostDetail,
-  considerServiceProvider,
-  selectServiceProvider,
 } from "../../redux/slices/jobPostSlice";
 import { fetchServiceProviders } from "../../redux/slices/userSlice";
 import { listAddress } from "../../redux/slices/profileAddressSlice";
@@ -44,7 +42,6 @@ function JobRequests() {
   const serviceProviders = users.filter((user) =>
     serviceProviderIds?.includes(user._id.toString())
   );
-  // console.log(serviceProviders);
 
   const requestedUsers = serviceProviders.map((user) => {
     const address = addresses.find((addr) => addr.userId === user._id);

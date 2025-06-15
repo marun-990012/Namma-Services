@@ -1,12 +1,12 @@
-import { Link, useLocation } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { BadgeCheck } from "lucide-react";
 import * as TablerIcons from "@tabler/icons-react";
+import { Link, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { PencilSquareIcon } from "@heroicons/react/24/solid";
+import menu from "../../routes/menu.json";                  
 import { fetchAccount } from "../../redux/slices/profileSlice";
 import { listCategories } from "../../redux/slices/serviceCategorySlice";
-import menu from "../../routes/menu.json";
 
 export default function Sidebar() {
   const location = useLocation();
@@ -23,10 +23,7 @@ export default function Sidebar() {
   const myServiceType = services.find((service) => {
     return service._id == userAccount?.serviceType;
   });
-  console.log(myServiceType);
-
-  console.log(userAccount);
-
+ 
   // Combine tabler and heroicons into one icon map
   const iconMap = {
     ...TablerIcons,
@@ -38,12 +35,10 @@ export default function Sidebar() {
       !link.permission || link.permission.includes(userAccount?.userType)
   );
 
-  console.log(filteredLinks);
   return (
     <div className="min-h-screen w-fit px-3 py-6 bg-gray-100 rounded-[10px] rounded-tl-[1px] shadow-md border border-white flex flex-col items-center">
       {/* Top window controls */}
-      {/* <PencilSquareIcon className="w-5 h-5 mb-4 text-gray-500" /> */}
-
+     
       <div className="flex justify-center mb-6 p-1 rounded-full">
         <div className="flex gap-1 justify-center items-center">
           <div className="bg-red-500 w-[12px] h-[12px] rounded-full border-2 border-white"></div>

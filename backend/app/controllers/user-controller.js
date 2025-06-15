@@ -1,19 +1,19 @@
+import crypto from 'crypto';
 import bcryptjs from "bcryptjs";
 import jsonwebtoken from "jsonwebtoken";
-import crypto from 'crypto';
 import User from "../models/user-model.js";
 import Wallet from "../models/wallet-model.js";
 import { createBlankAddressForUser } from "../helpers/user-address.js";
-
 import { sendVerificationEamil,senWelcomeEmail,sendResetPasswordEmail } from "../helpers/send-mail.js";
+
 const userController = {};
-// 9535840603
+
 
 // user Registration controller
 userController.register = async (req, res) => {
  
   const {name,email,password,userType,passcode} = req.body;
-  // const Plainpassword = req.body.password;
+  
   try {
     const user = new User({name,email,password,userType});
     if (userType == "work-provider" || userType == "admin") {
@@ -22,7 +22,7 @@ userController.register = async (req, res) => {
       user.isActive = false;
     }
     
-    if (user.userType === "admin" && passcode != "AdminPass") {
+    if (user.userType === "admin" && passcode != process.env.ADMIN_PASS) {
       return res.status(401).json({ message: "Passcode required for admin or enter correct passcode" });
     }
 
@@ -52,7 +52,7 @@ userController.verfiyEmail = async(req,res)=>{
       if (!user) {
           return res.status(400).json({success:false,message:"Inavlid or Expired Code"})      
       }
-        // varunvarun23@gmail.com
+    
    user.isVerified = true;
    user.verificationToken=undefined;
    await user.save()
@@ -80,7 +80,7 @@ userController.forgotPassword = async(req,res)=>{
      // Generate a secure random token
       const resetToken = crypto.randomBytes(32).toString('hex');
       console.log(resetToken);
-      const resetUrl = `http://localhost:5173/reset/password/${resetToken}`; 
+      const resetUrl = `${process.env.RESET_PASSWORD_URL}/${resetToken}`; 
       sendResetPasswordEmail({resetUrl,email:user.email,resetUrl});
 
      // Hash it before storing in DB for security
@@ -152,11 +152,13 @@ userController.loginOtp = async (req,res) => {
     return res.status(500).json({success:false,message:"internal server error"})
    }
 }
+
+
 // user login controller
 userController.login = async (req, res) => {
-  // console.log(process.env.JWT_SECRET)
+ 
   const { password, email,otp } = req.body;
-  // console.log(password, email,otp );
+ 
   try {
     const user = await User.findOne({ email: email });
     if (!user) {
@@ -174,12 +176,12 @@ userController.login = async (req, res) => {
       return res.json({ message: "OTP has expired resend otp" });
     }
     const isMatch = await bcryptjs.compare(password, user.password);
-    // console.log(isVerified)
+    
     if (!isMatch) {
       return res.status(404).json({ message: "invalid email or password" });
     }
     const tokenData = { userId: user._id, role: user.userType };
-    // console.log(tokenData)
+   
     const token = jsonwebtoken.sign(tokenData, process.env.JWT_SECRET, {
       expiresIn: "7d",
     });
@@ -321,26 +323,6 @@ userController.updateProfile = async(req,res)=>{
     }
 };
 
-
-// //address update controller(not done)
-// userController.updateAddress = async(req,res)=>{
-//     const id = req.params.id;
-//     const {address} = req.body;
-//     try{
-        
-//         if(req.userId==id){
-//             const user = await User.findByIdAndUpdate(id,{address},{new:true});
-//             if(!user){
-//                 return res.status(404).json({message:"user not found"});
-//             }
-//             return res.json({user,message:"succefully updated"});
-//         }
-//         return res.json({error:"Unauthorized access"});
-//     }catch(error){
-//         console.log(error);
-//         return res.status(500).json({ error: "Something went wrong" });
-//     }
-// };
 
 //delete account controller
 userController.remove = async(req,res)=>{

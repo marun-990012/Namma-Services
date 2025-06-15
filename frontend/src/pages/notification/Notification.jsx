@@ -1,8 +1,8 @@
-import {IconBellFilled, IconInfoCircle, IconCheck, IconX, IconBan,IconAlertTriangle } from '@tabler/icons-react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useEffect } from 'react';
-import { fetchNotifications,fetchUnreadCount,markNotificationsAsRead } from '../../redux/slices/notificationSlice';
 import { useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import {IconBellFilled, IconInfoCircle, IconCheck, IconX, IconBan,IconAlertTriangle } from '@tabler/icons-react';
+import { fetchNotifications,fetchUnreadCount,markNotificationsAsRead } from '../../redux/slices/notificationSlice';
 
 
 const getIcon = (type) => {

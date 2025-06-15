@@ -1,10 +1,10 @@
-import { useSelector, useDispatch } from "react-redux";
 import { useEffect, useState, useMemo } from "react";
-import { IconSearch, IconBriefcaseOff } from "@tabler/icons-react";
 import { Link } from "react-router-dom";
-import { fetchAddress } from "../../redux/slices/profileAddressSlice";
-import { findNearestJobs } from "../../redux/slices/jobPostSlice";
+import { useSelector, useDispatch } from "react-redux";
+import { IconSearch, IconBriefcaseOff } from "@tabler/icons-react";
 import { fetchAccount } from "../../redux/slices/profileSlice";
+import { findNearestJobs } from "../../redux/slices/jobPostSlice";
+import { fetchAddress } from "../../redux/slices/profileAddressSlice";
 import { listCategories } from "../../redux/slices/serviceCategorySlice";
 
 function LatestJobPosts() {
@@ -28,7 +28,6 @@ function LatestJobPosts() {
     (job) =>
       !job.jobRequests.some((req) => req.serviceProvider === userAccount?._id)
   );
-  console.log(filteredNearestJobs);
 
   const searchJob = useMemo(() => {
     const searchText = search.toLowerCase().trim();
@@ -42,7 +41,6 @@ function LatestJobPosts() {
     });
   }, [search, filteredNearestJobs]);
 
-  console.log(searchJob);
   useEffect(() => {
     if (!userAddress) {
       dispatch(fetchAddress());
@@ -54,8 +52,6 @@ function LatestJobPosts() {
     (category) => category._id === userAccount?.serviceType
   );
 
-  // Fetch nearest jobs only when userAddress and userServiceType._id are ready
-  console.log(userServiceType);
   useEffect(() => {
     if (
       userAddress &&
@@ -73,7 +69,6 @@ function LatestJobPosts() {
       );
     }
   }, [userAddress, userServiceType, dispatch]);
-  // console.log(userAddress[1],userAddress[0])
 
   // Show loading if essential data not ready yet
   if (!userServiceType || !userAddress) {

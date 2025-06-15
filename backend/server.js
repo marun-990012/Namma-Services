@@ -1,7 +1,8 @@
 //******* importing third party modules or packages
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 
 // importing config files
 import connectDb from './config/db.js';
@@ -20,8 +21,8 @@ import transactionRoute from './config/routes/transaction-route.js';
 import notificationRoute from './config/routes/notification-route.js';
 
 const app = express();
-dotenv.config();
-const port= process.env.PORT || 3040;
+
+const port= process.env.PORT ;
 
 //application level middleware 
 app.use(express.json()); // Parse incoming JSON bodies

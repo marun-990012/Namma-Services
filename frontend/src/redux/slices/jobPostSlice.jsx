@@ -4,10 +4,8 @@ import axiosInstance from "../../utils/axiosInstancs";
 export const createJobPost = createAsyncThunk('/jobs/createJobPost',async(formData,{rejectWithValue})=>{
     try{
         const response = await axiosInstance.post('/job/create',formData,{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
     }
 });
@@ -15,10 +13,8 @@ export const createJobPost = createAsyncThunk('/jobs/createJobPost',async(formDa
 export const updateJobPost = createAsyncThunk('/jobs/updateJobPost',async({id,formData},{rejectWithValue})=>{
     try{
         const response = await axiosInstance.put(`/job/update/${id}`,formData,{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
     }
 });
@@ -26,10 +22,8 @@ export const updateJobPost = createAsyncThunk('/jobs/updateJobPost',async({id,fo
 export const deleteJobPost = createAsyncThunk('/jobs/deleteJobPost',async(id,{rejectWithValue})=>{
     try{
         const response = await axiosInstance.delete(`/job/delete/${id}`,{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
     }
 });
@@ -39,10 +33,8 @@ export const listJobPosts = createAsyncThunk('/jobs/listJobPosts',async(_,{rejec
         const response = await axiosInstance.get('/job/my-posts',{headers:{
             Authorization:localStorage.getItem('token')
         }});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
 
     }
@@ -56,11 +48,8 @@ export const findNearestJobs = createAsyncThunk('/jobs/findNearestJobs',async ({
           Authorization: localStorage.getItem('token'),
         },
       });
-
-      console.log(response.data);
       return response.data;
     } catch (error) {
-      console.log(error);
       return rejectWithValue(error?.response?.data);
     }
   }
@@ -72,10 +61,8 @@ export const showJobPostDetail = createAsyncThunk('/jobs/showJobPostDetail',asyn
         const response = await axiosInstance.get(`/job/show/${id}`,{headers:{
             Authorization:localStorage.getItem('token')
         }});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
 
     }
@@ -83,16 +70,13 @@ export const showJobPostDetail = createAsyncThunk('/jobs/showJobPostDetail',asyn
 
 
 export const sendJobRequest = createAsyncThunk('/jobs/sendJobRequest',async({id,formData},{rejectWithValue})=>{
-    // console.log('thunk',id)
-    // console.log('thunk',formData)
+    
     try{
         const response = await axiosInstance.post(`/job/request/${id}`,formData,{headers:{
             Authorization:localStorage.getItem('token')
         }});
-        // console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
 
     }
@@ -101,10 +85,9 @@ export const sendJobRequest = createAsyncThunk('/jobs/sendJobRequest',async({id,
 
 // Thunk to check if a service provider is working on a job
 export const checkIfWorking = createAsyncThunk('jobs/checkIfWorking',async (userId, {rejectWithValue}) => {
-    console.log(userId)
+   
     try {
       const response = await axiosInstance.get(`/job/active/${userId}`,{headers:{Authorization:localStorage.getItem('token')}});
-      console.log(response.data)
       return response.data;
     } catch (error) {
       return rejectWithValue(error.response?.data || 'Something went wrong');
@@ -118,10 +101,8 @@ export const considerServiceProvider = createAsyncThunk('/jobs/considerServicePr
         const response = await axiosInstance.post(`/job/consideration/${id}`,{serviceProvider:serviceProviderId},{headers:{
             Authorization:localStorage.getItem('token')
         }});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
 
     }
@@ -136,10 +117,8 @@ export const withdrawConsider = createAsyncThunk('/jobs/withdrawConsider',async(
           Authorization: localStorage.getItem('token'),
         },
       });
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
 
     }
@@ -150,10 +129,8 @@ export const selectServiceProvider = createAsyncThunk('/jobs/selectServiceProvid
         const response = await axiosInstance.post(`/job/select/${id}`,{serviceProvider:selectedServiceProviderId},{headers:{
             Authorization:localStorage.getItem('token')
         }});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
 
     }
@@ -165,10 +142,8 @@ export const sendMessage = createAsyncThunk('/jobs/sendMessage',async({id,formDa
         const response = await axiosInstance.post(`/job/message/${id}`,formData,{headers:{
             Authorization:localStorage.getItem('token')
         }});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
 
     }
@@ -180,10 +155,8 @@ export const replyToServiceProvider = createAsyncThunk('/jobs/replyToServiceProv
         const response = await axiosInstance.post(`/job/reply/${id}`,formData,{headers:{
             Authorization:localStorage.getItem('token')
         }});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
 
     }
@@ -195,10 +168,8 @@ export const fetchJobList = createAsyncThunk('/jobs/fetchJobList',async(_,{rejec
     try{
         const response = await axiosInstance.get('/job/list',{headers:{
             Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data);
 
     }

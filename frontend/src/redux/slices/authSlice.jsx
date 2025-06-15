@@ -6,7 +6,6 @@ export const userRegister = createAsyncThunk('auth/register',async(formData,{rej
         const response = await axiosInstance.post('/auth/register',formData);
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data ||{ message : "Regirtration failed"})
     }
 });
@@ -14,10 +13,8 @@ export const userRegister = createAsyncThunk('auth/register',async(formData,{rej
 export const emailVerify = createAsyncThunk('auth/emailVerify',async(formData,{rejectWithValue})=>{
     try {
         const response = await axiosInstance.post('/auth/verify',formData);
-        console.log(response.data)
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data ||{ message : "Email verification failed"})
     }
 });
@@ -25,10 +22,8 @@ export const emailVerify = createAsyncThunk('auth/emailVerify',async(formData,{r
 export const loginOtp = createAsyncThunk('/auth/loginOtp',async(formData,{rejectWithValue})=>{
     try {
         const response = await axiosInstance.post('/auth/login-otp',formData);
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data ||{ message : "otp send failed"})
     }
 });
@@ -36,12 +31,10 @@ export const loginOtp = createAsyncThunk('/auth/loginOtp',async(formData,{reject
 export const userLogin = createAsyncThunk('/auth/userLogin',async(formData,{rejectWithValue})=>{
     try{
         const response = await axiosInstance.post('/auth/login',formData);
-        console.log(response.data);
         localStorage.setItem('token',response.data.token);
         localStorage.setItem('isLoggedIn',true);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data ||{ message : "Login failed. Please try again"});
     }
 });
@@ -50,10 +43,8 @@ export const userLogin = createAsyncThunk('/auth/userLogin',async(formData,{reje
 export const forgotPassword = createAsyncThunk('/auth/forgotPassword',async(formData,{rejectWithValue})=>{
     try{
         const response = await axiosInstance.post('/auth/forgot/paswword',formData);
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data ||{ message : "Login failed. Please try again"});
     }
 });
@@ -61,10 +52,8 @@ export const forgotPassword = createAsyncThunk('/auth/forgotPassword',async(form
 export const resetPassword = createAsyncThunk('/auth/resetPassword',async(formData,{rejectWithValue})=>{
     try{
         const response = await axiosInstance.post('/auth/reset/paswword',formData);
-        console.log(response.data);
         return response.data;
     }catch(error){
-        console.log(error);
         return rejectWithValue(error?.response?.data ||{ message : "Login failed. Please try again"});
     }
 });

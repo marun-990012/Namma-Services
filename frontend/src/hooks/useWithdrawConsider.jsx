@@ -6,7 +6,6 @@ export const usewithdrawConsider = () => {
   const dispatch = useDispatch();
 
   const withdraw = async (formData) => {
-    console.log(formData)
     try {
       const res = await dispatch(
         withdrawConsider(formData)

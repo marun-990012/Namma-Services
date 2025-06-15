@@ -92,7 +92,7 @@ useEffect(() => {
                 )
               }
             />
-            {/* <Route path="/forgot/password" element={<ForgotPassword/>}/> */}
+    
 
             <Route
               path="/reset/password/:id"

@@ -1,6 +1,7 @@
-
+import dotenv from 'dotenv';
+dotenv.config()
 import Razorpay from "razorpay";
 export const razorpayInstance = new Razorpay({
-    key_id: "rzp_test_d8jU7S0YhIAw1x",          // ✅ your Razorpay KEY ID (starts with rzp_test_)
-    key_secret: "5DrtcuKEVGGvv0L57aPiAi8A"      // ✅ your Razorpay SECRET
+    key_id: process.env.RAZORPAY_KEY_ID,          //your Razorpay KEY ID
+    key_secret: process.env.RAZORPAY_SECRET      // your Razorpay SECRET
   });

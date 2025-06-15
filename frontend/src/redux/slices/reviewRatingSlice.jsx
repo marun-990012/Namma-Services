@@ -4,10 +4,8 @@ import axiosInstance from "../../utils/axiosInstancs";
 export const createReview = createAsyncThunk('/reviews/createReview',async(formData,{rejectWithValue})=>{
     try {
         const response = await axiosInstance.post('/review/create',formData,{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data || { message : "error while create review"})
     }
 });
@@ -17,10 +15,8 @@ export const createReview = createAsyncThunk('/reviews/createReview',async(formD
 export const fetchReviews = createAsyncThunk('/reviews/fetchReviews',async(id,{rejectWithValue})=>{
     try {
         const response = await axiosInstance.get(`/review/list/${id}`,{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data || { message : "error while fetching reviews"})
     }
 });
@@ -29,10 +25,8 @@ export const fetchReviews = createAsyncThunk('/reviews/fetchReviews',async(id,{r
 export const likeReview = createAsyncThunk('/reviews/likeReview',async(id,{rejectWithValue})=>{
     try {
         const response = await axiosInstance.post(`/review/like/${id}`,{},{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data || { message : "error while fetching reviews"})
     }
 });

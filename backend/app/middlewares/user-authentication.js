@@ -6,7 +6,7 @@ function authentication(req,res,next){
     if(!token){
         return res.status(401).json({error:"Token is required"});
     }
-    const tokenData = jwt.verify(token,'Secret@123');
+    const tokenData = jwt.verify(token,process.env.JWT_SECRET);
     req.userId = tokenData.userId;
     req.role = tokenData.role;
     next();

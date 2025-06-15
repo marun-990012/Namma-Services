@@ -1,8 +1,8 @@
+import { useEffect } from "react";
+import {CirclePower,Kanban } from 'lucide-react';
 import {Link, useNavigate } from "react-router-dom";
 import { IconBellFilled } from "@tabler/icons-react";
-import {CirclePower,Kanban } from 'lucide-react';
 import { useSelector, useDispatch } from "react-redux";
-import { useEffect } from "react";
 import { logout } from "../../redux/slices/authSlice";
 
 function Navbar() {
@@ -10,10 +10,7 @@ function Navbar() {
   const dispatch = useDispatch();
 
   const notificationCount = useSelector((state) => state.notifications?.unreadCount);
-  console.log(notificationCount);
-
-//   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-const isLoggedIn = localStorage.getItem('token');
+  const isLoggedIn = localStorage.getItem('token');
 
 useEffect(() => {
   if (!isLoggedIn) {

@@ -1,10 +1,10 @@
-import { useState,useEffect } from "react";
-import { useNavigate,useParams } from "react-router-dom";
-import { useSelector,useDispatch } from "react-redux";
 import toast from "react-hot-toast";
+import { useState,useEffect } from "react";
+import { useSelector,useDispatch } from "react-redux";
+import { useNavigate,useParams } from "react-router-dom";
+import Star from "./Star";
 import { fetchAccount } from "../../redux/slices/profileSlice";
 import { createReview } from "../../redux/slices/reviewRatingSlice";
-import Star from "./Star";
 
 function ReviewCard() {
   const dispatch = useDispatch();
@@ -13,7 +13,6 @@ function ReviewCard() {
   const [rating, setRating] = useState(0);
   const [review,setReview] = useState('');
   const [hovered, setHovered] = useState(0);
-  console.log(serviceProviderId,jobId)
 
   useEffect(()=>{
     dispatch(fetchAccount());

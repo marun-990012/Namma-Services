@@ -1,11 +1,11 @@
-import Job from "../models/job-post-model.js";
-import User from '../models/user-model.js';
-import mongoose from 'mongoose';
 import axios from "axios";
-import { sendConsiderNotification, sendSelectNotification } from "../helpers/send-mail.js";
+import mongoose from 'mongoose';
+import User from '../models/user-model.js';
+import Job from "../models/job-post-model.js";
 import { sendNotification } from "../helpers/notify.js";
 import { deductCoin } from "../services/walletService.js";
 import Transaction from "../models/transactions-model.js";
+import { sendConsiderNotification, sendSelectNotification } from "../helpers/send-mail.js";
 
 const jobPostController={};
 
@@ -13,17 +13,17 @@ const jobPostController={};
 jobPostController.create = async(req,res)=>{
     const {title,description,serviceCategory,address,postalCode,salary,images} = req.body;
 
-    const apiKey = '414f3b4ff1ad47088654fae1b1c6ca01';
+    const apiKey = process.env.GEOAPIFY_API_KEY;
+    console.log(process.env.GEOAPIFY_API_KEY)
     const encodedAddress = encodeURIComponent(`${address} ${postalCode}`);
-    const url = `https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&apiKey=${apiKey}`;
+    const url = `${process.env.GEOAPIFY_URL}=${encodedAddress}&apiKey=${apiKey}`;
     try{
       
 
       const response = await axios.get(url);
       const location = response.data.features[0].properties;
-      // return { lat: location.lat, lng: location.lon };
-
-        const jobPost = await Job.create({title,description,serviceCategory,address:location.formatted,postalCode:location.postcode,location: {type: 'Point',coordinates: [location.lon, location.lat]},salary,images,postedBy:req.userId});
+      
+      const jobPost = await Job.create({title,description,serviceCategory,address:location.formatted,postalCode:location.postcode,location: {type: 'Point',coordinates: [location.lon, location.lat]},salary,images,postedBy:req.userId});
 
     await sendNotification({
      userId: req.userId,
@@ -33,7 +33,7 @@ jobPostController.create = async(req,res)=>{
     });
 
         return res.status(201).json(jobPost);
-        // return res.json(location)
+        
     }catch(error){
         console.log(error);
         return res.status(500).json({error:"Something went wrong"});
@@ -88,9 +88,9 @@ jobPostController.updatePost = async(req,res)=>{
     const id = req.params.id;
     const {title,description,address,postalCode,salary,images} = req.body;
 
-    const apiKey = '414f3b4ff1ad47088654fae1b1c6ca01';
+    const apiKey = process.env.GEOAPIFY_API_KEY;
     const encodedAddress = encodeURIComponent(`${address} ${postalCode}`);
-    const url = `https://api.geoapify.com/v1/geocode/search?text=${encodedAddress}&apiKey=${apiKey}`;
+    const url = `${process.env.GEOAPIFY_URL}=${encodedAddress}&apiKey=${apiKey}`;
     try{
            const response = await axios.get(url);
            const location = response.data.features[0].properties;

@@ -4,10 +4,8 @@ import axiosInstance from "../../utils/axiosInstancs";
 export const imageUpload = createAsyncThunk('/image/imageUpload',async(fileData,{rejectWithValue})=>{
     try {
         const response = await axiosInstance.post('/image/upload',fileData,{headers:{Authorization:localStorage.getItem('token')}});
-        console.log(response.data);
         return response.data;
     } catch (error) {
-        console.log(error);
         return rejectWithValue(error?.response?.data ||{ message : "error while image upload"});
     }
 })

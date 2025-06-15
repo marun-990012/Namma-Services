@@ -1,4 +1,5 @@
 import Service from "../models/service-category-model.js";
+
 const serviceCategoryController={};
 
 // controller for create service category 
@@ -15,7 +16,7 @@ serviceCategoryController.create = async (req,res)=>{
 
 // controller for list all the category
 serviceCategoryController.list = async(req,res)=>{
-    // res.json('hello');
+  
     try{
         const categories = await Service.find();
         return res.json(categories);
