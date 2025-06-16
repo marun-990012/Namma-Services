@@ -1,7 +1,7 @@
 import { useSelector, useDispatch } from "react-redux";
 import { Outlet, Link , useNavigate} from "react-router-dom";
 import Navbar from "./Navbar";
-import Sidebar from "./SideBar";
+import Sidebar from './Sidebar'
 import { logout } from "../../redux/slices/authSlice";
 import { fetchAccount } from "../../redux/slices/profileSlice";
 
