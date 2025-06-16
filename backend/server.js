@@ -61,6 +61,10 @@ app.use('/api/transaction', transactionRoute);
 //api for notification
 app.use('/api/notification', notificationRoute);
 
+app.get('/hello',(req,res)=>{
+    res.json('hello');
+})
+
 
 app.listen(port,()=>{
     connectDb();
