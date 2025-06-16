@@ -2,3 +2,4 @@ node_modules/
 package-lock.js/
 
 /backend/.env
+/frontend/.env
