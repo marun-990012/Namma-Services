@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
-import Login from "./login";
+import Login from './Login'
 import Register from "./Register";
 import logo from "../../images/app-logo.png";
 function AuthPage() {
