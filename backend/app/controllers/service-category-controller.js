@@ -9,7 +9,6 @@ serviceCategoryController.create = async (req,res)=>{
         const category = await Service.create({name,description,imageUrl});
         return res.status(201).json(category);
     }catch(error){
-        console.log(error);
         return res.status(500).json({message:"Something went wrong"});
     }
 };
@@ -21,7 +20,6 @@ serviceCategoryController.list = async(req,res)=>{
         const categories = await Service.find();
         return res.json(categories);
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 };
@@ -37,7 +35,6 @@ serviceCategoryController.update = async(req,res)=>{
         }
         return res.json(category);
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 }
@@ -52,7 +49,6 @@ serviceCategoryController.remove = async(req,res)=>{
         }
         return res.json(category);
     }catch(error){
-        console.log(error);
         return res.status(500).json({message:"Something went wrong"});
     }
 };

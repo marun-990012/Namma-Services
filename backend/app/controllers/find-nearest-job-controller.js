@@ -55,14 +55,12 @@ findNearestJobController.nearestJob = async (req, res) => {
         }
       }));
 
-      // console.log(jobsInKm);
 
       return res.status(200).json(jobsInKm);
     } else {
       return res.status(404).json({ message: "No recent nearby jobs found" });
     }
   } catch (error) {
-    console.error("Error in nearestJob:", error);
     return res.status(500).json({ error: "Something went wrong" });
   }
 };

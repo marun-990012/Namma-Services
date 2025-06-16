@@ -18,7 +18,6 @@ mediaController.uploadImage = async(req,res)=>{
       
           return res.json(cloudinaryResponse.secure_url);
         } catch (err) {
-          console.error("Error uploading image to Cloudinary:", err);
           return res.status(500).json({ error: "Failed to upload image" });
         }
 }

@@ -1,5 +1,4 @@
 import crypto from 'crypto';
-import Wallet from "../models/wallet-model.js";
 import Payment from "../models/paymentSchema.js";
 import { completeJob } from "../helpers/completJob.js";
 import Transaction from "../models/transactions-model.js";
@@ -25,17 +24,13 @@ paymentController.order = (req, res) => {
     // Create order on Razorpay
     razorpayInstance.orders.create(options, (error, order) => {
       if (error) {
-        console.log(error);
         return res.status(500).json({ error: 'Internal server error while creating order' });
       }
-
-      console.log('order created')
       return res.json({
         data: order // Send the order data to frontend
       });
     });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 };
@@ -56,7 +51,6 @@ paymentController.verify = async (req, res) => {
       .digest('hex');
 
     if (expectedSignature === razorpay_signature) {
-      console.log('Payment verified');
 
       const payment = new Payment({
         razorpay_order_id,
@@ -97,7 +91,6 @@ paymentController.verify = async (req, res) => {
       return res.status(400).json({ error: 'Payment verification failed, signature mismatch' });
     }
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ error: 'Internal server error' });
   }
 };

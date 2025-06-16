@@ -45,10 +45,8 @@ addressController.updateAddress = async (req, res) => {
       return res.status(404).json({ error: 'Record not found or unauthorized access' });
     }
 
-    // console.log(address)
     return res.status(200).json(address);
   } catch (error) {
-    console.error('Geoapify geocoding error:', error);
     return res.status(500).json({ error: 'Something went wrong' });
   }
 };
@@ -59,10 +57,8 @@ addressController.find = async(req,res)=>{
         if(!address){
             return res.status(404).json({message:'address not found'});
         }
-        console.log('address',address)
         return res.json(address);
     } catch (error) {
-        console.log(error);
         return res.status(500).json({error:'Something went wrong'});
     }
 }
@@ -73,7 +69,6 @@ addressController.listAddress = async(req,res)=>{
         const address = await Address.find();
         return res.json(address);
     } catch (error) {
-        console.log(error);
         return res.status(500).json({error:'Something went wrong'});
     }
 }

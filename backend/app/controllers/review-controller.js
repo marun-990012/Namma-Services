@@ -8,7 +8,6 @@ reviewRatingController.create = async(req,res)=>{
         const reviewRating = await ReviewRating.create({serviceProvider,jobProvider,jobId,rating,review});
         return res.status(201).json(reviewRating);
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 };
@@ -27,7 +26,6 @@ reviewRatingController.removeReview = async(req,res)=>{
     //   await review.save();
       return res.json(review);
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 };
@@ -53,7 +51,6 @@ reviewRatingController.updateReview = async(req,res)=>{
        return res.json(review);
     
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 };
@@ -64,7 +61,6 @@ reviewRatingController.list = async(req,res)=>{
         const review = await ReviewRating.find({serviceProvider:id});
         return res.json(review);
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 }
@@ -83,7 +79,6 @@ reviewRatingController.like = async(req,res)=>{
         review.save();
         return res.json(review);
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 }

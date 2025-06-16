@@ -1,5 +1,4 @@
 import Wallet from "../models/wallet-model.js";
-import walletRoute from "../../config/routes/wallet-route.js";
 
 const walletController = {};
 
@@ -8,7 +7,6 @@ walletController.createWallet = async(req,res)=>{
         const wallet = await Wallet.create({userId:req.userId});
         return res.status(201).json(wallet);
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 };
@@ -31,7 +29,6 @@ walletController.createWallet = async(req,res)=>{
   
       return res.status(200).json(wallet);
     } catch (error) {
-      console.error(error);
       return res.status(500).json({ error: "Something went wrong" });
     }
   };
@@ -44,7 +41,6 @@ walletController.find = async(req,res)=>{
     }
     return res.json(wallet);
   } catch (error) {
-    console.error(error);
       return res.status(500).json({ error: "Something went wrong" });
   }
 }

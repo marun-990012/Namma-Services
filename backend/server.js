@@ -64,6 +64,5 @@ app.use('/api/notification', notificationRoute);
 
 app.listen(port,()=>{
     connectDb();
-    console.log('Server is running on port',port);
     
 });

@@ -1,5 +1,4 @@
 import axios from "axios";
-import mongoose from 'mongoose';
 import User from '../models/user-model.js';
 import Job from "../models/job-post-model.js";
 import { sendNotification } from "../helpers/notify.js";
@@ -20,10 +19,10 @@ jobPostController.create = async(req,res)=>{
     try{
       
 
-      const response = await axios.get(url);
-      const location = response.data.features[0].properties;
+    const response = await axios.get(url);
+    const location = response.data.features[0].properties;
       
-      const jobPost = await Job.create({title,description,serviceCategory,address:location.formatted,postalCode:location.postcode,location: {type: 'Point',coordinates: [location.lon, location.lat]},salary,images,postedBy:req.userId});
+    const jobPost = await Job.create({title,description,serviceCategory,address:location.formatted,postalCode:location.postcode,location: {type: 'Point',coordinates: [location.lon, location.lat]},salary,images,postedBy:req.userId});
 
     await sendNotification({
      userId: req.userId,
@@ -32,10 +31,9 @@ jobPostController.create = async(req,res)=>{
      type: "success",
     });
 
-        return res.status(201).json(jobPost);
+      return res.status(201).json(jobPost);
         
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 };
@@ -43,12 +41,10 @@ jobPostController.create = async(req,res)=>{
 
 //controller for list all the job posts
 jobPostController.list = async(req,res)=>{
-  console.log('hi')
     try{
         const jobPosts = await Job.find();
         return res.json(jobPosts);
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 }; 
@@ -58,13 +54,11 @@ jobPostController.show = async (req,res) =>{
     const id = req.params.id;
   try {
     const job = await Job.findById(id);
-    // console.log(job)
     if(!job){
       return res.status(404).json({message:'Job post not found'})
     }
     return res.status(200).json(job);
   } catch (error) {
-    console.log(error);
     return res.status(500).json({error:"Something went wrong"});
   }
 }
@@ -78,7 +72,6 @@ jobPostController.myJobPosts = async (req,res) =>{
         }
         return res.json(posts);
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 };
@@ -92,8 +85,8 @@ jobPostController.updatePost = async(req,res)=>{
     const encodedAddress = encodeURIComponent(`${address} ${postalCode}`);
     const url = `${process.env.GEOAPIFY_URL}=${encodedAddress}&apiKey=${apiKey}`;
     try{
-           const response = await axios.get(url);
-           const location = response.data.features[0].properties;
+         const response = await axios.get(url);
+        const location = response.data.features[0].properties;
 
         const post = await Job.findOneAndUpdate(
             { _id: id, postedBy: req.userId }, // Ensure user owns the post
@@ -108,7 +101,6 @@ jobPostController.updatePost = async(req,res)=>{
           return res.json(post);
         
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 };
@@ -124,7 +116,6 @@ jobPostController.remove = async(req,res)=>{
         }
        return res.json(post);
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 };
@@ -189,7 +180,6 @@ jobPostController.jobRequest = async (req, res) => {
 
     return res.json(jobPost);
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -200,16 +190,13 @@ jobPostController.jobRequest = async (req, res) => {
 jobPostController.sendMessage = async(req,res)=>{
     const id = req.params.id;
     const {message} = req.body;
-    // console.log(id,message)
-    // const userId = req.userId;
+
     try{
         const jobPost = await Job.findById(id);
         if(!jobPost){
             return res.status(404).json({error:"job post not found "})
         }
 
-        // const request = jobPost.jobRequests.id(req.userId);
-        //  const request = jobPost.jobRequests.find((req) => req.serviceProvider === req.userId);
          const jobRequest = jobPost.jobRequests.find(
         (request) => request.serviceProvider.toString() === req.userId
          );
@@ -223,12 +210,11 @@ jobPostController.sendMessage = async(req,res)=>{
               message: message,
               sender: req.userId
              };
-        // const response=reply
+
        jobRequest.messages.push(newMessage);
         await jobPost.save();
         return res.json(jobPost);
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 };
@@ -238,7 +224,7 @@ jobPostController.sendMessage = async(req,res)=>{
 jobPostController.sendReply = async(req,res)=>{
     const id = req.params.id;
     const {sender,serviceProvider,reply} = req.body
-    // console.log(serviceProvider ,'id')
+
     try{
       const jobPost = await Job.findOne({ _id: id, postedBy: req.userId });
         if(!jobPost){
@@ -246,8 +232,7 @@ jobPostController.sendReply = async(req,res)=>{
         }
 
         const request = jobPost.jobRequests.find((req) => req.serviceProvider.toString() === serviceProvider.toString());
-        // const request = jobPost.jobRequests.id(requestId);
-        console.log(request)
+
         if (!request) {
           return res.status(404).json({ error: "Job request not found." });
         }
@@ -255,12 +240,11 @@ jobPostController.sendReply = async(req,res)=>{
               message: reply,
               sender: sender
              };
-        // const response=reply
+
        request.messages.push(newMessage);
         await jobPost.save();
         return res.json(jobPost);
     }catch(error){
-        console.log(error);
         return res.status(500).json({error:"Something went wrong"});
     }
 };
@@ -268,7 +252,7 @@ jobPostController.sendReply = async(req,res)=>{
 // Controller to check if the service provider is currently working on another job
 jobPostController.checkIfWorking = async(req,res)=>{
     const serviceProvider = req.params.serviceProvider;
-    console.log(serviceProvider)
+
     try {
     
     const exists = await Job.exists({
@@ -279,7 +263,7 @@ jobPostController.checkIfWorking = async(req,res)=>{
     // If a job exists, send true, otherwise false
     res.status(200).json({ activeJobExists: !!exists });
   } catch (error) {
-    console.error("Error checking active job:", error);
+
     res.status(500).json({ message: "Internal server error." });
   }
 }
@@ -334,7 +318,7 @@ jobPostController.consideration = async (req, res) => {
     return res.status(200).json({ message: "Added to consideration list.", jobPost });
 
   } catch (error) {
-    console.error("Error in consideration controller:", error);
+
     return res.status(500).json({ error: "Something went wrong." });
   }
 };
@@ -375,7 +359,7 @@ jobPostController.removeConsideration = async (req, res) => {
 
       return res.json(jobPost);
     } catch (error) {
-      console.error(error);
+
       return res.status(500).json({ error: "Something went wrong" });
     }
   };
@@ -436,7 +420,6 @@ jobPostController.removeConsideration = async (req, res) => {
     return res.status(200).json({ message: "Service provider selected successfully.", jobPost });
 
   } catch (error) {
-    console.error("selectServiceProvider error:", error);
     return res.status(500).json({ error: "Something went wrong." });
   }
 };
@@ -461,7 +444,6 @@ jobPostController.removeConsideration = async (req, res) => {
        await jobPost.save();
        return res.status(201).json(jobPost);
     }catch(error){
-       console.error(error);
        return res.status(500).json({ error: "Something went wrong" });
     }
   }

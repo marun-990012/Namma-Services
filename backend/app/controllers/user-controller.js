@@ -31,7 +31,6 @@ userController.register = async (req, res) => {
     user.password = hashedPassword;
     const verificationToken= Math.floor(100000 + Math.random() * 900000).toString();
     user.verificationToken=verificationToken;
-    console.log(verificationToken)
     await user.save();
     if(user.userType != 'admin'){
       await createBlankAddressForUser(user._id);
@@ -39,7 +38,6 @@ userController.register = async (req, res) => {
     sendVerificationEamil({email:user.email,message:'Verify your account',verificationToken:verificationToken});
     return res.status(201).json(user);
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -63,7 +61,6 @@ userController.verfiyEmail = async(req,res)=>{
    return res.status(200).json({success:true,message:"Email Verifed Successfully"})
          
   } catch (error) {
-      console.log(error)
       return res.status(500).json({success:false,message:"internal server error"})
   }
 };
@@ -79,7 +76,6 @@ userController.forgotPassword = async(req,res)=>{
 
      // Generate a secure random token
       const resetToken = crypto.randomBytes(32).toString('hex');
-      console.log(resetToken);
       const resetUrl = `${process.env.RESET_PASSWORD_URL}/${resetToken}`; 
       sendResetPasswordEmail({resetUrl,email:user.email,resetUrl});
 
@@ -97,7 +93,6 @@ userController.forgotPassword = async(req,res)=>{
       return res.json({success:true,message:`reset token has be sent your ${user.email}`});
 
   }catch(error){
-    console.log(error)
     return res.status(500).json({success:false,message:"internal server error"})
   }
 }
@@ -127,7 +122,6 @@ userController.resetPassword = async(req,res)=>{
        await user.save();
        return res.json({success:true,message:'password chenged succefully'})
   } catch (error) {
-    console.log(error)
     return res.status(500).json({success:false,message:"internal server error"})
   }
 }
@@ -142,13 +136,11 @@ userController.loginOtp = async (req,res) => {
       user.tokenExpires = Date.now() + 5 * 60 * 1000; // 5 minutes expiry
       await user.save();
       sendVerificationEamil({email:user.email,message:'Login OTP',verificationToken:verificationToken});
-      console.log(verificationToken)
       return res.status(200).json({message:'otp send successfully check email'});
     }
 
     return res.status(404).json({message:'Invalid email or no account found.'})
    }catch(error){
-    console.log(error)
     return res.status(500).json({success:false,message:"internal server error"})
    }
 }
@@ -190,7 +182,6 @@ userController.login = async (req, res) => {
     await user.save();
     return res.json({ token: token });
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -201,7 +192,6 @@ userController.list = async (req, res) => {
     const users = await User.find();
     return res.json(users);
   } catch (error) {
-    console.log(error);
     return res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -224,7 +214,6 @@ userController.fetchServiceProviders = async (req, res) => {
 
     return res.json(users);
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -246,7 +235,6 @@ userController.fetchWorkProviders = async (req, res) => {
 
     return res.json(users);
   } catch (error) {
-    console.error(error);
     return res.status(500).json({ error: "Something went wrong" });
   }
 };
@@ -258,7 +246,6 @@ userController.account = async (req, res) => {
     const user = await User.findById(req.userId);
     return res.json(user);
    }catch(error){
-    console.log(error);
     return res.status(500).json({ error: "Something went wrong" });
    }
 };
@@ -267,13 +254,12 @@ userController.account = async (req, res) => {
 userController.updateProfileImage = async(req,res)=>{
     const {imageUrl} = req.body;
     try{
-            const user = await User.findByIdAndUpdate(req.userId,{profileImage:imageUrl},{new:true});
-            if(!user){
-                return res.status(404).json({message:"user not found"});
-            }
-            return res.json(user);
+        const user = await User.findByIdAndUpdate(req.userId,{profileImage:imageUrl},{new:true});
+        if(!user){
+            return res.status(404).json({message:"user not found"});
+        }
+       return res.json(user);
     }catch(error){
-        console.log(error);
         return res.status(500).json({ error: "Something went wrong" });
     }
 };
@@ -301,7 +287,6 @@ userController.uploadPhotos = async (req, res) => {
 
     return res.status(200).json(user);
   } catch (error) {
-    console.error("Upload error:", error);
     return res.status(500).json({ error: "Something went wrong while uploading images" });
   }
 };
@@ -312,13 +297,12 @@ userController.updateProfile = async(req,res)=>{
     const {bio,name,phoneNumber,serviceType} = req.body;
     try{
         
-            const user = await User.findByIdAndUpdate(req.userId,{bio,name,phoneNumber,serviceType},{new:true});
-            if(!user){
-                return res.status(404).json({message:"user not found"});
-            }
+      const user = await User.findByIdAndUpdate(req.userId,{bio,name,phoneNumber,serviceType},{new:true});
+      if(!user){
+         return res.status(404).json({message:"user not found"});
+      }
             return res.json(user);
     }catch(error){
-        console.log(error);
         return res.status(500).json({ error: "Something went wrong" });
     }
 };
@@ -337,7 +321,6 @@ userController.remove = async(req,res)=>{
     }
     return res.json({error:"Unauthorized access"});
    }catch(error){
-    console.log(error);
     return res.status(500).json({ error: "Something went wrong" });
    }
 }
