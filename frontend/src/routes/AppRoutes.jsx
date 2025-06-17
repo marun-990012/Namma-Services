@@ -152,6 +152,16 @@ useEffect(() => {
             />
             {/* <Route path="/profile" element={<ProfilePage />} /> */}
 
+
+            <Route
+              path="/"
+              element={
+                <PrivateRoute>
+                  <ProfilePage />
+                </PrivateRoute>
+              }
+            />
+
             <Route
               path="/profile/edit/:id"
               element={
