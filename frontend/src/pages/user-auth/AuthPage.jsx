@@ -24,7 +24,7 @@ function AuthPage() {
     console.log(formData);
   };
   return (
-    <div className="flex justify-center ml-[-100px]">
+    <div className="flex justify-center ml-[-102px]">
       <div className="flex justify-evenly p-6 bg-white rounded-[10px]">
         <div className="">
           <img className="w-103 h-108 rounded-[10px]" src={logo} alt="" />
