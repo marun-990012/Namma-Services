@@ -7,6 +7,7 @@ import AuthPage from "../pages/user-auth/AuthPage";
 import EmailVerification from "../pages/user-auth/EmailVerification";
 import ForgotPassword from "../pages/user-auth/ForgotPassword";
 import ResetPassword from "../pages/user-auth/ResetPassword";
+import Users from "../pages/users/Users";
 import CategoryForm from "../pages/service-category/CategoryForm";
 import CategoryList from "../pages/service-category/CategoryList";
 import ProfilePage from "../pages/profilePage/ProfilePage";
@@ -104,7 +105,52 @@ useEffect(() => {
                 )
               }
             />
-            {/* <Route path="/reset/password/:id" element={<ResetPassword/>}/> */}
+
+            <Route
+              path="/users"
+              element={
+                <PrivateRoute>
+                  <ProtectedRoute roles={["admin"]}>
+                    <Users />
+                  </ProtectedRoute>
+                </PrivateRoute>
+              }
+            />
+
+
+            <Route
+              path="/users/approved"
+              element={
+                <PrivateRoute>
+                  <ProtectedRoute roles={["admin"]}>
+                    <Users />
+                  </ProtectedRoute>
+                </PrivateRoute>
+              }
+            />
+
+
+            <Route
+              path="/users/requested"
+              element={
+                <PrivateRoute>
+                  <ProtectedRoute roles={["admin"]}>
+                    <Users />
+                  </ProtectedRoute>
+                </PrivateRoute>
+              }
+            />
+
+            <Route
+              path="/users/rejected"
+              element={
+                <PrivateRoute>
+                  <ProtectedRoute roles={["admin"]}>
+                    <Users />
+                  </ProtectedRoute>
+                </PrivateRoute>
+              }
+            />
 
             <Route
               path="/category/new"

@@ -68,5 +68,6 @@ app.get('/hello',(req,res)=>{
 
 app.listen(port,()=>{
     connectDb();
+    console.log('server is running', port)
     
 });

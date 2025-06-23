@@ -119,22 +119,6 @@ function Register() {
             />
           </div>
 
-          {/* <div className="flex flex-col">
-                    <label htmlFor="password" className="mb-">
-                      Password
-                    </label>
-                    <input
-                    id="password"
-                      type="text"
-                      placeholder="Ex : Password@123"
-                      className="border border-gray-300 shadow rounded focus:outline-none focus:border-orange-200 px-[8px] py-[4px]"
-                      value={password}
-                      onChange={(e) => {
-                        setPassword(e.target.value);
-                      }}
-                    />
-                  </div> */}
-
           <div className="relative flex flex-col">
             <label htmlFor="" className="mb-1">
               Password
@@ -221,12 +205,9 @@ function Register() {
               </div>
             )}
 
-            {/* <div className="flex">
-                      <span className="text-[12px] text-red-400">Error</span>
-                    </div> */}
           </div>
 
-          <div className="text-center mt- bg-orange-500 text-white p-2 rounded">
+          <div className="text-center cursor-pointer bg-orange-500 hover:bg-orange-600 transition duration-200 text-white p-2 rounded">
             <input type="submit" value="Register" />
           </div>
         </div>

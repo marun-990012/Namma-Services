@@ -31,10 +31,7 @@ function AuthPage() {
         </div>
 
         <div className="bg-white w-83 ml-4">
-          {/* <p>Register components</p>
-             <form>
-                <input type="text" />
-             </form> */}
+          
           <div className="flex justify-between bg-[#e8e8ea] p-[4px] rounded-[5px]">
             <Link to="/login">
               <button

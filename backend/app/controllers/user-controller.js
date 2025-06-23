@@ -20,6 +20,7 @@ userController.register = async (req, res) => {
       user.isActive = true;
     } else {
       user.isActive = false;
+      user.requested=true;
     }
     
     if (user.userType === "admin" && passcode != process.env.ADMIN_PASS) {
@@ -31,6 +32,7 @@ userController.register = async (req, res) => {
     user.password = hashedPassword;
     const verificationToken= Math.floor(100000 + Math.random() * 900000).toString();
     user.verificationToken=verificationToken;
+    console.log(verificationToken)
     await user.save();
     if(user.userType != 'admin'){
       await createBlankAddressForUser(user._id);
@@ -132,9 +134,11 @@ userController.loginOtp = async (req,res) => {
    try{
     const user = await User.findOne({email});
     const verificationToken= Math.floor(100000 + Math.random() * 900000).toString();
+    
     if(user){
       user.verificationToken=verificationToken;
       user.tokenExpires = Date.now() + 5 * 60 * 1000; // 5 minutes expiry
+      console.log(verificationToken)
       await user.save();
       sendVerificationEamil({email:user.email,message:'Login OTP',verificationToken:verificationToken});
       return res.status(200).json({message:'otp send successfully check email'});
@@ -325,4 +329,54 @@ userController.remove = async(req,res)=>{
     return res.status(500).json({ error: "Something went wrong" });
    }
 }
+
+//list requested users controller
+userController.requestedUsers = async(req,res)=>{
+  try {
+    const listUsers = await User.find({userType:"service-provider",requested:true});
+    if(!listUsers){
+      return res.status(404).json({message:"No user requested"})
+    }
+    return res.json(listUsers);
+  } catch (error) {
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+}
+
+
+//user Approve controller
+userController.approveUser = async(req,res)=>{
+  const requestId = req.params.id; 
+  const status = req.body.status;
+  
+  console.log(status)
+  try {
+    const requestedUser = await User.findById(requestId);
+    if(!requestedUser){
+      return res.status(404).json({message:"No user requested"})
+    }
+    
+    requestedUser.isRejected=status;
+    requestedUser.requested=undefined;
+    await requestedUser.save();
+    return res.json(requestedUser);
+  } catch (error) {
+    return res.status(500).json({ error: "Something went wrong" });
+  }  
+}
+
+
+//list rejected users controller
+userController.rejectedUsers = async(req,res)=>{
+  try {
+    const listRejectedUsers = await User.find({userType:"service-provider",isRejected:true});
+    if(!listRejectedUsers){
+      return res.status(404).json({message:"No users Rejected"})
+    }
+    return res.json(listRejectedUsers);
+  } catch (error) {
+    return res.status(500).json({ error: "Something went wrong" });
+  }
+}
+
 export default userController;

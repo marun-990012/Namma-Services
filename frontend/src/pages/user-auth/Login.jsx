@@ -142,7 +142,7 @@ function Login() {
             </span>
           </div>
 
-          <div className="text-center mt-4 bg-orange-500 text-white p-2 rounded">
+          <div className="text-center cursor-pointer mt-4 bg-orange-500 hover:bg-orange-600 transition duration-200 text-white p-2 rounded">
             <input type="submit" value="login" />
           </div>
 
