@@ -139,13 +139,13 @@ const authSlice = createSlice({
         });
     },
 
-    // reducers: {
-    //         logout: (state,action) => {
-    //           state.data = [];
-    //           state.isLoggedIn = false
-    //           localStorage.removeItem("token");
-    //         },
-    //     },
+    reducers: {
+            logout: (state,action) => {
+              state.data = [];
+              state.isLoggedIn = false
+              localStorage.removeItem("token");
+            },
+        },
 });
 
 export const {logout} = authSlice.actions;

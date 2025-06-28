@@ -18,15 +18,10 @@ useEffect(() => {
   }
 }, [isLoggedIn, navigate]);
 
-
-
-const handleLogout = () => {
-  dispatch({ type: 'LOGOUT' }); // triggers rootReducer reset
-  localStorage.removeItem("token"); // optional cleanup
-  localStorage.removeItem("isLoggedIn");
-  navigate("/login");
-};
-
+  const handleLogout = async () => {
+    await dispatch(logout());
+    navigate("/login");
+  };
 
   return (
     <div className="flex items-center justify-between w-full">
