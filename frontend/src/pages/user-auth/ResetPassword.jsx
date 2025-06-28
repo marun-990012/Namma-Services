@@ -109,7 +109,7 @@ function ResetPassword() {
 
           <button
             type="submit"
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 rounded-lg transition duration-200"
+            className="w-full text-center cursor-pointer bg-orange-500 hover:bg-orange-600 transition duration-200 text-white p-2 rounded"
           >
             Update Password
           </button>
