@@ -59,11 +59,12 @@ function ProfilePage() {
   });
   
 
-  useEffect(()=>{
-    if(userAccount.userType=='service-provider'){
-      dispatch(fetchReviews(userAccount?.data?._id));
-    }
-  },[userAccount?.data,dispatch]);
+  useEffect(() => {
+  if (userAccount?.data?._id && userAccount?.data?.userType === 'service-provider') {
+    dispatch(fetchReviews(userAccount?.data?._id));
+  }
+}, [userAccount?.data?._id, userAccount?.data?.userType, dispatch]);
+
 
   const reviews = useSelector((state) => state.review)?.reviews;
   const averageRating = reviews.length? reviews.reduce((acc, cv) => acc + cv.rating, 0) / reviews.length: 0;
@@ -158,7 +159,7 @@ function ProfilePage() {
                   {userAccount.data?.name}
                   <BadgeCheck color="#06f" className="ml-2" />
                 </p>
-                {userAccount?.data?.userType === 'service-provider' && reviews.length > 0 && (<p className="flex items-center">
+                {userAccount?.data?.userType =='service-provider' && (<p className="flex items-center">
                   {[0, 1, 2, 3, 4].map((_, idx) => {
                       const isFilled = idx + 1 <= averageRating;
                       const isHalf =
