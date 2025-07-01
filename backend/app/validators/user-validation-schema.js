@@ -250,3 +250,41 @@ export const updateAddressValidation = {
     }
 };
 
+
+
+ export const regSchemaValidation={
+    name:{
+        in:['body'],
+        exists:{
+            errorMessage:'required',
+        },
+        notEmpty:{
+            errorMessage:'not empty'
+        },
+        trim:true,
+        isEmail:{
+            errorMessage:'eamil Sholud be in valid format'
+        },
+        isStrongPassword:{
+            options:{
+                minLength:10,
+                minUpperCase:3
+            }
+        },
+        isMobilePhone:{
+            errorMessage:''
+        },
+        custom:{
+            options:async(value)=>{
+                try{
+                    const user = await User.findOne({email:value});
+                    if(user){
+                        throw new Error('eamil already exists try with another eamil')
+                    }
+                }catch(error){
+                    throw new Error(error.message);
+                }
+            }
+        }
+    }
+}
