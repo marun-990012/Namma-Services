@@ -21,9 +21,3 @@ const inputValidator = ( req, res, next ) => {
 }
 
 export default inputValidator;
-
-
-
-import { validationResult } from "express-validator";
-
-

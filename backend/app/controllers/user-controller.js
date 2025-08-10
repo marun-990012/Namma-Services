@@ -14,6 +14,7 @@ userController.register = async (req, res) => {
  
   const {name,email,password,userType,passcode} = req.body;
   
+  
   try {
     const user = new User({name,email,password,userType});
     if (userType == "work-provider" || userType == "admin") {

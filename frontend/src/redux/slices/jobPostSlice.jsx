@@ -345,6 +345,7 @@ const jobPostSlice = createSlice({
              const index = state.data.findIndex((post)=>{
              return post._id == action.payload._id;
              });
+             
              if (index !== -1) {
              state.data[index] = action.payload;
              }
