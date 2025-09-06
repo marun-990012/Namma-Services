@@ -29,6 +29,7 @@ import ProtectedRoute from "./ProtectedRoutes";
 import Notification from "../pages/notification/Notification";
 
 import { fetchUnreadCount } from "../redux/slices/notificationSlice";
+import NammaServicesLanding from "../pages/landing-page/landing";
 
 function AppRoutes() {
 
@@ -44,6 +45,8 @@ useEffect(() => {
     <>
       <div>
         <Routes>
+
+          <Route path="/" element={<NammaServicesLanding/>}/>
           <Route element={<MainLayout />}>
             {/* login route */}
             <Route

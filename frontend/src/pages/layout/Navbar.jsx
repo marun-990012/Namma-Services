@@ -14,7 +14,7 @@ function Navbar() {
 
 useEffect(() => {
   if (!isLoggedIn) {
-    navigate("/login");
+    navigate("/");
   }
 }, [isLoggedIn, navigate]);
 
