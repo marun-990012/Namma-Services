@@ -29,7 +29,7 @@ import ProtectedRoute from "./ProtectedRoutes";
 import Notification from "../pages/notification/Notification";
 
 import { fetchUnreadCount } from "../redux/slices/notificationSlice";
-import NammaServicesLanding from "../pages/landing-page/landing";
+import NammaServicesLanding from "../pages/landing-page/Landing";
 
 function AppRoutes() {
 
